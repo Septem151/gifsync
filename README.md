@@ -163,7 +163,7 @@ Project Link: [https://github.com/Septem151/gifsync](https://github.com/Septem15
 [issues-url]: https://github.com/Septem151/gifsync/issues
 [license-shield]: https://img.shields.io/github/license/Septem151/gifsync.svg?style=flat-square
 [license-url]: https://github.com/Septem151/gifsync/blob/master/LICENSE.txt
-[project-screenshot]: images/screenshot.png
+[project-screenshot]: gifsync/static/images/screenshot.png
 [a-hat-in-time]: https://gearsforbreakfast.com/games/a-hat-in-time/
 [python-link]: https://www.python.org/
 [flask-link]: https://pypi.org/project/Flask/

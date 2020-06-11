@@ -1,0 +1,76 @@
+body {
+    font-family: "Ubuntu", serif;
+    background-color: #181818;
+    color: #b2b2b2;
+    padding-top: 107px;
+}
+
+.footer-copyright {
+    font-size: 14px;
+    background-color: #282828;
+}
+
+.navbar-custom {
+    background-color: #282828;
+}
+/* change the brand and text color */
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: #1db954;
+    font-weight: bold;
+    font-size: 32px;
+}
+/* change the link color */
+.navbar-custom .navbar-nav .nav-link {
+    color: #1db954;
+}
+/* change the color of active or hovered links */
+.navbar-custom .nav-item.active .nav-link,
+.navbar-custom .nav-item:hover .nav-link {
+    color: #20cb5c;
+}
+
+/* change the spacing between list elements */
+.navbar-custom .navbar-nav > li {
+    margin: 10px 15px;
+}
+
+.btn-custom-green {
+    color: #181818;
+    font-weight: bold;
+    background-color: #1db954;
+    -webkit-appearance: none;
+    display: flex;
+    align-items: center;
+}
+
+.btn-custom-green .btn-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.btn-custom-green:hover {
+    color: #181818;
+    background-color: #20cb5c;
+}
+
+.btn-custom-red {
+    color: #e5e5e5;
+    font-weight: bold;
+    background-color: #b91d34;
+    -webkit-appearance: none;
+    display: flex;
+    align-items: center;
+}
+
+.btn-custom-red:hover {
+    color: #e5e5e5;
+    background-color: #cb2039;
+}
+
+.btn-custom-red .btn-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}

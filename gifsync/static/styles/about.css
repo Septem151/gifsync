@@ -1,0 +1,31 @@
+a {
+    font-weight: bold;
+    color: #1db954;
+}
+
+a:hover {
+    color: #20cb5c;
+}
+
+.logo {
+    margin-bottom: 32px;
+}
+
+.title {
+    color: #1db954;
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 64px;
+}
+
+.header {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 24px;
+    margin-left: 30px;
+    margin-bottom: 18px;
+}
+
+.textblock {
+    margin-bottom: 64px;
+}
