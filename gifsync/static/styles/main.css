@@ -12,6 +12,9 @@ body {
 
 .navbar-custom {
     background-color: #282828;
+    -webkit-box-shadow: 0 4px 12px 2px rgb(0,0,0,0.35);
+    -moz-box-shadow: 0 4px 12px 2px rgb(0,0,0,0.35);
+    box-shadow: 0 4px 12px 2px rgb(0,0,0,0.35);
 }
 /* change the brand and text color */
 .navbar-custom .navbar-brand,
