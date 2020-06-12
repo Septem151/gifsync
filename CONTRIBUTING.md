@@ -4,11 +4,15 @@
 If you plan on testing any functionality involving the Spotify API, you need to have a [registered App with Spotify][spotifydev-url] in order to get a Client ID and Client Secret.
 
 * Python 3 and Pip
-    ```sh
-    sudo apt update && sudo apt upgrade
-    sudo apt install python3 python3-pip
-    python3 -m pip install --upgrade pip
-    ```
+    * Linux
+        ```sh
+        sudo apt update && sudo apt upgrade
+        sudo apt install python3 python3-pip
+        ```
+    * Windows
+        * [Download and Install the latest Python 3 release][windows-python-url]
+            * IMPORTANT: When installing, please check "Add Python 3.x to PATH"
+            * (Optional) When installing, select "Disable path length limit" (this may resolve some bugs)
 
 ### Installation
  
@@ -22,22 +26,35 @@ If you plan on testing any functionality involving the Spotify API, you need to 
     ```
 
 2. (Optional) Create a Python virtual environment
-    ```sh
-    sudo apt update
-    sudo apt install python3-venv
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+    * Linux
+        ```sh
+        sudo apt update
+        sudo apt install python3-venv
+        python3 -m venv venv
+        source venv/bin/activate
+        ```
+    * Windows
+        ```sh
+        python -m venv venv
+        venv\Scripts\activate.bat
+        ```
 
 3. Install required modules
-    ```sh
-    python3 -m pip install -r requirements.txt
-    ```
+    * Linux
+        ```sh
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements.txt
+        ```
+    * Windows
+        * Replace "python3" with "python" in the Linux commands above
 
 4. Run the server
-    ```sh
-    python3 -m run
-    ```
+    * Linux
+        ```sh
+        python3 -m run
+        ```
+    * Windows
+        * Replace "python3" with "python" in the Linux commands above
 
 ### Making Changes
 1. Create your Feature Branch (`git checkout -b feature/SomeFeature`)
@@ -49,3 +66,4 @@ If you plan on testing any functionality involving the Spotify API, you need to 
 
 
 [spotifydev-url]: https://developer.spotify.com/dashboard/login
+[windows-python-url]: https://www.python.org/downloads/windows/
