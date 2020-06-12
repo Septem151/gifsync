@@ -1,18 +1,22 @@
 import os
-from flask import Flask, render_template, url_for, send_from_directory
+from flask import Flask, redirect, render_template, send_from_directory, url_for
 
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route('/')
+def root():
+    return redirect(url_for('home'))
+
+
 @app.route("/home/")
-def home(title='Home'):
-    return render_template('about.html', title=title)
+def home():
+    return render_template('about.html', title='Home')
 
 
 @app.route("/about/")
 def about():
-    return home('About')
+    return redirect(url_for('home'))
 
 
 @app.route("/collection/")
