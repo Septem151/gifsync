@@ -121,4 +121,3 @@ Project Link: https://github.com/Septem151/gifsync
 [squash-url]: https://stackoverflow.com/questions/5189560/squash-my-last-x-commits-together-using-git
 [keybase-url]: https://keybase.io/septem151
 [email-mailto]: mailto:septem151@protonmail.com
-[spotifydev-url]: https://developer.spotify.com/dashboard/login

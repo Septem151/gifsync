@@ -46,3 +46,6 @@ If you plan on testing any functionality involving the Spotify API, you need to 
     - If you make multiple commits, please [squash them][squash-url] into a single commit before Pushing or opening a Pull request
 4. Push to the Branch (`git push origin feature/SomeFeature`)
 5. Open a Pull Request on GitHub
+
+
+[spotifydev-url]: https://developer.spotify.com/dashboard/login
