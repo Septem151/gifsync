@@ -1,8 +1,8 @@
-[![Contributors][contributors-shield]][contributors-url]
+[![Build][build-shield]][build-url]
+[![Issues][issues-shield]][issues-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![Contributors][contributors-shield]][contributors-url]
 
 
 <!-- PROJECT LOGO -->
@@ -45,7 +45,7 @@
 <!-- EXCLUDE PROJECT SCREENSHOT
 [![GifSync Screen Shot][project-screenshot]](https://example.com)
 -->
-GifSync started out as a simple question: "How do I get [Hat Kid][hatintime-url] to dance to my music while I stream?" The answer to this question quickly turned into a long and convoluted dive into APIs, gif frame-times, and web servers.
+GifSync started out as a simple question: "How do I get [Hat Kid](gifsync/static/images/hat-kid-smug-dance.gif) to dance to my music while I stream?" The answer to this question quickly turned into a long and convoluted dive into APIs, gif frame-times, and web servers.
 
 However, through the power of **THE INTERNET!!** (and a ton of duck-duck-go'ing) I was able to pull it off with as best of accuracy as I could. Best of all, it works with any gif! I wanted to share this with others so that no matter what your experience level is in programming, you too can experience gifs that dance to your music in real time.
 
@@ -101,6 +101,8 @@ Project Link: https://github.com/Septem151/gifsync
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[build-shield]: https://img.shields.io/github/workflow/status/Septem151/gifsync/GifSync%20CI/master?style=flat-square
+[build-url]: https://github.com/
 [contributors-shield]: https://img.shields.io/github/contributors/Septem151/gifsync.svg?style=flat-square
 [contributors-url]: https://github.com/Septem151/gifsync/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/Septem151/gifsync.svg?style=flat-square
@@ -109,8 +111,6 @@ Project Link: https://github.com/Septem151/gifsync
 [stars-url]: https://github.com/Septem151/gifsync/stargazers
 [issues-shield]: https://img.shields.io/github/issues/Septem151/gifsync.svg?style=flat-square
 [issues-url]: https://github.com/Septem151/gifsync/issues
-[license-shield]: https://img.shields.io/github/license/septem151/gifsync.svg?style=flat-square
-[license-url]: https://github.com/Septem151/gifsync/blob/master/LICENSE.txt
 [project-screenshot]: gifsync/static/images/screenshot.png
 [hatintime-url]: https://gearsforbreakfast.com/games/a-hat-in-time/
 [gfb-url]: https://gearsforbreakfast.com
