@@ -109,7 +109,7 @@ Project Link: https://github.com/Septem151/gifsync
 [stars-url]: https://github.com/Septem151/gifsync/stargazers
 [issues-shield]: https://img.shields.io/github/issues/Septem151/gifsync.svg?style=flat-square
 [issues-url]: https://github.com/Septem151/gifsync/issues
-[license-shield]: https://img.shields.io/github/license/Septem151/gifsync.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/septem151/gifsync.svg?style=flat-square
 [license-url]: https://github.com/Septem151/gifsync/blob/master/LICENSE.txt
 [project-screenshot]: gifsync/static/images/screenshot.png
 [hatintime-url]: https://gearsforbreakfast.com/games/a-hat-in-time/
