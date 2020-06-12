@@ -9,23 +9,16 @@
 <br />
 <div align="center">
   <a href="https://github.com/Septem151/gifsync">
-    <img src="gifsync/static/images/logo.png" alt="Logo" width="256" height="256">
+    <img src="gifsync/static/images/logo.png" alt="GifSync Logo" width="256" height="256">
   </a>
 
-  <h3 align="center">GifSync</h3>
+  <h3 align="center"><a href="https://gifsync.herokuapp.com">GifSync</a></h3>
 
   <p align="center">
     Synchronize the speed of Gifs to music on Spotify in real time
     <br />
-    <!-- EXCLUDE DOCS
-    <a href="https://github.com/Septem151/gifsync"><strong>Explore the docs »</strong></a>
-    -->
     <br />
     <br />
-    <!-- EXCLUDE VIEW DEMO
-    <a href="https://github.com/Septem151/gifsync">View Demo</a>
-    ·
-    -->
     <a href="https://github.com/Septem151/gifsync/issues">Report Bug</a>
     ·
     <a href="https://github.com/Septem151/gifsync/issues">Request Feature</a>
@@ -39,12 +32,12 @@
 
 * [About the Project](#about-the-project)
   * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  <!-- * [Prerequisites](#prerequisites) -->
-  <!-- * [Installation](#installation) -->
 * [Usage](#usage)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+  * [Making Changes](#making-changes)
 * [License](#license)
 * [Contact](#contact)
 
@@ -55,77 +48,90 @@
 <!-- EXCLUDE PROJECT SCREENSHOT
 [![GifSync Screen Shot][project-screenshot]](https://example.com)
 -->
-GifSync started out as a simple question: "How do I get [Hat Kid][a-hat-in-time] to dance to my music while I stream?" The answer to this question quickly turned into a long and convoluted dive into APIs, gif frame-times, and web servers.
+GifSync started out as a simple question: "How do I get [Hat Kid][hatintime-url] to dance to my music while I stream?" The answer to this question quickly turned into a long and convoluted dive into APIs, gif frame-times, and web servers.
 
 However, through the power of **THE INTERNET!!** (and a ton of duck-duck-go'ing) I was able to pull it off with as best of accuracy as I could. Best of all, it works with any gif! I wanted to share this with others so that no matter what your experience level is in programming, you too can experience gifs that dance to your music in real time.
 
 
 ### Built With
 
-* [Python](python-link)
-* [Flask](flask-link)
-* [Heroku](heroku-link)
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-This section is currently under maintenance!
-<!--
-To get a local copy up and running, follow these simple steps.
-
-### Prerequisites
-
-* npm
-```sh
-npm install npm@latest -g
-```
-
-### Installation
- 
-1. Clone the project
-```sh
-git clone https://github.com/Septem151/gifsync.git
-```
-2. Install NPM packages
-```sh
-npm install
-```
--->
-
+* [Python][python-url]
+* [Flask][flask-url]
+* [Bootstrap][bootstrap-url]
+* [Heroku][heroku-url]
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-This section is currently under maintenance!
-<!--
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
--->
+GifSync is hosted on [Heroku][heroku-url]. The link for GifSync is https://gifsync.herokuapp.com
 
 
 <!-- ROADMAP -->
 ## Roadmap
-| Release Version | Release Date |
-| :-------------: | :----------: |
-| Alpha | TBD |
-| Beta | TBD |
-| Full | TBD |
+| Release Version | Release Date | Status |
+| :-------------: | :----------: | :-------: |
+| HTML Skeleton | TBD | IN PROGRESS |
+| Event Handling | TBD | |
+| Database Integration | TBD | |
+| Alpha Release | TBD | |
+| Beta Release | TBD | |
+| Full Release | TBD | |
 
-See the [open issues](https://github.com/Septem151/gifsync/issues) for a list of proposed features (and known issues).
+See the [open issues][issues-url] for a list of proposed features (and known issues).
 
 
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions make the world go 'round, and I am by no means perfect. In fact, a lot of the tools used for this project are new to me. Any contributions you make are **greatly appreciated**, whether it's help with coding, security, bug fixes, or user feedback.
+Contributions make the world go round, and I am by no means perfect. In fact, a lot of the tools used for this project are new to me. Any contributions you make are **greatly appreciated**, whether it's help with coding, security, bug fixes, or user feedback.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/SomeFeature`)
+### Prerequisites
+
+If you plan on testing any functionality involving the Spotify API, you need to have a [registered App with Spotify][spotifydev-url] in order to get a Client ID and Client Secret.
+
+* Python 3 and Pip
+    ```sh
+    sudo apt update && sudo apt upgrade
+    sudo apt install python3 python3-pip
+    python3 -m pip install --upgrade pip
+    ```
+
+### Installation
+ 
+1. Fork the Repository on GitHub
+    * It is recommended that you fork the repository so you can push changes and submit pull requests.
+
+2. Clone the forked Repository locally
+    ```sh
+    git clone https://github.com/YOUR-USERNAME/gifsync.git
+    cd gifsync
+    ```
+
+2. (Optional) Create a Python virtual environment
+    ```sh
+    sudo apt update
+    sudo apt install python3-venv
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3. Install required modules
+    ```sh
+    python3 -m pip install -r requirements.txt
+    ```
+
+4. Run the server
+    ```sh
+    python3 -m run
+    ```
+
+### Making Changes
+1. Create your Feature Branch (`git checkout -b feature/SomeFeature`)
+2. Make some changes and stage them (`git add .`)
 3. Commit your Changes (`git commit -m 'Add some Feature'`)
+    - If you make multiple commits, please [squash them][squash-url] into a single commit before Pushing or opening a Pull request
 4. Push to the Branch (`git push origin feature/SomeFeature`)
-5. Open a Pull Request
+5. Open a Pull Request on GitHub
 
 
 
@@ -139,15 +145,15 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Carson Mullins ([Septem 151](https://keybase.io/septem151)) - septem151@protonmail.com
+Carson Mullins ([Septem 151][keybase-url]) - [septem151@protonmail.com][email-mailto]
 
-Project Link: [https://github.com/Septem151/gifsync](https://github.com/Septem151/gifsync)
+Project Link: https://github.com/Septem151/gifsync
 
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* [Gears for Breakfast](https://gearsforbreakfast.com)
+* [Gears for Breakfast][gfb-url]
   * For making an amazing game, whose protagonist is in the GifSync logo
 
 
@@ -164,7 +170,13 @@ Project Link: [https://github.com/Septem151/gifsync](https://github.com/Septem15
 [license-shield]: https://img.shields.io/github/license/Septem151/gifsync.svg?style=flat-square
 [license-url]: https://github.com/Septem151/gifsync/blob/master/LICENSE.txt
 [project-screenshot]: gifsync/static/images/screenshot.png
-[a-hat-in-time]: https://gearsforbreakfast.com/games/a-hat-in-time/
-[python-link]: https://www.python.org/
-[flask-link]: https://pypi.org/project/Flask/
-[heroku-link]: https://heroku.com
+[hatintime-url]: https://gearsforbreakfast.com/games/a-hat-in-time/
+[gfb-url]: https://gearsforbreakfast.com
+[python-url]: https://www.python.org/
+[flask-url]: https://pypi.org/project/Flask/
+[heroku-url]: https://heroku.com
+[bootstrap-url]: https://getbootstrap.com
+[squash-url]: https://stackoverflow.com/questions/5189560/squash-my-last-x-commits-together-using-git
+[keybase-url]: https://keybase.io/septem151
+[email-mailto]: mailto:septem151@protonmail.com
+[spotifydev-url]: https://developer.spotify.com/dashboard/login
