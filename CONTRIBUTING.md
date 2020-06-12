@@ -64,6 +64,9 @@ If you plan on testing any functionality involving the Spotify API, you need to 
 4. Push to the Branch (`git push origin feature/SomeFeature`)
 5. Open a Pull Request on GitHub
 
+### Additional Information
+You can use your favorite Python IDE, however I recommend using [PyCharm][pycharm-url] as it allows for built-in VCS support and virtual environments.
 
 [spotifydev-url]: https://developer.spotify.com/dashboard/login
 [windows-python-url]: https://www.python.org/downloads/windows/
+[pycharm-url]: https://www.jetbrains.com/pycharm/
