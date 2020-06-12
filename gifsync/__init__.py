@@ -11,7 +11,7 @@ def root():
 
 @app.route("/home/")
 def home():
-    return render_template('about.html', title='Home')
+    return render_template('home.html', title='Home')
 
 
 @app.route("/about/")

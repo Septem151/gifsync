@@ -1,12 +1,18 @@
 {% extends "skeleton.html" %}
 {% block styles %}
+    <!-- Link the css file specifically for this page -->
     <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='styles/about.css') }}">
+          href="{{ url_for('static', filename='styles/home.css') }}">
 {% endblock styles %}
 {% block content %}
-    <img class="mx-auto d-block logo" width="256px" height="256px" src="{{ url_for('static', filename='images/logo.png') }}">
+    <!-- LOGO -->
+    <img class="mx-auto d-block logo" width="256px" height="256px"
+         src="{{ url_for('static', filename='images/logo.png') }}">
+    <!-- TITLE -->
     <p class="text-center title">Synchronize the speed of Gifs to music on Spotify in real time</p>
+    <!-- HEADER -->
     <p class="text-left header">What is GifSync?</p>
+    <!-- TEXTBLOCK -->
     <p class="text-left textblock">
         GifSync started out as a simple question: "How do I get
         <a target="_blank" rel="noopener noreferrer"
@@ -18,7 +24,10 @@
         programming, you too can experience gifs that dance to your music in real time.<br><br>If you're interested in
         reading the source code, or want to contribute to the development of GifSync, see the
         <a target="_blank" rel="noopener noreferrer" href="https://github.com/Septem151/gifsync">GitHub Repository</a>.
+    </p>
+    <!-- HEADER -->
     <p class="text-left header">How does it work?</p>
+    <!-- TEXTBLOCK -->
     <p class="text-left textblock">
         GifSync utilizes the
         <a target="_blank" rel="noopener noreferrer" href="https://developer.spotify.com/documentation/web-api/">
@@ -30,7 +39,9 @@
         you’ve specified) to find the Milliseconds/Loop, and finally the frame times in the gif are adjusted to match
         as accurately as possible. This results in a gif that will loop every X beats of the currently playing song.
     </p>
+    <!-- HEADER -->
     <p class="text-left header">How do I get started?</p>
+    <!-- TEXTBLOCK -->
     <p class="text-left textblock">
         Easy! You must allow GifSync to access your currently playing songs by clicking the “Connect Spotify” button at
         the top of this page. From there, upload the gif you want to sync, specify the number of Beats per loop of the

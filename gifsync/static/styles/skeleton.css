@@ -1,79 +1,96 @@
+/* Generic styling for all pages */
 body {
     font-family: "Ubuntu", serif;
     background-color: #181818;
     color: #b2b2b2;
+    /* Top padding is necessary to move body of page below the navbar, since the navbar is fixed to the top */
     padding-top: 107px;
 }
 
+/* Footer style */
 .footer-copyright {
     font-size: 14px;
     background-color: #282828;
 }
 
+/* Navbar Base Styling */
 .navbar-custom {
     background-color: #282828;
     -webkit-box-shadow: 0 4px 12px 2px rgb(0,0,0,0.35);
     -moz-box-shadow: 0 4px 12px 2px rgb(0,0,0,0.35);
     box-shadow: 0 4px 12px 2px rgb(0,0,0,0.35);
 }
-/* change the brand and text color */
+
+/* Navbar Brand/Text Styling */
 .navbar-custom .navbar-brand,
 .navbar-custom .navbar-text {
     color: #1db954;
     font-weight: bold;
     font-size: 32px;
 }
-/* change the link color */
+
+/* Navbar Link Styling (not in use, but covering all bases) */
 .navbar-custom .navbar-nav .nav-link {
     color: #1db954;
 }
-/* change the color of active or hovered links */
+
+/* Navbar Link additional Styling (not in use, but covering all bases) */
 .navbar-custom .nav-item.active .nav-link,
 .navbar-custom .nav-item:hover .nav-link {
     color: #20cb5c;
 }
 
-/* change the spacing between list elements */
+/* Navbar Spacing between List elements, ex: buttons */
 .navbar-custom .navbar-nav > li {
     margin: 10px 15px;
 }
 
+/* Green Button Base Styling */
 .btn-custom-green {
     color: #181818;
     font-weight: bold;
     background-color: #1db954;
+    /* Webkit Appearance is set to none so buttons appear as intended on Mobile browsers */
     -webkit-appearance: none;
     display: flex;
     align-items: center;
 }
 
+/* Green Button Icon Styling */
 .btn-custom-green .btn-icon {
     width: 20px;
     height: 20px;
+    /* Margin to right is added so text doesn't sit so close to the icon */
     margin-right: 8px;
 }
 
+/* Green Button Hover Styling */
 .btn-custom-green:hover {
     color: #181818;
     background-color: #20cb5c;
 }
 
+/* Red Button Base Styling */
 .btn-custom-red {
     color: #e5e5e5;
     font-weight: bold;
     background-color: #b91d34;
+    /* Webkit Appearance is set to none so buttons appear as intended on Mobile browsers */
     -webkit-appearance: none;
     display: flex;
     align-items: center;
 }
 
+/* Red Button Hover Styling */
 .btn-custom-red:hover {
     color: #e5e5e5;
     background-color: #cb2039;
 }
 
+/* Red Button Icon Styling */
 .btn-custom-red .btn-icon {
     width: 20px;
     height: 20px;
+    /* Margin to right is added so text doesn't sit so close to the icon */
     margin-right: 8px;
 }
