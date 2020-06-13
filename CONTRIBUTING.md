@@ -69,4 +69,5 @@ You can use your favorite Python IDE, however I recommend using [PyCharm][pychar
 
 [spotifydev-url]: https://developer.spotify.com/dashboard/login
 [windows-python-url]: https://www.python.org/downloads/windows/
+[squash-url]: https://stackoverflow.com/questions/5189560/squash-my-last-x-commits-together-using-git
 [pycharm-url]: https://www.jetbrains.com/pycharm/
