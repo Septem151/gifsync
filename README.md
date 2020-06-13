@@ -118,6 +118,5 @@ Project Link: https://github.com/Septem151/gifsync
 [flask-url]: https://pypi.org/project/Flask/
 [heroku-url]: https://heroku.com
 [bootstrap-url]: https://getbootstrap.com
-[squash-url]: https://stackoverflow.com/questions/5189560/squash-my-last-x-commits-together-using-git
 [keybase-url]: https://keybase.io/septem151
 [email-mailto]: mailto:septem151@protonmail.com
