@@ -66,7 +66,7 @@ If you plan on testing any functionality involving the Spotify API, you need to 
 
 ### Additional Information
 * You can use your favorite Python IDE, however I recommend using [PyCharm][pycharm-url] as it allows for built-in VCS support and virtual environments.
-* When making changes to HTML/CSS, browsers will cache the files for faster load times so you may not see your changes if you refresh the page. To fix this, do a Hard Reload of the page. In Chrome/Firefox the command is `Shift+R`, in Edge/IE the command is `Ctrl+F5`, and in Safari the command is hold `Shift` and click the Refresh button.
+* When making changes to HTML/CSS, browsers will cache the files for faster load times so you may not see your changes if you refresh the page. To fix this, do a Hard Reload of the page. In Chrome/Firefox the command is `Ctrl+Shift+R`, in Edge/IE the command is `Ctrl+F5`, and in Safari the command is hold `Shift` and click the Refresh button.
 * Keep your fork up-to-date by adding this repository as an upstream:
     * `git remote add upstream https://github.com/Septem151/gifsync.git`
     * Fetching and merging diffs:
