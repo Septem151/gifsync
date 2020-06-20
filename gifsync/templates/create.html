@@ -2,9 +2,32 @@
 {% block styles %}
     <!-- Link the css file specifically for this page -->
     <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='styles/create.css') }}">
+          href="{{ url_for('static', filename='css/create.css') }}">
 {% endblock styles %}
 {% block content %}
-    <!-- TODO: Create this page's HTML structure and css structure -->
-    <h1>Create Page</h1>
+    <img class="mx-auto d-block logo"
+         src="{{ url_for('static', filename='img/logo.png') }}">
+    <p class="text-center header">Upload a gif to sync</p>
+    <form class="form-center">
+        <div class="form-group row">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="fileChooser">
+                <label class="custom-file-label text-truncate" for="fileChooser">Choose File</label>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="gifName" class="col-form-label">Name your creation</label>
+            <input type="text" class="form-control" id="gifName" placeholder="Name of Gif">
+        </div>
+        <div class="form-group row">
+            <label for="beatsPerLoop" class="col-form-label">Beats per loop</label>
+            <input type="number" class="form-control" id="beatsPerLoop" value="1">
+        </div>
+        <div class="form-group row">
+            <button class="btn btn-custom-green" type="submit">PRESTO!</button>
+        </div>
+    </form>
 {% endblock content %}
+{% block js %}
+    <script src="{{ url_for('static', filename='js/updateFileChooser.js') }}"></script>
+{% endblock js %}

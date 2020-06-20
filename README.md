@@ -45,7 +45,7 @@
 <!-- EXCLUDE PROJECT SCREENSHOT
 [![GifSync Screen Shot][project-screenshot]](https://example.com)
 -->
-GifSync started out as a simple question: "How do I get [Hat Kid](gifsync/static/images/hat-kid-smug-dance.gif) to dance to my music while I stream?" The answer to this question quickly turned into a long and convoluted dive into APIs, gif frame-times, and web servers.
+GifSync started out as a simple question: "How do I get [Hat Kid](gifsync/static/img/hat-kid-smug-dance.gif) to dance to my music while I stream?" The answer to this question quickly turned into a long and convoluted dive into APIs, gif frame-times, and web servers.
 
 However, through the power of **THE INTERNET!!** (and a ton of duck-duck-go'ing) I was able to pull it off with as best of accuracy as I could. Best of all, it works with any gif! I wanted to share this with others so that no matter what your experience level is in programming, you too can experience gifs that dance to your music in real time.
 
@@ -111,7 +111,7 @@ Project Link: https://github.com/Septem151/gifsync
 [stars-url]: https://github.com/Septem151/gifsync/stargazers
 [issues-shield]: https://img.shields.io/github/issues/Septem151/gifsync.svg?style=flat-square
 [issues-url]: https://github.com/Septem151/gifsync/issues
-[project-screenshot]: gifsync/static/images/screenshot.png
+[project-screenshot]: gifsync/static/img/screenshot.png
 [hatintime-url]: https://gearsforbreakfast.com/games/a-hat-in-time/
 [gfb-url]: https://gearsforbreakfast.com
 [python-url]: https://www.python.org/

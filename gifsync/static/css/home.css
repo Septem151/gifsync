@@ -12,6 +12,8 @@ a:hover {
 /* Logo Styling */
 .logo {
     /* Margin is added to the bottom to space out page text from the logo */
+    width: 256px;
+    height: 256px;
     margin-bottom: 32px;
 }
 
