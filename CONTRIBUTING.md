@@ -60,7 +60,7 @@ All Linux commands assume you are running a debian-based system. All Windows com
 3. Create a new file called ".env" (File must have no extension!)
     * (Optional) Populate the .env file with KEY=VALUE pairs, ex: `PORT=8000`
 
-4. Open the file `./gifsync/run.py` and change the method call in `set_environment()` to be `develop_mode(port)`
+4. Open the file `run.py` and change the method call in `set_environment()` to be `develop_mode(port)`
 
 5. Run `docker-compose up -d` (omit the "-d" flag if you wish to keep the server attached to the terminal)
 
