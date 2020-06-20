@@ -1,0 +1,11 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - '${PORT:-5000}:${PORT:-5000}'
+    env_file: .env
+    volumes:
+      - ./gifsync:/app/gifsync
+      - ./run.py:/app/run.py
+

@@ -1,0 +1,9 @@
+.git*
+LICENSE.txt
+*.md
+.idea/
+tests/
+venv/
+**/__pycache__
+**/.pytest_cache
+**/.env
