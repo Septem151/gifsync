@@ -6,12 +6,12 @@
 {% block styles %}
     <!-- Link the css file specifically for this page -->
     <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='styles/home.css') }}">
+          href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock styles %}
 {% block content %}
     <!-- LOGO -->
-    <img class="mx-auto d-block logo" width="256px" height="256px"
-         src="{{ url_for('static', filename='images/logo.png') }}">
+    <img class="mx-auto d-block logo"
+         src="{{ url_for('static', filename='img/logo.png') }}">
     <!-- TITLE -->
     <p class="text-center title">Synchronize the speed of Gifs to music on Spotify in real time</p>
     <!-- HEADER -->
@@ -20,7 +20,7 @@
     <p class="text-left textblock">
         GifSync started out as a simple question: "How do I get
         <a target="_blank" rel="noopener noreferrer"
-           href="{{ url_for('static', filename='images/hat-kid-smug-dance.gif') }}">Hat Kid</a> to dance to my music
+           href="{{ url_for('static', filename='img/hat-kid-smug-dance.gif') }}">Hat Kid</a> to dance to my music
         while I stream?" The answer to this question quickly turned into a long and convoluted dive into APIs, gif
         frame-times, and web servers. However, through <b>THE POWER OF THE INTERNET!!</b> (and a ton of
         duck-duck-go'ing) I was able to pull it off with as best of accuracy as I could.<br><br>Best of all, it works

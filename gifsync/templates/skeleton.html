@@ -8,7 +8,7 @@
         {% block meta %}
         {% endblock meta %}
         <!-- FAVICON Reference for newer browsers -->
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
         <!-- BOOTSTRAP CSS LINK -->
         <link rel="stylesheet"
               href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -19,7 +19,7 @@
         <link rel="stylesheet"
               href="https://fonts.googleapis.com/css?family=Ubuntu|Ubuntu:bold|Ubuntu:bolditalic|Ubuntu:italic">
         <link rel="stylesheet" type="text/css"
-              href="{{ url_for('static', filename='styles/skeleton.css') }}">
+              href="{{ url_for('static', filename='css/skeleton.css') }}">
 
         <!-- PAGE SPECIFIC CSS LINKS -->
         {% block styles %}
@@ -36,7 +36,7 @@
         <!-- NAVBAR -->
         <nav class="navbar navbar-custom navbar-expand-sm fixed-top">
             <!-- BRAND -->
-            <a href="#" class="navbar-brand">GifSync</a>
+            <a href="{{ url_for('home') }}" class="navbar-brand">GifSync</a>
             <!-- TOGGLER for when screen size becomes too small (mobile devices in particular) -->
             <button class="navbar-toggler navbar-dark" data-toggle="collapse" data-target="#navbarMenu">
                 <span class="navbar-toggler-icon"></span>
@@ -48,14 +48,14 @@
                     <!-- BUTTON "About GifSync" -->
                     <li class="nav-item">
                         <a class="btn btn-custom-green shadow-none" type="button" href="#">
-                            <img class="btn-icon" src="{{ url_for('static', filename='images/info-icon.svg') }}" />
+                            <img class="btn-icon" src="{{ url_for('static', filename='img/info-icon.svg') }}" />
                             About GifSync
                         </a>
                     </li>
                     <!-- BUTTON "Connect Spotify" -->
                     <li class="nav-item">
                         <a class="btn btn-custom-green shadow-none" type="button" href="#">
-                            <img class="btn-icon" src="{{ url_for('static', filename='images/account-icon-black.svg') }}" />
+                            <img class="btn-icon" src="{{ url_for('static', filename='img/account-icon-black.svg') }}" />
                             Connect Spotify
                         </a>
                     </li>

@@ -12,24 +12,23 @@ def client():
 
 def test_routes(client):
     routes_and_codes = [
-        {'route': '/', 'redirect': '/home/', 'code': 302},
-        {'route': '/home', 'redirect': '/home/', 'code': 308},
-        {'route': '/home/', 'code': 200},
-        {'route': '/about', 'redirect': '/about/', 'code': 308},
-        {'route': '/about/', 'redirect': '/home/', 'code': 302},
-        {'route': '/collection', 'redirect': '/collection/', 'code': 308},
-        {'route': '/collection/', 'code': 200},
-        {'route': '/create', 'redirect': '/create/', 'code': 308},
-        {'route': '/create/', 'code': 200},
-        {'route': '/show', 'redirect': '/show/', 'code': 308},
-        {'route': '/show/', 'code': 200},
-        {'route': '/favicon.ico', 'code': 200}
+        {'route': '/', 'redirect': '/home', 'code': 302},
+        {'route': '/home', 'code': 200},
+        {'route': '/home/', 'redirect': '/home', 'code': 302},
+        {'route': '/collection', 'code': 200},
+        {'route': '/collection/', 'redirect': '/collection', 'code': 302},
+        {'route': '/create', 'code': 200},
+        {'route': '/create/', 'redirect': '/create', 'code': 302},
+        {'route': '/show', 'code': 200},
+        {'route': '/show/', 'redirect': '/show', 'code': 302},
+        {'route': '/favicon.ico', 'code': 200},
+        {'route': '/favicon.ico/', 'redirect': '/favicon.ico', 'code': 302}
     ]
     assert_routes_with_codes(client, routes_and_codes)
 
 
 def test_html_for_skeleton(client):
-    routes = ['/', '/home/', '/about/', '/collection/', '/create/', '/show/']
+    routes = ['/', '/home', '/collection', '/create', '/show']
     print()
     for route in routes:
         assert_html_skeleton_exists(client, route)
@@ -56,6 +55,3 @@ def assert_html_skeleton_exists(client, route):
     assert(b'<nav class="navbar' in response.data)
     assert(b'<div class="container">' in response.data)
     assert(b'<footer class="page-footer">' in response.data)
-    assert(b'Copyright 2020' in response.data)
-    assert(b'| Made with Flask, Bootstrap, and' in response.data)
-    assert(b'MIT License' in response.data)
