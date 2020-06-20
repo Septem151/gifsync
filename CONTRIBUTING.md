@@ -63,6 +63,7 @@ All Linux commands assume you are running a debian-based system. All Windows com
 4. Open the file `run.py` and change the method call in `set_environment()` to be `develop_mode(port)`
 
 5. Run `docker-compose up -d` (omit the "-d" flag if you wish to keep the server attached to the terminal)
+    * To view the site, open a browser and go to localhost:PORT (PORT defaults to 5000 if not set in `.env`)
 
 ## Local Build
 ### Prerequisites (Local)
@@ -120,6 +121,7 @@ All Linux commands assume you are running a debian-based system. All Windows com
         ```
     * Windows
         * Replace "python3" with "python" in the Linux commands above
+    * To view the site, open a browser and go to localhost:PORT (PORT defaults to 5000 if not set as an environment variable or modified in `run.py`)
 
 ## Making Changes
 1. Create your Feature Branch (`git checkout -b feature/SomeFeature`)
