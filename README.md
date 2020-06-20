@@ -9,7 +9,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Septem151/gifsync">
-    <img src="gifsync/static/images/logo.png" alt="GifSync Logo" width="256" height="256">
+    <img src="gifsync/static/img/logo.png" alt="GifSync Logo" width="256" height="256">
   </a>
 
   <h3 align="center"><a href="https://gifsync.herokuapp.com">GifSync</a></h3>
