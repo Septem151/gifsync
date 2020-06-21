@@ -23,7 +23,13 @@ def home():
 
 @app.route("/collection")
 def collection():
-    return render_template('collection.html', title='My Gifs')
+    test_images = []
+    for i in range(1, 14):
+        test_images.append({
+            'src': url_for('static', filename='img/thumbnail-placeholder.png'),
+            'label': f'Image #{i}'
+        })
+    return render_template('collection.html', title='My Gifs', images=test_images)
 
 
 @app.route('/create')

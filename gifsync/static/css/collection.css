@@ -1,0 +1,9 @@
+/* Header Text Styling */
+.header {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.top-bar {
+    margin-bottom: 32px;
+}

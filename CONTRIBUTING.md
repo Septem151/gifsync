@@ -60,10 +60,11 @@ All Linux commands assume you are running a debian-based system. All Windows com
 3. Create a new file called ".env" (File must have no extension!)
     * (Optional) Populate the .env file with KEY=VALUE pairs, ex: `PORT=8000`
 
-4. Open the file `run.py` and change the method call in `set_environment()` to be `develop_mode(port)`
-
 5. Run `docker-compose up -d` (omit the "-d" flag if you wish to keep the server attached to the terminal)
     * To view the site, open a browser and go to localhost:PORT (PORT defaults to 5000 if not set in `.env`)
+    * Changes made to **HTML** and **CSS** will be reflected automatically after waiting approx. 10-15 seconds.
+    * Changes to **code** will **NOT** be reflected automatically. Restart the server with `docker-compose down`, then 
+    `docker-compose up -d`.
 
 ## Local Build
 ### Prerequisites (Local)
@@ -112,8 +113,6 @@ All Linux commands assume you are running a debian-based system. All Windows com
     * Windows
         * Replace "python3" with "python" in the Linux commands above
 
-5. Open the file `./gifsync/run.py` and change the method call in `set_environment()` to be `develop_mode(port)`
-
 6. Run the server
     * Linux
         ```sh
@@ -121,7 +120,8 @@ All Linux commands assume you are running a debian-based system. All Windows com
         ```
     * Windows
         * Replace "python3" with "python" in the Linux commands above
-    * To view the site, open a browser and go to localhost:PORT (PORT defaults to 5000 if not set as an environment variable or modified in `run.py`)
+    * To view the site, open a browser and go to localhost:PORT (PORT defaults to 5000 if not set as an environment 
+    variable or modified in `run.py`)
 
 ## Making Changes
 1. Create your Feature Branch (`git checkout -b feature/SomeFeature`)
