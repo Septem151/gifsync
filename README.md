@@ -98,7 +98,6 @@ Project Link: https://github.com/Septem151/gifsync
 * [Gears for Breakfast][gfb-url]
   * For making an amazing game, whose protagonist is in the GifSync logo
 
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [build-shield]: https://img.shields.io/github/workflow/status/Septem151/gifsync/GifSync%20CI/master?style=flat-square
