@@ -5,6 +5,21 @@
           href="{{ url_for('static', filename='css/show.css') }}">
 {% endblock styles %}
 {% block content %}
-    <!-- TODO: Create this page's HTML structure and css structure -->
-    <h1>Show Page</h1>
+    <img class="synced-image mx-auto d-block"
+         src="{{ synced_image }}">
+    <div class="row justify-content-center">
+        <p class="header my-auto">Sync another?</p>
+        <a class="col-auto ml-3 my-3 btn btn-custom-green shadow-none" type="button"
+           href="#">
+            Click here!
+        </a>
+    </div>
+    <div class="row justify-content-center mb-4">
+        <p class="header my-auto">Not satisfied?</p>
+        <a class="col-auto ml-3 my-3 btn btn-custom-red shadow-none" type="button"
+           href="#">
+            Delete gif
+        </a>
+    </div>
+
 {% endblock content %}

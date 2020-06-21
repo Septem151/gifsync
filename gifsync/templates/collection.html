@@ -16,9 +16,9 @@
         {% for image in images %}
         <div class="col col-6 col-sm-4 col-md-3 mb-3">
             <a href="#">
-                <img class="img-rounded" src="{{ image['src'] }}">
+                <img class="framed-image" src="{{ image['src'] }}">
             </a>
-            <p class="ml-2">{{ image['label'] }}</p>
+            <p class="image-label">{{ image['label'] }}</p>
         </div>
         {% endfor %}
     </div>

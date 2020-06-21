@@ -26,7 +26,7 @@ def collection():
     test_images = []
     for i in range(1, 14):
         test_images.append({
-            'src': url_for('static', filename='img/thumbnail-placeholder.png'),
+            'src': url_for('static', filename='img/image-placeholder.png'),
             'label': f'Image #{i}'
         })
     return render_template('collection.html', title='My Gifs', images=test_images)
@@ -39,7 +39,8 @@ def create():
 
 @app.route('/show')
 def show():
-    return render_template('show.html', title='Synced Gif')
+    synced_image_src = url_for('static', filename='img/image-placeholder.png')
+    return render_template('show.html', title='Synced Gif', synced_image=synced_image_src)
 
 
 @app.route('/favicon.ico')
