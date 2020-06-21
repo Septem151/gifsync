@@ -9,12 +9,11 @@ on:
 
 jobs:
   build:
-
+    # ubuntu-latest == Ubuntu 18.04 as of 06-21-2020
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.8]
-
+        python-version: [3.8]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
