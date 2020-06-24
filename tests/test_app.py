@@ -6,23 +6,24 @@ from gifsync import app
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
+    app.config['SECRET_KEY'] = 'testingkey'
     client = app.test_client()
     yield client
 
 
 def test_routes(client):
     routes_and_codes = [
-        {'route': '/', 'redirect': '/home', 'code': 302},
-        {'route': '/home', 'code': 200},
-        {'route': '/home/', 'redirect': '/home', 'code': 302},
-        {'route': '/collection', 'code': 200},
-        {'route': '/collection/', 'redirect': '/collection', 'code': 302},
-        {'route': '/create', 'code': 200},
-        {'route': '/create/', 'redirect': '/create', 'code': 302},
-        {'route': '/show', 'code': 200},
-        {'route': '/show/', 'redirect': '/show', 'code': 302},
-        {'route': '/favicon.ico', 'code': 200},
-        {'route': '/favicon.ico/', 'redirect': '/favicon.ico', 'code': 302}
+        {'route': '/', 'redirect': '/home/', 'code': 302},
+        {'route': '/home', 'redirect': '/home/', 'code': 308},
+        {'route': '/home/', 'code': 200},
+        {'route': '/collection', 'redirect': '/collection/', 'code': 308},
+        {'route': '/collection/', 'code': 200},
+        {'route': '/create', 'redirect': '/create/', 'code': 308},
+        {'route': '/create/', 'code': 200},
+        {'route': '/show', 'redirect': '/show/', 'code': 308},
+        {'route': '/show/', 'code': 200},
+        {'route': '/favicon.ico', 'redirect': '/favicon.ico/', 'code': 308},
+        {'route': '/favicon.ico/', 'code': 200}
     ]
     assert_routes_with_codes(client, routes_and_codes)
 
