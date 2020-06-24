@@ -22,8 +22,7 @@ def test_routes(client):
         {'route': '/create/', 'code': 200},
         {'route': '/show', 'redirect': '/show/', 'code': 308},
         {'route': '/show/', 'code': 200},
-        {'route': '/favicon.ico', 'redirect': '/favicon.ico/', 'code': 308},
-        {'route': '/favicon.ico/', 'code': 200}
+        {'route': '/favicon.ico', 'code': 200}
     ]
     assert_routes_with_codes(client, routes_and_codes)
 
