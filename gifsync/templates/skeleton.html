@@ -47,7 +47,7 @@
                 <ul class="navbar-nav ml-auto">
                     <!-- BUTTON "About GifSync" -->
                     <li class="nav-item">
-                        <a class="btn btn-custom-green shadow-none" type="button" href="#">
+                        <a class="btn btn-custom-green shadow-none" type="button" href="{{ url_for('home') }}">
                             <img class="btn-icon" src="{{ url_for('static', filename='img/info-icon.svg') }}" />
                             About GifSync
                         </a>
@@ -64,6 +64,15 @@
         </nav>
         <!-- CONTAINER for all other page content -->
         <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             {% block content %}
             {% endblock content %}
         </div>
@@ -86,6 +95,7 @@
                 integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
                 crossorigin="anonymous"></script>
         <!-- PAGE SPECIFIC JS -->
+        <script src="{{ url_for('static', filename='js/timeoutFlashes.js') }}"></script>
         {% block js %}
         {% endblock js %}
     </body>
