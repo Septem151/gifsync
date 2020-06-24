@@ -1,14 +1,31 @@
 import base64
 import os
 from flask import Flask, flash, redirect, request, render_template, send_from_directory, url_for
+from flask_talisman import Talisman
 from .forms import GifCreationForm
 
 # from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-env = os.environ.get('FLASK_ENV', 'development')
-app.config['ENV'] = env
+app.config['ENV'] = os.environ.get('FLASK_ENV', 'development')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'devkey')
+if not app.config['ENV'] == 'development':
+    csp = {
+        'default-src': [
+            '\'self\'',
+            '\'unsafe-inline\'',
+            'stackpath.bootstrapcdn.com',
+            'code.jquery.com',
+            'cdn.jsdelivr.net',
+            'fonts.googleapis.com'
+        ],
+        'img-src': [
+            '*',
+            'data:'
+        ],
+        'font-src': 'fonts.gstatic.com'
+    }
+    Talisman(app, content_security_policy=csp)
 
 
 @app.route('/')
@@ -56,7 +73,7 @@ def show():
     return render_template('show.html', title='Synced Gif', synced_image=image_src)
 
 
-@app.route('/favicon.ico/')
+@app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'img/favicon.ico', mimetype='image/vnd.microsoft.icon')
