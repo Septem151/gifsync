@@ -18,7 +18,7 @@ def index():
 
 @app.route("/home/")
 def home():
-    return render_template('home.html', title=f'Home: {app.config["SECRET_KEY"]}')
+    return render_template('home.html', title='Home')
 
 
 @app.route("/collection/")
