@@ -1,9 +1,24 @@
 version: '3'
 services:
   web:
-    build: .
-    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile_web
+    env_file:
+      - web.env
     ports:
-      - '${PORT:-5000}:${PORT:-5000}'
+      - '8000:8000'
     volumes:
       - ./gifsync:/app/gifsync
+    depends_on:
+      - db
+  db:
+    env_file:
+      - db.env
+    build:
+      context: .
+      dockerfile: Dockerfile_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db_backup:/backup

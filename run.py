@@ -1,6 +1,6 @@
 """
     Entry point for running a GifSync server without gunicorn.
-    When running from Docker, the .env file is used to manage the Port instead, and this file is not ran.
+    When running from Docker, the web.env file is used to manage the Port instead, and this file is not ran.
     Making changes when running via Docker does not require "development" or "debug" mode on changes.
     However, changes made will require a few seconds (10s or so) to be picked up.
 """

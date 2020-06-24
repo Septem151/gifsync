@@ -67,8 +67,7 @@ GifSync is hosted on [Heroku][heroku-url]. The link for GifSync is https://gifsy
 | Release Version | Release Date | Status |
 | :-------------: | :----------: | :-------: |
 | HTML Skeleton | 06-21-2020 | DONE |
-| Event Handling | TBD | IN PROGRESS |
-| Database Integration | TBD | |
+| Database Integration | TBD | IN PROGRESS |
 | Alpha Release | TBD | |
 | Beta Release | TBD | |
 | Full Release | TBD | |

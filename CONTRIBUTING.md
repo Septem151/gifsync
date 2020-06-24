@@ -57,14 +57,17 @@ All Linux commands assume you are running a debian-based system. All Windows com
     cd gifsync
     ```
 
-3. Create a new file called ".env" (File must have no extension!)
-    * (Optional) Populate the .env file with KEY=VALUE pairs, ex: `PORT=8000`
+3. Create two new files called **web.env** and **db.env**, and populate **db.env** with the following:
+    ```
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=devpassword
+    ```
 
-5. Run `docker-compose up -d` (omit the "-d" flag if you wish to keep the server attached to the terminal)
-    * To view the site, open a browser and go to localhost:PORT (PORT defaults to 5000 if not set in `.env`)
+5. Run `docker-compose up --build -d` (omit the "-d" flag if you wish to keep the server attached to the terminal)
+    * To view the site, open a browser and go to `localhost:8000`
     * Changes made to **HTML** and **CSS** will be reflected automatically after waiting approx. 10-15 seconds.
     * Changes to **code** will **NOT** be reflected automatically. Restart the server with `docker-compose down`, then 
-    `docker-compose up -d`.
+    `docker-compose up --build -d`.
 
 ## Local Build
 ### Prerequisites (Local)
@@ -78,6 +81,38 @@ All Linux commands assume you are running a debian-based system. All Windows com
         * [Download and Install the latest Python 3 release][windows-python-url]
             * IMPORTANT: When installing, please check "Add Python 3.x to PATH"
             * (Optional) When installing, select "Disable path length limit" (this may resolve some bugs)
+* PostgreSQL / Psql
+    * Docker
+        * I highly recommend using Docker for PostgreSQL. Please see the [Docker Prerequisites](#prerequisites-docker) 
+        section for help setting up Docker, then proceed with the next steps.
+        * Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local), then run the following command:
+            ```sh
+            docker-compose -f docker-compose.postgres.yml up --build -d
+            ```
+        * Open a web browser and go to `localhost:8080`. Within the Adminer console, select/enter the following:
+            - System: PostgreSQL
+            - Server: db
+            - Username: postgres
+            - Password: devpassword
+            - Database: postgres
+        * Click on "Import" near the left-hand side, and under "File upload" select the file `db_template.sql`. 
+        Execute the chosen file. You now have a test database that is available for the app to use, and a GUI to 
+        interact with the database. If you wish to use the command line, enter `docker exec -it gifsync_db_1 bash` and 
+        once you are in the container's terminal, enter `psql -U postgres`.
+    * Linux
+        * Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local), then run the following commands:
+        ```sh
+        sudo apt update && sudo apt install postgresql
+        # If you don't set the password to "devpassword", you will need to modify the password used in the code.
+        # It is recommended that you set a strong password when running postgres locally on your machine like this.
+        sudo passwd postgres
+        sudo su - postgres
+        psql -U postgres -d postgres -a -f /absolute/path/to/project/db_template.sql
+        ```
+    * Windows
+        * Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local) to get the `db_template.sql` file
+        * [Download][postgres-windows-url] and install PostgreSQL and PgAdmin installer
+        * Use PgAdmin to run the `db_template.sql` file
 
 ### Environment Setup (Local)
  
@@ -150,3 +185,4 @@ All Linux commands assume you are running a debian-based system. All Windows com
 [pycharm-url]: https://www.jetbrains.com/pycharm/
 [docker-windows-home-url]: https://docs.docker.com/docker-for-windows/install-windows-home/
 [docker-windows-url]: https://docs.docker.com/docker-for-windows/install/
+[postgres-windows-url]: https://www.postgresql.org/download/windows/
