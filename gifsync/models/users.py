@@ -2,15 +2,17 @@ from ..extensions import db
 
 
 class SpotifyUser(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    spotify_id = db.Column(db.String(50), unique=True, nullable=False)
+    __tablename__ = 'spotify_user'
+
+    id = db.Column(db.String(32), primary_key=True)
     access_token = db.Column(db.String(256), nullable=False)
+    expiration_time = db.Column(db.DateTime, nullable=False)
     refresh_token = db.Column(db.String(256), nullable=False)
 
-    def __init__(self, spotify_id, access_token, refresh_token):
-        self.spotify_id = spotify_id
+    def __init__(self, id_, access_token, expiration_time, refresh_token):
+        self.id = id_
         self.access_token = access_token
+        self.expiration_time = expiration_time
         self.refresh_token = refresh_token
 
     @property
@@ -26,10 +28,10 @@ class SpotifyUser(db.Model):
         return False
 
     def get_id(self):
-        return self.spotify_id
+        return self.id
 
     def __repr__(self):
-        return f'User ID: {self.spotify_id} | Is Authenticated: {self.is_authenticated} | Is Active: {self.is_active} ' \
+        return f'User ID: {self.get_id()} | Is Authenticated: {self.is_authenticated} | Is Active: {self.is_active} ' \
                f'| Is Anonymous: {self.is_anonymous}'
 
 
