@@ -58,7 +58,6 @@ def create():
             return redirect(url_for('show'), code=307)
         else:
             flash('You must select a file (Only .gif files are allowed)', 'danger')
-            render_template('create.html', title='New Gif', form=form)
     return render_template('create.html', title='New Gif', form=form)
 
 

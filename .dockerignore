@@ -6,5 +6,5 @@ tests/
 venv/
 **/__pycache__
 **/.pytest_cache
-**/.env
+**/*.env
 run.py
