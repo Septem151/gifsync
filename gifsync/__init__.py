@@ -1,19 +1,21 @@
+from . import config
 from .extensions import db, login_manager
 from .models.forms import GifCreationForm
 from .models.users import AnonymousUser, SpotifyUser
-import base64
-from flask import Flask, flash, redirect, request, render_template, send_from_directory, url_for
+from datetime import datetime, timedelta
+from flask import flash, Flask, jsonify, redirect, render_template, request, send_from_directory, session, url_for
+from flask_login import current_user, login_required, login_user
 from flask_talisman import Talisman
+from requests_oauthlib import OAuth2Session
+import base64
 import os
 
 
 def create_app():
     flask_app = Flask(__name__)
-    flask_app.config['ENV'] = os.environ.get('FLASK_ENV', 'development')
-    flask_app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'devkey')
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-        'DATABASE_URL',
-        'postgresql://postgres:devpassword@localhost:5432/postgres')
+    flask_app.config['ENV'] = os.environ.get('FLASK_ENV', config.default_env)
+    flask_app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', config.default_secret)
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', config.default_db_url)
     db.init_app(flask_app)
     login_manager.anonymous_user = AnonymousUser
     login_manager.init_app(flask_app)
@@ -22,27 +24,15 @@ def create_app():
 
 app = create_app()
 if not app.config['ENV'] == 'development':
-    csp = {
-        'default-src': [
-            '\'self\'',
-            '\'unsafe-inline\'',
-            'stackpath.bootstrapcdn.com',
-            'code.jquery.com',
-            'cdn.jsdelivr.net',
-            'fonts.googleapis.com'
-        ],
-        'img-src': [
-            '*',
-            'data:'
-        ],
-        'font-src': 'fonts.gstatic.com'
-    }
-    Talisman(app, content_security_policy=csp)
+    Talisman(app, content_security_policy=config.csp)
+else:
+    # Manually set OAUTHLIB_INSECURE_TRANSPORT so we don't have to include it in environment variables
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return SpotifyUser.query.filter(SpotifyUser.spotify_id == str(user_id)).first()
+    return SpotifyUser.query.filter(SpotifyUser.id == str(user_id)).first()
 
 
 @app.route('/')
@@ -50,12 +40,35 @@ def index():
     return redirect(url_for('home'))
 
 
-@app.route("/home/")
-def home():
-    return render_template('home.html', title='Home')
+@app.route('/api/me/current-song')
+@login_required
+def api_curr_song():
+    current_user.update_curr_song()
+    return jsonify(current_user.curr_song)
+
+
+@app.route('/callback/', methods=['GET'])
+def callback():
+    if len(request.args) != 2 or 'error' in request.args \
+            or ('code' not in request.args and 'state' not in request.args):
+        return redirect(url_for('index'))
+    spotify_oauth = OAuth2Session(config.client_id, redirect_uri=config.redirect_uri, state=session['oauth_state'])
+    token = spotify_oauth.fetch_token(config.token_url, client_secret=config.client_secret,
+                                      authorization_response=request.url)
+    access_token = token['access_token']
+    expires_in = float(token['expires_in'])
+    expiration_time = datetime.utcnow() + timedelta(seconds=expires_in)
+    refresh_token = token['refresh_token']
+    user = SpotifyUser(access_token, expiration_time, refresh_token)
+    if not load_user(user.get_id()):
+        db.session.add(user)
+        db.session.commit()
+    login_user(user)
+    return redirect(url_for('index'))
 
 
 @app.route("/collection/")
+@login_required
 def collection():
     test_images = []
     for i in range(1, 14):
@@ -67,6 +80,7 @@ def collection():
 
 
 @app.route('/create/', methods=['GET', 'POST'])
+@login_required
 def create():
     form = GifCreationForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -78,7 +92,35 @@ def create():
     return render_template('create.html', title='New Gif', form=form)
 
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'img/favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+@app.route("/home/")
+def home():
+    return render_template('home.html', title='Home')
+
+
+@app.route('/login/')
+def login():
+    spotify_oauth = OAuth2Session(config.client_id, scope=config.scope, redirect_uri=config.redirect_uri)
+    authorization_url, state = spotify_oauth.authorization_url(config.authorization_base_url, show_dialog='false')
+    session['oauth_state'] = state
+    return redirect(authorization_url)
+
+
+@app.route('/logout/')
+@login_required
+def logout():
+    db.session.delete(current_user)
+    db.session.commit()
+    return redirect(url_for('home'))
+
+
 @app.route('/show/', methods=['GET', 'POST'])
+@login_required
 def show():
     # TODO: This is temporary. Will move to storing images in database.
     if request.method == 'POST' and request.files.get('gif_file'):
@@ -87,9 +129,3 @@ def show():
     else:
         image_src = url_for('static', filename='img/image-placeholder.png')
     return render_template('show.html', title='Synced Gif', synced_image=image_src)
-
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'img/favicon.ico', mimetype='image/vnd.microsoft.icon')

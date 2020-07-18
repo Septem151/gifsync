@@ -19,7 +19,13 @@ CREATE TABLE frame (
 
 CREATE TABLE gif_frame (
     gif_id integer NOT NULL REFERENCES gif(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    frame_id integer NOT NULL REFERENCES frame(id) ON UPDATE CASCADE,
+    frame_id integer NOT NULL REFERENCES frame(id) ON UPDATE CASCADE ON DELETE CASCADE,
     frame_number integer NOT NULL CHECK (frame_number >= 0),
     PRIMARY KEY (gif_id, frame_id)
 );
+
+CREATE TABLE song (
+    id varchar(32) UNIQUE NOT NULL PRIMARY KEY,
+    tempo real NOT NULL
+)
+

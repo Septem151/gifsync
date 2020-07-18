@@ -34,7 +34,7 @@
     </head>
     <body>
         <!-- NAVBAR -->
-        <nav class="navbar navbar-custom navbar-expand-sm fixed-top">
+        <nav class="navbar navbar-custom navbar-expand-md fixed-top">
             <!-- BRAND -->
             <a href="{{ url_for('home') }}" class="navbar-brand">GifSync</a>
             <!-- TOGGLER for when screen size becomes too small (mobile devices in particular) -->
@@ -52,13 +52,30 @@
                             About GifSync
                         </a>
                     </li>
-                    <!-- BUTTON "Connect Spotify" -->
-                    <li class="nav-item">
-                        <a class="btn btn-custom-green shadow-none" type="button" href="{{ url_for('create') }}">
-                            <img class="btn-icon" src="{{ url_for('static', filename='img/account-icon-black.svg') }}" />
-                            Connect Spotify
-                        </a>
-                    </li>
+                    {% if not current_user.is_authenticated %}
+                        <!-- BUTTON "Connect Spotify" -->
+                        <li class="nav-item">
+                            <a class="btn btn-custom-green shadow-none" type="button" href="{{ url_for('login') }}">
+                                <img class="btn-icon" src="{{ url_for('static', filename='img/account-icon-black.svg') }}" />
+                                Connect Spotify
+                            </a>
+                        </li>
+                    {% else %}
+                        <!-- BUTTON "My Synced Gifs" -->
+                        <li class="nav-item">
+                            <a class="btn btn-custom-green shadow-none" type="button" href="{{ url_for('collection') }}">
+                                <img class="btn-icon" src="{{ url_for('static', filename='img/synced-gifs-icon.svg') }}" />
+                                My Synced Gifs
+                            </a>
+                        </li>
+                        <!-- BUTTON "Forget Me" -->
+                        <li class="nav-item">
+                            <a class="btn btn-custom-red shadow-none" type="button" href="{{ url_for('logout') }}">
+                                <img class="btn-icon" src="{{ url_for('static', filename='img/account-icon-white.svg') }}" />
+                                Forget Me
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>

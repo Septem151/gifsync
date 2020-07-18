@@ -1,6 +1,7 @@
 version: '3'
 services:
   web:
+    image: gifsync_web:dev
     build:
       context: .
       dockerfile: Dockerfile_web
@@ -13,11 +14,12 @@ services:
     depends_on:
       - db
   db:
-    env_file:
-      - db.env
+    image: gifsync_db:dev
     build:
       context: .
       dockerfile: Dockerfile_db
+    env_file:
+      - db.env
     ports:
       - '5432:5432'
     volumes:

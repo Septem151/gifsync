@@ -6,29 +6,29 @@ from gifsync import app
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
-    app.config['SECRET_KEY'] = 'testingkey'
+    app.config['SECRET_KEY'] = 'devkey'
     client = app.test_client()
     yield client
 
 
-def test_routes(client):
+def test_routes_while_logged_out(client):
     routes_and_codes = [
-        {'route': '/', 'redirect': '/home/', 'code': 302},
-        {'route': '/home', 'redirect': '/home/', 'code': 308},
+        {'route': '/', 'code': 302, 'redirect': '/home/', 'redirect_code': 200},
+        {'route': '/home', 'code': 308, 'redirect': '/home/', 'redirect_code': 200},
         {'route': '/home/', 'code': 200},
-        {'route': '/collection', 'redirect': '/collection/', 'code': 308},
-        {'route': '/collection/', 'code': 200},
-        {'route': '/create', 'redirect': '/create/', 'code': 308},
-        {'route': '/create/', 'code': 200},
-        {'route': '/show', 'redirect': '/show/', 'code': 308},
-        {'route': '/show/', 'code': 200},
+        {'route': '/collection', 'code': 308, 'redirect': '/collection/', 'redirect_code': 401},
+        {'route': '/collection/', 'code': 401},
+        {'route': '/create', 'code': 308, 'redirect': '/create/', 'redirect_code': 401},
+        {'route': '/create/', 'code': 401},
+        {'route': '/show', 'code': 308, 'redirect': '/show/', 'redirect_code': 401},
+        {'route': '/show/', 'code': 401},
         {'route': '/favicon.ico', 'code': 200}
     ]
     assert_routes_with_codes(client, routes_and_codes)
 
 
-def test_html_for_skeleton(client):
-    routes = ['/', '/home', '/collection', '/create', '/show']
+def test_html_for_skeleton_while_logged_out(client):
+    routes = ['/', '/home']
     print()
     for route in routes:
         assert_html_skeleton_exists(client, route)
@@ -46,7 +46,10 @@ def assert_routes_with_codes(client, routes_and_codes):
             assert('Location' in response.headers and response.headers['Location'].endswith(route_and_code['redirect']))
         print(f'Testing Response Code from route "{route}" while following redirects.')
         response = client.get(route, follow_redirects=True)
-        assert(response.status_code == 200)
+        if 'redirect_code' in route_and_code:
+            assert(response.status_code == route_and_code['redirect_code'])
+        else:
+            assert(response.status_code == route_and_code['code'])
 
 
 def assert_html_skeleton_exists(client, route):

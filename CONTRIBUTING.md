@@ -57,14 +57,28 @@ All Linux commands assume you are running a debian-based system. All Windows com
     cd gifsync
     ```
 
-3. Create two new files called **web.env** and **db.env**, and populate **db.env** with the following:
-    ```
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=devpassword
-    ```
+3. Create two new files called **web.env** and **db.env** within the project's root directory.
+    * Populate **db.env** with the following:
+        ```
+        POSTGRES_USER=postgres
+        POSTGRES_PASSWORD=devpassword
+        ```
+    * **web.env** must have `CLIENT_ID` and `CLIENT_SECRET` defined (see 
+    [Additional Information](#additional-information) for getting a Spotify Client & Secret ID). Populate **web.env** 
+    with the following:
+        ```
+        CLIENT_ID=your_spotify_client_id
+        CLIENT_SECRET=your_spotify_client_secret
+        DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres
+        ```
+    * Optional values for **web.env** include:
+        * `FLASK_ENV` - recommended value: `development`
+        * `SECRET_KEY` - not necessary to set, defaults to `devkey`
+        * `PORT` - if set, you **MUST** change the port definition within the `docker-compose.yml` file to match
 
-5. Run `docker-compose up --build -d` (omit the "-d" flag if you wish to keep the server attached to the terminal)
-    * To view the site, open a browser and go to `localhost:8000`
+5. Run `docker-compose up --build -d` (omit the "-d" flag if you wish to keep the containers attached to the terminal, 
+useful for debugging)
+    * To view the site, open a browser and go to `localhost:8000` or to the port you've specified in `web.env`
     * Changes made to **HTML** and **CSS** will be reflected automatically after waiting approx. 10-15 seconds.
     * Changes to **code** will **NOT** be reflected automatically. Restart the server with `docker-compose down`, then 
     `docker-compose up --build -d`.
@@ -103,7 +117,8 @@ All Linux commands assume you are running a debian-based system. All Windows com
         * Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local), then run the following commands:
         ```sh
         sudo apt update && sudo apt install postgresql
-        # If you don't set the password to "devpassword", you will need to modify the password used in the code.
+        # If you don't set the password to "devpassword", you will need to modify the password used in the code, 
+        # or utilize environment variables and define a port in web.env
         # It is recommended that you set a strong password when running postgres locally on your machine like this.
         sudo passwd postgres
         sudo su - postgres
@@ -148,6 +163,26 @@ All Linux commands assume you are running a debian-based system. All Windows com
     * Windows
         * Replace "python3" with "python" in the Linux commands above
 
+5. Create two new files called **web.env** and **db.env** within the project's root directory.
+    * Populate **db.env** with the following:
+        ```
+        POSTGRES_USER=postgres
+        POSTGRES_PASSWORD=devpassword
+        ```
+    * **web.env** must have `CLIENT_ID` and `CLIENT_SECRET` defined (see 
+    [Additional Information](#additional-information) for getting a Spotify Client & Secret ID). Populate **web.env** 
+    with the following:
+        ```
+        CLIENT_ID=your_spotify_client_id
+        CLIENT_SECRET=your_spotify_client_secret
+        ```
+    * Optional values for **web.env** include:
+        * `FLASK_ENV` - not necessary to set, defaults to: `development`
+        * `DATABASE_URL` - if you are connecting to an external database or have defined a different user/password than 
+        what is in **db.env** file above
+        * `SECRET_KEY` - not necessary to set, defaults to `devkey`
+        * `PORT` - not necessary to set, defaults to `8000`
+
 6. Run the server
     * Linux
         ```sh
@@ -167,9 +202,12 @@ All Linux commands assume you are running a debian-based system. All Windows com
 5. Open a Pull Request on GitHub
 
 ## Additional Information
-* If you plan on testing any functionality involving the Spotify API, you need to have a [registered App with Spotify][spotifydev-url] in order to get a Client ID and Client Secret.
-* You can use your favorite Python IDE, however I recommend using [PyCharm][pycharm-url] as it allows for built-in VCS support and virtual environments.
-* When making changes to HTML/CSS, browsers will cache the files for faster load times so you may not see your changes if you refresh the page. To fix this, do a Hard Reload of the page. In Chrome/Firefox the command is `Ctrl+Shift+R`, in Edge/IE the command is `Ctrl+F5`, and in Safari the command is hold `Shift` and click the Refresh button.
+* You need to have a [registered App with Spotify][spotifydev-url] in order to get a Client ID and Client Secret.
+* You can use your favorite Python IDE, however I recommend using [PyCharm][pycharm-url] as it allows for built-in VCS 
+support and virtual environments, and an awesome plugin (EnvFile) for adding environment variables at runtime.
+* When making changes to HTML/CSS, browsers will cache the files for faster load times so you may not see your changes 
+if you refresh the page. To fix this, do a Hard Reload of the page. In Chrome/Firefox the command is `Ctrl+Shift+R`, in 
+Edge/IE the command is `Ctrl+F5`, and in Safari the command is hold `Shift` and click the Refresh button.
 * Keep your fork up-to-date by adding this repository as an upstream:
     * `git remote add upstream https://github.com/Septem151/gifsync.git`
     * Fetching and merging diffs:
