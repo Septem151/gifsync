@@ -5,8 +5,8 @@
           href="{{ url_for('static', filename='css/show.css') }}">
 {% endblock styles %}
 {% block content %}
-    <img class="synced-image mx-auto d-block"
-         src="{{ synced_image }}">
+    <img id="synced-image" class="synced-image mx-auto d-block"
+         src="">
     <div class="row justify-content-center">
         <p class="header my-auto">Sync another?</p>
         <a class="col-auto ml-3 my-3 btn btn-custom-green shadow-none" type="button"
@@ -17,9 +17,29 @@
     <div class="row justify-content-center mb-4">
         <p class="header my-auto">Not satisfied?</p>
         <a class="col-auto ml-3 my-3 btn btn-custom-red shadow-none" type="button"
-           href="{{ url_for('create') }}">
+           href="{{ url_for('api_delete_gif', id=gif_id) }}">
             Delete gif
         </a>
     </div>
-
 {% endblock content %}
+{% block js %}
+    <script>
+        timeout = 30000;
+        gif_id = {{ gif_id }};
+
+        function updateLoop() {
+            $.ajax({
+                method: 'GET',
+                url: {{ url_for('api_curr_song')|tojson }}
+            }).done(updateGif);
+        }
+
+        function updateGif(data) {
+            $('#synced-image').attr('src', {{ url_for('api_user_image', gif_id=gif_id)|tojson }} + '#' +
+                new Date().getTime());
+            setTimeout(updateLoop, timeout);
+        }
+
+        updateLoop();
+    </script>
+{% endblock js %}

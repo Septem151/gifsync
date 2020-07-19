@@ -13,15 +13,15 @@ def client():
 
 def test_routes_while_logged_out(client):
     routes_and_codes = [
-        {'route': '/', 'code': 302, 'redirect': '/home/', 'redirect_code': 200},
-        {'route': '/home', 'code': 308, 'redirect': '/home/', 'redirect_code': 200},
-        {'route': '/home/', 'code': 200},
-        {'route': '/collection', 'code': 308, 'redirect': '/collection/', 'redirect_code': 401},
-        {'route': '/collection/', 'code': 401},
-        {'route': '/create', 'code': 308, 'redirect': '/create/', 'redirect_code': 401},
-        {'route': '/create/', 'code': 401},
-        {'route': '/show', 'code': 308, 'redirect': '/show/', 'redirect_code': 401},
-        {'route': '/show/', 'code': 401},
+        {'route': '/', 'code': 302, 'redirect': '/home', 'redirect_code': 200},
+        {'route': '/home', 'code': 200},
+        {'route': '/home/', 'code': 404},
+        {'route': '/collection', 'code': 401},
+        {'route': '/collection/', 'code': 404},
+        {'route': '/create', 'code': 401},
+        {'route': '/create/', 'code': 404},
+        {'route': '/show', 'code': 401},
+        {'route': '/show/', 'code': 404},
         {'route': '/favicon.ico', 'code': 200}
     ]
     assert_routes_with_codes(client, routes_and_codes)

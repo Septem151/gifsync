@@ -14,12 +14,12 @@
     </div>
     <div class="row">
         {% for image in images %}
-        <div class="col col-6 col-sm-4 col-md-3 mb-3">
-            <a href="#">
-                <img class="framed-image" src="{{ image['src'] }}">
-            </a>
-            <p class="image-label">{{ image['label'] }}</p>
-        </div>
+            <div class="col col-6 col-sm-4 col-md-3 mb-3">
+                <a href="{{ image['href'] }}">
+                    <img class="framed-image" src="{{ image['src'] }}">
+                </a>
+                <p class="image-label">{{ image['label'] }}</p>
+            </div>
         {% endfor %}
     </div>
 {% endblock content %}

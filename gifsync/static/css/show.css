@@ -5,6 +5,7 @@
     width: auto\9; /* specifically for ie8 compatibility.
                       Might remove, since I'm not sure if I want the site IE compatible anyway. */
     margin-bottom: 64px;
+    margin-top: 32px;
 }
 
 /* Header Text Styling */

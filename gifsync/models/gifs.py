@@ -1,14 +1,5 @@
 from ..extensions import db
-
-
-class Frame(db.Model):
-    __tablename__ = 'frame'
-
-    id = db.Column(db.Integer, primary_key=True)
-    image = db.Column(db.LargeBinary, nullable=False)
-
-    def __init__(self, image):
-        self.image = image
+import hashlib
 
 
 class Gif(db.Model):
@@ -17,34 +8,36 @@ class Gif(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.ForeignKey('spotify_user.id', ondelete='CASCADE'), nullable=False)
+    image_id = db.Column(db.ForeignKey('image.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     name = db.Column(db.String(256), nullable=False)
     beats_per_loop = db.Column(db.Integer, nullable=False)
 
+    image = db.relationship('Image', primaryjoin='Gif.image_id == Image.id',
+                            backref=db.backref('gifs', passive_deletes=True))
     user = db.relationship('SpotifyUser', primaryjoin='Gif.user_id == SpotifyUser.id',
                            backref=db.backref('gifs', passive_deletes=True))
 
-    def __init__(self, user_id, name, beats_per_loop):
+    def __init__(self, user_id, image_id, name, beats_per_loop):
         self.user_id = user_id
+        self.image_id = image_id
         self.name = name
         self.beats_per_loop = beats_per_loop
 
 
-class GifFrame(db.Model):
-    __tablename__ = 'gif_frame'
-    __table_args__ = (db.CheckConstraint('frame_number >= 0'),)
+class Image(db.Model):
+    __tablename__ = 'image'
 
-    gif_id = db.Column(db.ForeignKey('gif.id', ondelete='CASCADE', onupdate='CASCADE'),
-                       primary_key=True, nullable=False)
-    frame_id = db.Column(db.ForeignKey('frame.id', ondelete='CASCADE', onupdate='CASCADE'),
-                         primary_key=True, nullable=False)
-    frame_number = db.Column(db.Integer, nullable=False)
+    id = db.Column(db.String(64), primary_key=True)
+    image = db.Column(db.LargeBinary, nullable=False)
 
-    frame = db.relationship('Frame', primaryjoin='GifFrame.frame_id == Frame.id',
-                            backref=db.backref('gif_frames', passive_deletes=True))
-    gif = db.relationship('Gif', primaryjoin='GifFrame.gif_id == Gif.id',
-                          backref=db.backref('gif_frames', passive_deletes=True))
+    def __init__(self, image, id_=None):
+        self.image = image
+        if not id_:
+            image_hash = Image.hash_image(image)
+            self.id = image_hash
+        else:
+            self.id = id_
 
-    def __init__(self, gif_id, frame_id, frame_number):
-        self.gif_id = gif_id
-        self.frame_id = frame_id
-        self.frame_number = frame_number
+    @staticmethod
+    def hash_image(image):
+        return hashlib.sha256(image).hexdigest()
