@@ -14,9 +14,9 @@ import os
 
 def create_app():
     flask_app = Flask(__name__)
-    flask_app.config['ENV'] = os.environ.get('FLASK_ENV', config.default_env)
-    flask_app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', config.default_secret)
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', config.default_db_url)
+    flask_app.config['ENV'] = config.flask_env
+    flask_app.config['SECRET_KEY'] = config.flask_secret
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = config.db_url
     db.init_app(flask_app)
     login_manager.anonymous_user = AnonymousUser
     login_manager.init_app(flask_app)
@@ -96,7 +96,7 @@ def callback():
     if len(request.args) != 2 or 'error' in request.args \
             or ('code' not in request.args and 'state' not in request.args):
         return redirect(url_for('index'))
-    spotify_oauth = OAuth2Session(config.client_id, redirect_uri=config.redirect_uri, state=session['oauth_state'])
+    spotify_oauth = OAuth2Session(config.client_id, redirect_uri=config.callback_uri, state=session['oauth_state'])
     token = spotify_oauth.fetch_token(config.token_url, client_secret=config.client_secret,
                                       authorization_response=request.url)
     access_token = token['access_token']
@@ -158,7 +158,7 @@ def home():
 
 @app.route('/login')
 def login():
-    spotify_oauth = OAuth2Session(config.client_id, scope=config.scope, redirect_uri=config.redirect_uri)
+    spotify_oauth = OAuth2Session(config.client_id, scope=config.scope, redirect_uri=config.callback_uri)
     authorization_url, state = spotify_oauth.authorization_url(config.authorization_base_url, show_dialog='true')
     session['oauth_state'] = state
     return redirect(authorization_url)
