@@ -65,6 +65,8 @@ class SpotifyUser(db.Model):
                 self.curr_song['artists'] = []
                 for artist in content['item']['artists']:
                     self.curr_song['artists'].append(artist['name'])
+            else:
+                self.curr_song['paused'] = 'true'
         elif response.status_code == 204:
             self.curr_song['paused'] = 'true'
         return self.curr_song
