@@ -31,9 +31,6 @@ if not app.config['ENV'] == 'development':
 else:
     # Manually set OAUTHLIB_INSECURE_TRANSPORT so we don't have to include it in environment variables
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-# Create gif_frames directory if it doesn't exist
-if not os.path.exists(config.gif_frames_path):
-    os.makedirs(config.gif_frames_path)
 
 
 @login_manager.user_loader
