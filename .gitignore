@@ -140,6 +140,5 @@ gen
 # Flake8 Scripts
 tests/flake8.sh
 
-# Docker-compose specific files
-initdb.sh
-db_backup/
+# Additional Files & Folders
+gifsync/static/gif_frames/*
