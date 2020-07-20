@@ -23,5 +23,3 @@ CREATE TABLE song (
     tempo real NOT NULL
 );
 
-INSERT INTO song(id, tempo) VALUES ('placeholdersong', 128);
-

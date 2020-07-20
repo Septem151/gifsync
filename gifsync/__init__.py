@@ -88,7 +88,6 @@ def api_user_image():
     if gif.user_id != current_user.get_id():
         abort(401)
     response = make_response(gif.image.image)
-    response.headers['Cache-control'] = 'no-store'
     return response
 
 
@@ -129,8 +128,16 @@ def callback():
     expiration_time = datetime.utcnow() + timedelta(seconds=expires_in)
     refresh_token = token['refresh_token']
     user = SpotifyUser(access_token, expiration_time, refresh_token)
-    if not load_user(user.get_id()):
+    if not SpotifyUser.query.filter(SpotifyUser.id == user.get_id()).first():
         db.session.add(user)
+        # Insert hat kid image into user's collection by default
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               'static/img/hat-kid-smug-dance.gif'), 'rb') as image:
+            hat_kid_image = Image(image.read())
+        if not Image.query.filter(Image.id == hat_kid_image.id).first():
+            db.session.add(hat_kid_image)
+        hat_kid_gif = Gif(user.id, hat_kid_image.id, 'Hat Kid', 4)
+        db.session.add(hat_kid_gif)
         db.session.commit()
     login_user(user)
     return redirect(url_for('collection'))
