@@ -53,7 +53,11 @@ class SpotifyUser(db.Model):
         self.curr_song = {}
         if response.status_code == 200:
             content = response.json()
-            if 'item' in content and 'name' in content['item']:
+            # Don't trust spotify to respect 204 vs 200
+            # When an ad is playing for users w/out premium, content = None, so we must check first
+            if not content:
+                self.curr_song['paused'] = 'true'
+            elif 'item' in content and 'name' in content['item']:
                 self.curr_song['name'] = content['item']['name']
                 self.curr_song['id'] = content['item']['id']
                 self.curr_song['tempo'] = Song.get_song_tempo(self.curr_song['id'], self.access_token)
@@ -65,8 +69,6 @@ class SpotifyUser(db.Model):
                     self.curr_song['artists'].append(artist['name'])
         elif response.status_code == 204:
             self.curr_song['paused'] = 'true'
-        else:
-            self.curr_song = None
         return self.curr_song
 
     def refresh_access_token(self):
