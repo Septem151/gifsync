@@ -56,65 +56,52 @@ def api_curr_song():
 @app.route('/api/me/delete-gif')
 @login_required
 def api_delete_gif():
-    id_arg = request.args.get('id')
-    try:
-        int(id_arg)
-    except TypeError:
+    gif_id = request.args.get('id')
+    if not gif_id:
         abort(400)
-    gif_id = int(id_arg)
     gif = Gif.query.filter(Gif.id == gif_id).first()
-    if gif:
-        if gif.user_id == current_user.get_id():
-            db.session.delete(gif)
-            db.session.commit()
-            # Delete all images not being referenced by a gif to clean up the database & local files
-            image_query_result = db.session.execute(
-                'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
-            for result in image_query_result:
-                image_id = result['id']
-                image_frames_folder = os.path.join(config.gif_frames_path, str(image_id)[:8])
-                if os.path.exists(image_frames_folder):
-                    shutil.rmtree(image_frames_folder)
-            db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
-            db.session.commit()
-            return redirect(url_for('collection'))
-        else:
-            abort(401)
-    else:
+    if not gif:
         abort(404)
+    if gif.user_id != current_user.get_id():
+        abort(401)
+    db.session.delete(gif)
+    db.session.commit()
+    # Delete all images not being referenced by a gif to clean up the database & local files
+    image_query_result = db.session.execute(
+        'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+    for result in image_query_result:
+        image_id = result['id']
+        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id))
+        if os.path.exists(image_frames_folder):
+            shutil.rmtree(image_frames_folder)
+    db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+    db.session.commit()
+    return redirect(url_for('collection'))
 
 
 @app.route('/api/me/image')
 @login_required
 def api_user_image():
-    id_arg = request.args.get('gif_id')
-    try:
-        int(id_arg)
-    except TypeError:
+    gif_id = request.args.get('gif_id')
+    if not gif_id:
         abort(400)
-    gif_id = int(id_arg)
     gif = Gif.query.filter(Gif.id == gif_id).first()
-    if gif:
-        if gif.user_id == current_user.get_id():
-            response = make_response(gif.image.image)
-            response.headers['Cache-control'] = 'no-store'
-            return response
-        else:
-            abort(401)
-    else:
+    if not gif:
         abort(404)
+    if gif.user_id != current_user.get_id():
+        abort(401)
+    response = make_response(gif.image.image)
+    response.headers['Cache-control'] = 'no-store'
+    return response
 
 
 @app.route('/api/me/synced-gif')
 @login_required
 def api_synced_gif():
-    gif_arg = request.args.get('gif_id')
+    gif_id = request.args.get('gif_id')
     song_id = request.args.get('song_id')
-    try:
-        int(gif_arg)
-    except TypeError:
+    if not gif_id:
         abort(400)
-    gif_id = int(gif_arg)
     gif = Gif.query.filter(Gif.id == gif_id).first()
     if not gif:
         abort(404)
@@ -171,6 +158,11 @@ def collection():
 def create():
     form = GifCreationForm()
     if request.method == 'POST' and form.validate_on_submit():
+        user_gifs = current_user.gifs
+        for user_gif in user_gifs:
+            if user_gif.name == form.gif_name.data:
+                flash('You already have a Gif called that! Try a unique name.', 'danger')
+                return render_template('create.html', title='New Gif', form=form)
         filename = form.gif_file.data.filename
         if '.' in filename and filename.rsplit('.', 1)[1].lower() == 'gif':
             file = Image(form.gif_file.data.stream.read())
@@ -216,7 +208,7 @@ def logout():
         'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
     for result in image_query_result:
         image_id = result['id']
-        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id)[:8])
+        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id))
         if os.path.exists(image_frames_folder):
             shutil.rmtree(image_frames_folder)
     db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
@@ -227,12 +219,9 @@ def logout():
 @app.route('/show', methods=['GET'])
 @login_required
 def show():
-    id_arg = request.args.get('gif_id')
-    try:
-        int(id_arg)
-    except TypeError:
+    gif_id = request.args.get('gif_id')
+    if not gif_id:
         abort(400)
-    gif_id = int(id_arg)
     gif = Gif.query.filter(Gif.id == gif_id).first()
     if gif:
         if gif.user_id == current_user.get_id():
@@ -241,10 +230,3 @@ def show():
             abort(401)
     else:
         abort(404)
-
-
-@app.route('/test-gif')
-def test_gif():
-    path = config.gif_frames_path
-    print(path)
-    return str(os.path.exists(path))

@@ -6,12 +6,12 @@ CREATE TABLE spotify_user (
 );
 
 CREATE TABLE image (
-    id char(64) UNIQUE NOT NULL PRIMARY KEY,
+    id char(16) UNIQUE NOT NULL PRIMARY KEY,
     image bytea NOT NULL
 );
 
 CREATE TABLE gif (
-    id SERIAL UNIQUE PRIMARY KEY,
+    id char(16) UNIQUE NOT NULL PRIMARY KEY,
     user_id varchar(32) NOT NULL REFERENCES spotify_user(id) ON DELETE CASCADE,
     image_id char(64) NOT NULL REFERENCES image(id) ON DELETE CASCADE,
     name varchar(256) NOT NULL,

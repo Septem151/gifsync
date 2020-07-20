@@ -60,6 +60,9 @@ class SpotifyUser(db.Model):
                 track_duration = int(content['item']['duration_ms'])
                 track_progress = int(content['progress_ms'])
                 self.curr_song['remaining_ms'] = track_duration - track_progress
+                self.curr_song['artists'] = []
+                for artist in content['item']['artists']:
+                    self.curr_song['artists'].append(artist['name'])
         elif response.status_code == 204:
             self.curr_song['paused'] = 'true'
         else:

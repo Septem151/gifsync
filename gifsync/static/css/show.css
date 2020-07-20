@@ -4,13 +4,21 @@
     height: auto;
     width: auto\9; /* specifically for ie8 compatibility.
                       Might remove, since I'm not sure if I want the site IE compatible anyway. */
-    margin-bottom: 64px;
+    margin-bottom: 32px;
     margin-top: 32px;
+}
+
+.margin-btm {
+    margin-bottom: 32px;
 }
 
 /* Header Text Styling */
 .header {
     font-weight: bold;
     font-size: 18px;
-    text-align: left;
+}
+
+.sub-header {
+    font-weight: bold;
+    font-size: 14px;
 }

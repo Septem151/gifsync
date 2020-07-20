@@ -7,6 +7,10 @@
 {% block content %}
     <img id="synced-image" class="synced-image mx-auto d-block"
          src="">
+    <p class="header text-center margin-btm">{{ title }}</p>
+    <p class="sub-header text-center">Now Playing:</p>
+    <p id="song-name" class="header text-center"></p>
+    <p id="song-tempo" class="sub-header text-center margin-btm"></p>
     <div class="row justify-content-center">
         <p class="header my-auto">Sync another?</p>
         <a class="col-auto ml-3 my-3 btn btn-custom-green shadow-none" type="button"
@@ -25,7 +29,7 @@
 {% block js %}
     <script>
         var timeout = 30000;
-        var curr_song = 'placeholdersong';
+        var curr_song = 'none';
         var base_synced_gif_url = {{ url_for('api_synced_gif', gif_id=gif_id)|tojson }}
 
         function updateLoop() {
@@ -38,12 +42,13 @@
         function updateSong(data) {
             if('paused' in data) {
                 timeout = 30000;
-                if(curr_song !== 'placeholdersong') {
+                if(curr_song === 'none' || curr_song !== 'placeholdersong') {
                     curr_song = 'placeholdersong';
                     updateGif();
+                    updateSongText(null, null, null);
                 }
             } else {
-                time_remaining = parseInt(data['remaining_ms']);
+                let time_remaining = parseInt(data['remaining_ms']);
                 if (time_remaining < 30000) {
                     timeout = time_remaining;
                 } else {
@@ -53,6 +58,7 @@
                 if(curr_song !== song_id) {
                     curr_song = song_id;
                     updateGif();
+                    updateSongText(data['name'], data['artists'], parseFloat(data['tempo']));
                 }
             }
             setTimeout(updateLoop, timeout);
@@ -67,11 +73,29 @@
             $('#synced-image').attr('src', image_url);
         }
 
+        function updateSongText(name, artists, tempo) {
+            if(name) {
+                let artist_str = "";
+                for(var i=0; i<artists.length; i++) {
+                    artist_str += artists[i];
+                    if (i !== artists.length - 1) {
+                        artist_str += ", ";
+                    }
+                }
+                $('#song-name').text(name + ' - ' + artist_str);
+                if(tempo) {
+                    $('#song-tempo').text(Math.floor(tempo) + ' BPM');
+                }
+            } else {
+                $('#song-name').text('No song is playing right now!');
+            }
+        }
+
         updateLoop();
     </script>
     <script>
-        $(window).on('unload', function(e) {
+<!--        $(window).on('unload', function(e) {
 
-        });
+        });-->
     </script>
 {% endblock js %}

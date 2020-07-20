@@ -12,7 +12,7 @@ class Gif(db.Model):
     __tablename__ = 'gif'
     __table_args__ = (db.CheckConstraint('beats_per_loop > 0'),)
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(16), primary_key=True)
     user_id = db.Column(db.ForeignKey('spotify_user.id', ondelete='CASCADE'), nullable=False)
     image_id = db.Column(db.ForeignKey('image.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     name = db.Column(db.String(256), nullable=False)
@@ -23,11 +23,19 @@ class Gif(db.Model):
     user = db.relationship('SpotifyUser', primaryjoin='Gif.user_id == SpotifyUser.id',
                            backref=db.backref('gifs', passive_deletes=True))
 
-    def __init__(self, user_id, image_id, name, beats_per_loop):
+    def __init__(self, user_id, image_id, name, beats_per_loop, id_=None):
         self.user_id = user_id
         self.image_id = image_id
         self.name = name
         self.beats_per_loop = beats_per_loop
+        if not id_:
+            self.id = Gif.generate_hash_id(user_id, name)
+        else:
+            self.id = id_
+
+    @staticmethod
+    def generate_hash_id(user_id, name):
+        return hashlib.sha256(f'{user_id}{name}'.encode('utf-8')).hexdigest()[:16]
 
     @staticmethod
     def round_tens(num):
@@ -73,7 +81,7 @@ class Gif(db.Model):
         frame_times = Gif.get_frame_times(len(original_frames), tempo, self.beats_per_loop)
         synced_frames = []
         for i in range(0, len(original_frames)):
-            path_to_frame = os.path.join(gif_frames_path, f'{self.image.short_id}/{i}.png')
+            path_to_frame = os.path.join(gif_frames_path, f'{self.image.id}/{i}.png')
             pil_image = PilImage.open(path_to_frame)
             # Convert the image into P mode but only use 255 colors in the palette out of 256
             alpha = pil_image.getchannel('A')
@@ -101,7 +109,7 @@ class Gif(db.Model):
 class Image(db.Model):
     __tablename__ = 'image'
 
-    id = db.Column(db.String(64), primary_key=True)
+    id = db.Column(db.String(16), primary_key=True)
     image = db.Column(db.LargeBinary, nullable=False)
 
     def __init__(self, image, id_=None):
@@ -112,13 +120,9 @@ class Image(db.Model):
         else:
             self.id = id_
 
-    @property
-    def short_id(self):
-        return self.id[:8]
-
     @staticmethod
     def hash_image(image):
-        return hashlib.sha256(image).hexdigest()
+        return hashlib.sha256(image).hexdigest()[:16]
 
     def analyse_image(self):
         # Pre-process pass over the image to determine the mode (full or additive).
@@ -144,7 +148,7 @@ class Image(db.Model):
         return results
 
     def save_frames(self):
-        Path(f'{gif_frames_path}/{self.short_id}').mkdir(parents=True, exist_ok=True)
+        Path(f'{gif_frames_path}/{self.id}').mkdir(parents=True, exist_ok=True)
         mode = self.analyse_image()['mode']
         pil_image = PilImage.open(BytesIO(self.image))
         num_frames = 0
@@ -163,7 +167,7 @@ class Image(db.Model):
                 if mode == 'partial':
                     new_frame.paste(last_frame)
                 new_frame.paste(pil_image, (0, 0), pil_image.convert('RGBA'))
-                new_frame.save(os.path.join(gif_frames_path, f'{self.short_id}/{num_frames}.png'), 'PNG')
+                new_frame.save(os.path.join(gif_frames_path, f'{self.id}/{num_frames}.png'), 'PNG')
                 num_frames += 1
                 last_frame = new_frame
                 pil_image.seek(pil_image.tell() + 1)
@@ -171,7 +175,7 @@ class Image(db.Model):
             pass
 
     def get_frames(self):
-        path_to_frames = os.path.join(gif_frames_path, str(self.short_id))
+        path_to_frames = os.path.join(gif_frames_path, str(self.id))
         if not os.path.exists(path_to_frames):
             self.save_frames()
         frame_files = os.listdir(path_to_frames)
