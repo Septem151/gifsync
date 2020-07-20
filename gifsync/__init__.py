@@ -133,7 +133,7 @@ def callback():
         db.session.add(user)
         db.session.commit()
     login_user(user)
-    return redirect(url_for('index'))
+    return redirect(url_for('collection'))
 
 
 @app.route("/collection")
