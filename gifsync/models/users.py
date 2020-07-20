@@ -1,7 +1,7 @@
 from ..config import refresh_url
 from ..extensions import db
 from datetime import datetime, timedelta
-from .songs import get_song_tempo
+from .songs import Song
 import os
 import requests
 from requests_oauthlib import OAuth2Session
@@ -56,7 +56,7 @@ class SpotifyUser(db.Model):
             if 'item' in content and 'name' in content['item']:
                 self.curr_song['name'] = content['item']['name']
                 self.curr_song['id'] = content['item']['id']
-                self.curr_song['tempo'] = get_song_tempo(self.curr_song['id'], self.access_token)
+                self.curr_song['tempo'] = Song.get_song_tempo(self.curr_song['id'], self.access_token)
                 track_duration = int(content['item']['duration_ms'])
                 track_progress = int(content['progress_ms'])
                 self.curr_song['remaining_ms'] = track_duration - track_progress

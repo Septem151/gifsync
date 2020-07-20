@@ -24,22 +24,54 @@
 {% endblock content %}
 {% block js %}
     <script>
-        timeout = 30000;
-        gif_id = {{ gif_id }};
+        var timeout = 30000;
+        var curr_song = 'placeholdersong';
+        var base_synced_gif_url = {{ url_for('api_synced_gif', gif_id=gif_id)|tojson }}
 
         function updateLoop() {
             $.ajax({
                 method: 'GET',
                 url: {{ url_for('api_curr_song')|tojson }}
-            }).done(updateGif);
+            }).done(updateSong);
         }
 
-        function updateGif(data) {
-            $('#synced-image').attr('src', {{ url_for('api_user_image', gif_id=gif_id)|tojson }} + '#' +
-                new Date().getTime());
+        function updateSong(data) {
+            if('paused' in data) {
+                timeout = 30000;
+                if(curr_song !== 'placeholdersong') {
+                    curr_song = 'placeholdersong';
+                    updateGif();
+                }
+            } else {
+                time_remaining = parseInt(data['remaining_ms']);
+                if (time_remaining < 30000) {
+                    timeout = time_remaining;
+                } else {
+                    timeout = 30000;
+                }
+                song_id = data['id'];
+                if(curr_song !== song_id) {
+                    curr_song = song_id;
+                    updateGif();
+                }
+            }
             setTimeout(updateLoop, timeout);
         }
 
+        function updateGif() {
+            image_url = base_synced_gif_url;
+            if(curr_song !== 'placeholdersong') {
+                image_url += ('&song_id=' + curr_song);
+            }
+            image_url += '#' + new Date().getTime()
+            $('#synced-image').attr('src', image_url);
+        }
+
         updateLoop();
+    </script>
+    <script>
+        $(window).on('unload', function(e) {
+
+        });
     </script>
 {% endblock js %}

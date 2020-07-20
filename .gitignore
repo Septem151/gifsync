@@ -139,3 +139,6 @@ gen
 
 # Flake8 Scripts
 tests/flake8.sh
+
+# Additional Files & Folders
+gifsync/static/gif_frames/*

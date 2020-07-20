@@ -12,24 +12,24 @@ class Song(db.Model):
         self.id = id_
         self.tempo = tempo
 
-
-def get_song_tempo(id_, access_token):
-    song = Song.query.filter(Song.id == str(id_)).first()
-    if not song:
-        response = requests.get(
-            f'https://api.spotify.com/v1/audio-features/{id_}',
-            headers={
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + access_token
-            }
-        )
-        content = response.json()
-        if 'tempo' in content:
-            song = Song(id_, content['tempo'])
-            db.session.add(song)
-            db.session.commit()
-            return song.tempo
+    @staticmethod
+    def get_song_tempo(id_, access_token):
+        song = Song.query.filter(Song.id == str(id_)).first()
+        if not song:
+            response = requests.get(
+                f'https://api.spotify.com/v1/audio-features/{id_}',
+                headers={
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + access_token
+                }
+            )
+            content = response.json()
+            if 'tempo' in content:
+                song = Song(id_, content['tempo'])
+                db.session.add(song)
+                db.session.commit()
+                return song.tempo
+            else:
+                return None
         else:
-            return None
-    else:
-        return song.tempo
+            return song.tempo

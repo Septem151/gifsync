@@ -2,14 +2,16 @@ from . import config
 from .extensions import db, login_manager
 from .models.forms import GifCreationForm
 from .models.gifs import Gif, Image
+from .models.songs import Song
 from .models.users import AnonymousUser, SpotifyUser
 from datetime import datetime, timedelta
 from flask import abort, flash, Flask, jsonify, make_response, redirect, render_template, request, \
-    send_from_directory, session, url_for
+    send_file, send_from_directory, session, url_for
 from flask_login import current_user, login_required, login_user
 from flask_talisman import Talisman
-from requests_oauthlib import OAuth2Session
 import os
+from requests_oauthlib import OAuth2Session
+import shutil
 
 
 def create_app():
@@ -29,6 +31,9 @@ if not app.config['ENV'] == 'development':
 else:
     # Manually set OAUTHLIB_INSECURE_TRANSPORT so we don't have to include it in environment variables
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+# Create gif_frames directory if it doesn't exist
+if not os.path.exists(config.gif_frames_path):
+    os.makedirs(config.gif_frames_path)
 
 
 @login_manager.user_loader
@@ -53,22 +58,30 @@ def api_curr_song():
 def api_delete_gif():
     id_arg = request.args.get('id')
     try:
-        gif_id = int(id_arg)
-        gif = Gif.query.filter(Gif.id == gif_id).first()
-        if gif:
-            if gif.user_id == current_user.get_id():
-                db.session.delete(gif)
-                db.session.commit()
-                # Delete all images not being referenced by a gif to clean up the database
-                db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
-                db.session.commit()
-                return redirect(url_for('collection'))
-            else:
-                abort(401)
-        else:
-            abort(404)
+        int(id_arg)
     except TypeError:
         abort(400)
+    gif_id = int(id_arg)
+    gif = Gif.query.filter(Gif.id == gif_id).first()
+    if gif:
+        if gif.user_id == current_user.get_id():
+            db.session.delete(gif)
+            db.session.commit()
+            # Delete all images not being referenced by a gif to clean up the database & local files
+            image_query_result = db.session.execute(
+                'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+            for result in image_query_result:
+                image_id = result['id']
+                image_frames_folder = os.path.join(config.gif_frames_path, str(image_id)[:8])
+                if os.path.exists(image_frames_folder):
+                    shutil.rmtree(image_frames_folder)
+            db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+            db.session.commit()
+            return redirect(url_for('collection'))
+        else:
+            abort(401)
+    else:
+        abort(404)
 
 
 @app.route('/api/me/image')
@@ -76,19 +89,47 @@ def api_delete_gif():
 def api_user_image():
     id_arg = request.args.get('gif_id')
     try:
-        gif_id = int(id_arg)
-        gif = Gif.query.filter(Gif.id == gif_id).first()
-        if gif:
-            if gif.user_id == current_user.get_id():
-                response = make_response(gif.image.image)
-                response.headers['Cache-control'] = 'no-store'
-                return response
-            else:
-                abort(401)
-        else:
-            abort(404)
+        int(id_arg)
     except TypeError:
         abort(400)
+    gif_id = int(id_arg)
+    gif = Gif.query.filter(Gif.id == gif_id).first()
+    if gif:
+        if gif.user_id == current_user.get_id():
+            response = make_response(gif.image.image)
+            response.headers['Cache-control'] = 'no-store'
+            return response
+        else:
+            abort(401)
+    else:
+        abort(404)
+
+
+@app.route('/api/me/synced-gif')
+@login_required
+def api_synced_gif():
+    gif_arg = request.args.get('gif_id')
+    song_id = request.args.get('song_id')
+    try:
+        int(gif_arg)
+    except TypeError:
+        abort(400)
+    gif_id = int(gif_arg)
+    gif = Gif.query.filter(Gif.id == gif_id).first()
+    if not gif:
+        abort(404)
+    if gif.user_id != current_user.get_id():
+        abort(401)
+    if not song_id:
+        song_id = 'placeholdersong'
+    tempo = Song.get_song_tempo(song_id, current_user.access_token)
+    if not tempo:
+        abort(404)
+    synced_image = gif.get_synced_gif(tempo)
+    synced_image.seek(0, 0)
+    response = make_response(send_file(synced_image, mimetype='image/gif'))
+    response.headers['Cache-control'] = 'no-store'
+    return response
 
 
 @app.route('/callback', methods=['GET'])
@@ -170,7 +211,14 @@ def logout():
     # Delete the current user, which deletes all of their gifs
     db.session.delete(current_user)
     db.session.commit()
-    # Delete all images not being referenced by a gif to clean up the database
+    # Delete all images not being referenced by a gif to clean up the database & local files
+    image_query_result = db.session.execute(
+        'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+    for result in image_query_result:
+        image_id = result['id']
+        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id)[:8])
+        if os.path.exists(image_frames_folder):
+            shutil.rmtree(image_frames_folder)
     db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
     db.session.commit()
     return redirect(url_for('home'))
@@ -181,14 +229,22 @@ def logout():
 def show():
     id_arg = request.args.get('gif_id')
     try:
-        gif_id = int(id_arg)
-        gif = Gif.query.filter(Gif.id == gif_id).first()
-        if gif:
-            if gif.user_id == current_user.get_id():
-                return render_template('show.html', title=gif.name, gif_id=gif_id)
-            else:
-                abort(401)
-        else:
-            abort(404)
+        int(id_arg)
     except TypeError:
         abort(400)
+    gif_id = int(id_arg)
+    gif = Gif.query.filter(Gif.id == gif_id).first()
+    if gif:
+        if gif.user_id == current_user.get_id():
+            return render_template('show.html', title=gif.name, gif_id=gif_id)
+        else:
+            abort(401)
+    else:
+        abort(404)
+
+
+@app.route('/test-gif')
+def test_gif():
+    path = config.gif_frames_path
+    print(path)
+    return str(os.path.exists(path))
