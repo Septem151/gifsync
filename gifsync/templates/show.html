@@ -28,7 +28,7 @@
 {% endblock content %}
 {% block js %}
     <script>
-        var default_timeout = 15000;
+        var default_timeout = 5000;
         var timeout = default_timeout;
         var curr_song = 'none';
         var base_synced_gif_url = {{ url_for('api_synced_gif', gif_id=gif_id)|tojson }}
