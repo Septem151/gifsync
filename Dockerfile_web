@@ -8,4 +8,4 @@ COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip3 install -r requirements.txt
 COPY ./gifsync /app/gifsync
-CMD exec gunicorn -b 0.0.0.0:${PORT:-8000} --log-file=- --workers=2 --threads=4 --worker-class=gthread gifsync:app
+CMD exec gunicorn -b 0.0.0.0:${PORT:-8000} --workers=1 --threads=2 --worker-class=gthread gifsync:app --log-file -
