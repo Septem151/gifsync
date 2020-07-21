@@ -1,7 +1,11 @@
 FROM python:3.8-slim-buster
 MAINTAINER Carson Mullins "carsonmullins@yahoo.com"
+RUN apt-get update && apt-get upgrade -y && apt-get install -y bash curl openssh-server \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY ./.profile.d /app/.profile.d
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip3 install -r requirements.txt
 COPY ./gifsync /app/gifsync
-CMD exec gunicorn -b 0.0.0.0:${PORT:-8000} --log-file=- --workers=2 --threads=4 --worker-class=gthread gifsync:app
+CMD exec gunicorn -b 0.0.0.0:${PORT:-8000} --workers=1 --threads=2 --worker-class=gthread gifsync:app --log-file -

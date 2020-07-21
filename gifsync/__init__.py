@@ -19,6 +19,7 @@ def create_app():
     flask_app.config['ENV'] = config.flask_env
     flask_app.config['SECRET_KEY'] = config.flask_secret
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = config.db_url
+    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(flask_app)
     login_manager.anonymous_user = AnonymousUser
     login_manager.init_app(flask_app)
