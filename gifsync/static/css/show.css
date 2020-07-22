@@ -12,6 +12,10 @@
     margin-bottom: 32px;
 }
 
+.margin-left {
+    margin-left: 39px;
+}
+
 /* Header Text Styling */
 .header {
     font-weight: bold;
