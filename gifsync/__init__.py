@@ -111,13 +111,14 @@ def api_edit_gif():
     if gif_bpl:
         try:
             gif_bpl = int(gif_bpl)
-        except TypeError:
+        except (TypeError, ValueError):
             return jsonify({'status': 'error', 'reason': 'Only whole numbers are allowed for Beats per loop.'})
         if not 1 <= gif_bpl <= 64:
             return jsonify({'status': 'error', 'reason': 'Beats per loop value must be between 1-64.'})
         gif.beats_per_loop = gif_bpl
-    if gif_id or gif_bpl:
+    if gif_name or gif_bpl:
         db.session.commit()
+    print('returned')
     return jsonify({'status': 'OK', 'gif_id': gif.id, 'gif_name': gif.name, 'gif_bpl': gif.beats_per_loop})
 
 

@@ -159,9 +159,17 @@
                 post_url += '&name=' + encodeURIComponent(new_name);
                 changed = true;
             }
-            if($.isNumeric(new_bpl) && Math.floor(new_bpl) == new_bpl && new_bpl != current_gif_bpl) {
-                post_url += '&bpl=' + encodeURIComponent(new_bpl);
-                changed = true;
+            if(new_bpl != current_gif_bpl) {
+                if(new_bpl.length == 0) {
+                    $('#alert-placeholder').append("<div class='alert alert-danger'>"
+                        + "Beats per loop cannot be blank!" + "</div>");
+                    alertTimeout(5000);
+                    $('#beats-per-loop').val(current_gif_bpl);
+                    return;
+                } else {
+                    post_url += '&bpl=' + encodeURIComponent(new_bpl);
+                    changed = true;
+                }
             }
             if(changed) {
                 $.ajax({
