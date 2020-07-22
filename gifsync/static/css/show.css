@@ -22,3 +22,20 @@
     font-weight: bold;
     font-size: 14px;
 }
+
+.form-control:focus {
+    border-color: #1db954;
+    box-shadow: none;
+}
+
+input[type=number] {
+    width: 80px;
+}
+
+input[type=text] {
+    width: 200px;
+}
+
+#edit-form {
+    padding-top: 22px;
+}

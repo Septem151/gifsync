@@ -105,6 +105,10 @@ class Gif(db.Model):
         )
         return synced_image
 
+    def update_name(self, new_name):
+        self.name = new_name
+        self.id = Gif.generate_hash_id(self.user_id, new_name)
+
 
 class Image(db.Model):
     __tablename__ = 'image'

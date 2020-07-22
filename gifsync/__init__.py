@@ -1,18 +1,18 @@
 from datetime import datetime, timedelta
+from flask import abort, Flask, flash, jsonify, make_response, redirect, render_template, request, \
+                  send_file, send_from_directory, session, url_for
+from flask_login import current_user, login_required, login_user
+from flask_talisman import Talisman
 from gifsync import config
 from gifsync.extensions import db, login_manager
 from gifsync.models.forms import GifCreationForm
 from gifsync.models.gifs import Gif, Image
 from gifsync.models.songs import Song
 from gifsync.models.users import AnonymousUser, SpotifyUser
-from flask import abort, flash, Flask, jsonify, make_response, redirect, render_template, request, \
-    send_file, send_from_directory, session, url_for
-from flask_login import current_user, login_required, login_user
-from flask_talisman import Talisman
-import os
 from requests_oauthlib import OAuth2Session
-import shutil
 from urllib.parse import urlparse, urljoin
+import os
+import shutil
 
 
 def create_app():
@@ -25,6 +25,23 @@ def create_app():
     login_manager.anonymous_user = AnonymousUser
     login_manager.init_app(flask_app)
     return flask_app
+
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
+def retrieve_gif(gif_id, user_id):
+    if not gif_id:
+        abort(400)
+    gif = Gif.query.filter(Gif.id == gif_id).first()
+    if not gif:
+        abort(404)
+    if gif.user_id != user_id:
+        abort(401)
+    return gif
 
 
 app = create_app()
@@ -45,12 +62,6 @@ def unauthorized():
     return redirect(url_for('login', next=request.url))
 
 
-def is_safe_url(target):
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
-
 @app.route('/')
 def index():
     return redirect(url_for('home'))
@@ -67,13 +78,7 @@ def api_curr_song():
 @login_required
 def api_delete_gif():
     gif_id = request.args.get('id')
-    if not gif_id:
-        abort(400)
-    gif = Gif.query.filter(Gif.id == gif_id).first()
-    if not gif:
-        abort(404)
-    if gif.user_id != current_user.get_id():
-        abort(401)
+    gif = retrieve_gif(gif_id, current_user.get_id())
     db.session.delete(gif)
     db.session.commit()
     # Delete all images not being referenced by a gif to clean up the database & local files
@@ -89,17 +94,38 @@ def api_delete_gif():
     return redirect(url_for('collection'))
 
 
+@app.route('/api/me/edit-gif', methods=['POST'])
+@login_required
+def api_edit_gif():
+    gif_id = request.args.get('id')
+    gif_name = request.args.get('name')
+    gif_bpl = request.args.get('bpl')
+    gif = retrieve_gif(gif_id, current_user.get_id())
+    if gif_name and gif_name != gif.name:
+        if not 1 <= len(gif_name) <= 64:
+            return jsonify({'status': 'error', 'reason': 'New name must be between 1-64 characters in length.'})
+        new_id = Gif.generate_hash_id(current_user.get_id(), gif_name)
+        if Gif.query.filter(Gif.id == new_id).first():
+            return jsonify({'status': 'error', 'reason': 'You already have a Gif called that! Try a unique name.'})
+        gif.update_name(gif_name)
+    if gif_bpl:
+        try:
+            gif_bpl = int(gif_bpl)
+        except TypeError:
+            return jsonify({'status': 'error', 'reason': 'Only whole numbers are allowed for Beats per loop.'})
+        if not 1 <= gif_bpl <= 64:
+            return jsonify({'status': 'error', 'reason': 'Beats per loop value must be between 1-64.'})
+        gif.beats_per_loop = gif_bpl
+    if gif_id or gif_bpl:
+        db.session.commit()
+    return jsonify({'status': 'OK', 'gif_id': gif.id, 'gif_name': gif.name, 'gif_bpl': gif.beats_per_loop})
+
+
 @app.route('/api/me/image')
 @login_required
 def api_user_image():
     gif_id = request.args.get('gif_id')
-    if not gif_id:
-        abort(400)
-    gif = Gif.query.filter(Gif.id == gif_id).first()
-    if not gif:
-        abort(404)
-    if gif.user_id != current_user.get_id():
-        abort(401)
+    gif = retrieve_gif(gif_id, current_user.get_id())
     response = make_response(gif.image.image)
     return response
 
@@ -109,13 +135,7 @@ def api_user_image():
 def api_synced_gif():
     gif_id = request.args.get('gif_id')
     song_id = request.args.get('song_id')
-    if not gif_id:
-        abort(400)
-    gif = Gif.query.filter(Gif.id == gif_id).first()
-    if not gif:
-        abort(404)
-    if gif.user_id != current_user.get_id():
-        abort(401)
+    gif = retrieve_gif(gif_id, current_user.get_id())
     if not song_id:
         song_id = 'placeholdersong'
     tempo = Song.get_song_tempo(song_id, current_user.access_token)
@@ -247,13 +267,5 @@ def logout():
 @login_required
 def show():
     gif_id = request.args.get('gif_id')
-    if not gif_id:
-        abort(400)
-    gif = Gif.query.filter(Gif.id == gif_id).first()
-    if gif:
-        if gif.user_id == current_user.get_id():
-            return render_template('show.html', title=gif.name, gif_id=gif_id)
-        else:
-            abort(401)
-    else:
-        abort(404)
+    gif = retrieve_gif(gif_id, current_user.get_id())
+    return render_template('show.html', title=gif.name, gif=gif)
