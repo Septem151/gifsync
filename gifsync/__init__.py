@@ -118,7 +118,6 @@ def api_edit_gif():
         gif.beats_per_loop = gif_bpl
     if gif_name or gif_bpl:
         db.session.commit()
-    print('returned')
     return jsonify({'status': 'OK', 'gif_id': gif.id, 'gif_name': gif.name, 'gif_bpl': gif.beats_per_loop})
 
 
