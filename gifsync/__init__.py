@@ -12,6 +12,7 @@ from flask_talisman import Talisman
 import os
 from requests_oauthlib import OAuth2Session
 import shutil
+from urllib.parse import urlparse, urljoin
 
 
 def create_app():
@@ -37,6 +38,17 @@ else:
 @login_manager.user_loader
 def load_user(user_id):
     return SpotifyUser.query.filter(SpotifyUser.id == str(user_id)).first()
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect(url_for('login', next=request.url))
+
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 
 @app.route('/')
@@ -118,8 +130,9 @@ def api_synced_gif():
 
 @app.route('/callback', methods=['GET'])
 def callback():
-    if len(request.args) != 2 or 'error' in request.args \
+    if not session.get('oauth_state') or len(request.args) != 2 or 'error' in request.args \
             or ('code' not in request.args and 'state' not in request.args):
+        flash('There was an error logging you in.', category='danger')
         return redirect(url_for('index'))
     spotify_oauth = OAuth2Session(config.client_id, redirect_uri=config.callback_uri, state=session['oauth_state'])
     token = spotify_oauth.fetch_token(config.token_url, client_secret=config.client_secret,
@@ -141,7 +154,13 @@ def callback():
         db.session.add(hat_kid_gif)
         db.session.commit()
     login_user(user)
-    return redirect(url_for('collection'))
+    next_url = session.get('next')
+    if not is_safe_url(next_url):
+        abort(400)
+    if next_url:
+        session.pop('next')
+    session.pop('oauth_state')
+    return redirect(next_url or url_for('collection'))
 
 
 @app.route("/collection")
@@ -199,6 +218,9 @@ def login():
     spotify_oauth = OAuth2Session(config.client_id, scope=config.scope, redirect_uri=config.callback_uri)
     authorization_url, state = spotify_oauth.authorization_url(config.authorization_base_url, show_dialog='true')
     session['oauth_state'] = state
+    next_url = request.args.get('next')
+    if next_url:
+        session['next'] = next_url
     return redirect(authorization_url)
 
 
