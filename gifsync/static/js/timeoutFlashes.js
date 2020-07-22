@@ -1,6 +1,6 @@
-$(document).ready(function() {
-    // show the alert
-    setTimeout(function() {
-        $(".alert").alert('close');
-    }, 5000);
-});
+function alertTimeout(wait){
+    setTimeout(function(){
+        $('#alert-placeholder').children('.alert:first-child').remove()
+    }, wait);
+}
+alertTimeout(5000);
