@@ -1,10 +1,10 @@
-from . import config
-from .extensions import db, login_manager
-from .models.forms import GifCreationForm
-from .models.gifs import Gif, Image
-from .models.songs import Song
-from .models.users import AnonymousUser, SpotifyUser
 from datetime import datetime, timedelta
+from gifsync import config
+from gifsync.extensions import db, login_manager
+from gifsync.models.forms import GifCreationForm
+from gifsync.models.gifs import Gif, Image
+from gifsync.models.songs import Song
+from gifsync.models.users import AnonymousUser, SpotifyUser
 from flask import abort, flash, Flask, jsonify, make_response, redirect, render_template, request, \
     send_file, send_from_directory, session, url_for
 from flask_login import current_user, login_required, login_user
