@@ -1,5 +1,5 @@
-from ..config import gif_frames_path
-from ..extensions import db
+from gifsync.config import gif_frames_path
+from gifsync.extensions import db
 import hashlib
 from io import BytesIO
 import math

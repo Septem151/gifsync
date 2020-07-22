@@ -1,7 +1,7 @@
-from ..config import refresh_url
-from ..extensions import db
+from gifsync.config import refresh_url
+from gifsync.extensions import db
 from datetime import datetime, timedelta
-from .songs import Song
+from gifsync.models.songs import Song
 import os
 import requests
 from requests_oauthlib import OAuth2Session
