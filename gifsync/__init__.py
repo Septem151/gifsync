@@ -59,6 +59,8 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    if request.path == url_for('logout'):
+        return redirect(url_for('home'))
     return redirect(url_for('login', next=request.url))
 
 
@@ -205,11 +207,16 @@ def create():
         user_gifs = current_user.gifs
         for user_gif in user_gifs:
             if user_gif.name == form.gif_name.data:
-                flash('You already have a Gif called that! Try a unique name.', 'danger')
+                flash('You already have a Gif called that! Try a unique name.', category='danger')
                 return render_template('create.html', title='New Gif', form=form)
         filename = form.gif_file.data.filename
         if '.' in filename and filename.rsplit('.', 1)[1].lower() == 'gif':
-            file = Image(form.gif_file.data.stream.read())
+            image_data = form.gif_file.data.stream.read()
+            size = len(image_data)
+            if size > 6 * 1024 * 1024:
+                flash('File is too large! Maximum Gif size is 6MB. Try a smaller file.', category='danger')
+                return render_template('create.html', title='New Gif', form=form)
+            file = Image(image_data)
             if not Image.query.filter(Image.id == file.id).first():
                 db.session.add(file)
                 db.session.commit()
