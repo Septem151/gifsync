@@ -2,7 +2,6 @@ from flask import abort
 from gifsync.config import gif_frames_path
 from gifsync.extensions import db
 import hashlib
-import imageio
 from io import BytesIO
 import math
 from moviepy.video.io.VideoFileClip import VideoFileClip
@@ -80,32 +79,6 @@ class Gif(db.Model):
         return frame_times
 
     def get_synced_gif(self, tempo):
-        # original_frames = self.image.get_frames()
-        # frame_times = Gif.get_frame_times(len(original_frames), tempo, self.beats_per_loop)
-        # synced_frames = []
-        # for i in range(0, len(original_frames)):
-        #     path_to_frame = os.path.join(gif_frames_path, f'{self.image.id}/{i}.png')
-        #     pil_image = PilImage.open(path_to_frame)
-        #     # Convert the image into P mode but only use 255 colors in the palette out of 256
-        #     alpha = pil_image.getchannel('A')
-        #     pil_image = pil_image.convert('RGB').convert('P', palette=PilImage.ADAPTIVE, colors=255)
-        #     # Set all pixel values below 128 to 255 , and the rest to 0
-        #     mask = PilImage.eval(alpha, lambda a: 255 if a <= 128 else 0)
-        #     # Paste the color of index 255 and use alpha as a mask
-        #     pil_image.paste(255, mask)
-        #     # The transparency index is 255
-        #     pil_image.info['transparency'] = 255
-        #     synced_frames.append(pil_image)
-        # synced_image = BytesIO()
-        # synced_frames[0].save(
-        #     synced_image,
-        #     format='GIF',
-        #     save_all=True,
-        #     append_images=synced_frames[1:],
-        #     loop=0,
-        #     duration=frame_times,
-        #     disposal=2
-        # )
         original_frames = self.image.get_frames()
         frame_times = Gif.get_frame_times(len(original_frames), tempo, self.beats_per_loop)
         synced_frames = []
