@@ -268,4 +268,7 @@ def logout():
 def show():
     gif_id = request.args.get('gif_id')
     gif = retrieve_gif(gif_id, current_user.get_id())
+    if not gif.image.is_saved_as_frames:
+        flash('Gifs may take a few seconds to load when first created! '
+              'If still not loaded after 30 seconds, try refreshing the page.', category='warning')
     return render_template('show.html', title=gif.name, gif=gif)
