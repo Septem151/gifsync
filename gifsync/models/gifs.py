@@ -1,8 +1,10 @@
+from flask import abort
 from gifsync.config import gif_frames_path
 from gifsync.extensions import db
 import hashlib
 from io import BytesIO
 import math
+from moviepy.video.io.VideoFileClip import VideoFileClip
 import os
 from pathlib import Path
 from PIL import Image as PilImage
@@ -80,9 +82,8 @@ class Gif(db.Model):
         original_frames = self.image.get_frames()
         frame_times = Gif.get_frame_times(len(original_frames), tempo, self.beats_per_loop)
         synced_frames = []
-        for i in range(0, len(original_frames)):
-            path_to_frame = os.path.join(gif_frames_path, f'{self.image.id}/{i}.png')
-            pil_image = PilImage.open(path_to_frame)
+        for path_to_frame in original_frames:
+            pil_image = PilImage.open(str(path_to_frame))
             # Convert the image into P mode but only use 255 colors in the palette out of 256
             alpha = pil_image.getchannel('A')
             pil_image = pil_image.convert('RGB').convert('P', palette=PilImage.ADAPTIVE, colors=255)
@@ -124,63 +125,35 @@ class Image(db.Model):
         else:
             self.id = id_
 
+    @property
+    def path_to_frames(self):
+        return Path(f'{gif_frames_path}/{self.id}')
+
+    @property
+    def is_saved_as_frames(self):
+        return self.path_to_frames.exists() and \
+            not Path(gif_frames_path).joinpath(f'${self.id}.gif').exists()
+
     @staticmethod
     def hash_image(image):
         return hashlib.sha256(image).hexdigest()[:16]
 
-    def analyse_image(self):
-        # Pre-process pass over the image to determine the mode (full or additive).
-        # Necessary as assessing single frames isn't reliable. Need to know the mode
-        # before processing all frames.
-        pil_image = PilImage.open(BytesIO(self.image))
-        results = {
-            'size': pil_image.size,
-            'mode': 'full',
-        }
-        try:
-            while True:
-                if pil_image.tile:
-                    tile = pil_image.tile[0]
-                    update_region = tile[1]
-                    update_region_dimensions = update_region[2:]
-                    if update_region_dimensions != pil_image.size:
-                        results['mode'] = 'partial'
-                        break
-                pil_image.seek(pil_image.tell() + 1)
-        except EOFError:
-            pass
-        return results
-
     def save_frames(self):
-        Path(f'{gif_frames_path}/{self.id}').mkdir(parents=True, exist_ok=True)
-        mode = self.analyse_image()['mode']
-        pil_image = PilImage.open(BytesIO(self.image))
-        num_frames = 0
-        p = pil_image.getpalette()
-        last_frame = pil_image.convert('RGBA')
-        try:
-            while True:
-                # If the GIF uses local colour tables, each frame will have its own palette.
-                # If not, we need to apply the global palette to the new frame.
-                if not pil_image.getpalette():
-                    pil_image.putpalette(p)
-                new_frame = PilImage.new('RGBA', pil_image.size)
-                # Is this file a "partial"-mode GIF where frames update a region
-                # of a different size to the entire image?
-                # If so, we need to construct the new frame by pasting it on top of the preceding frames.
-                if mode == 'partial':
-                    new_frame.paste(last_frame)
-                new_frame.paste(pil_image, (0, 0), pil_image.convert('RGBA'))
-                new_frame.save(os.path.join(gif_frames_path, f'{self.id}/{num_frames}.png'), 'PNG')
-                num_frames += 1
-                last_frame = new_frame
-                pil_image.seek(pil_image.tell() + 1)
-        except EOFError:
-            pass
+        self.path_to_frames.mkdir(parents=True, exist_ok=True)
+        temp_gif_path = Path(gif_frames_path).joinpath(f'${self.id}.gif')
+        with open(temp_gif_path, 'wb') as temp_gif_file:
+            temp_gif_file.write(BytesIO(self.image).read())
+        with VideoFileClip(str(temp_gif_path), has_mask=True, verbose=False) as clip:
+            clip.write_images_sequence(str(self.path_to_frames.joinpath('%03d.png')), logger=None)
+        os.remove(temp_gif_path)
 
     def get_frames(self):
-        path_to_frames = os.path.join(gif_frames_path, str(self.id))
-        if not os.path.exists(path_to_frames):
+        if not self.path_to_frames.exists():
             self.save_frames()
-        frame_files = os.listdir(path_to_frames)
+        frame_files = os.listdir(self.path_to_frames)
+        if not self.is_saved_as_frames:
+            abort(409)
+        for i in range(0, len(frame_files)):
+            frame_files[i] = self.path_to_frames.joinpath(frame_files[i])
+        frame_files.sort()
         return frame_files

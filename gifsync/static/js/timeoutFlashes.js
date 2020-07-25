@@ -3,4 +3,4 @@ function alertTimeout(wait){
         $('#alert-placeholder').children('.alert:first-child').remove()
     }, wait);
 }
-alertTimeout(5000);
+alertTimeout(10000);
