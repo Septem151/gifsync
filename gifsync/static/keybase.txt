@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/septem151
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://gifsync.herokuapp.com
+  * I am septem151 (https://keybase.io/septem151) on keybase.
+  * I have a public key ASDN4WyTrY9wouPsUcA-FLRdAyy9eXnFsNZ8T6ZB5-cH0Qo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0101e93d9868e2be1fe73cef4ebfe7f2aa8600182fa656148d4685942a3ef31b6be50a",
+      "host": "keybase.io",
+      "kid": "0120cde16c93ad8f70a2e3ec51c03e14b45d032cbd7979c5b0d67c4fa641e7e707d10a",
+      "uid": "fcc9a57fe3ec47a73643456c62780219",
+      "username": "septem151"
+    },
+    "merkle_root": {
+      "ctime": 1596672105,
+      "hash": "83c09300c71b8698f5518d500df0b4e573f59855575d6a093614280942c4db978c1e656cdee57c3ceeef67687c0be21c67589fc671176c4ec6064c6cbe6b8e62",
+      "hash_meta": "b37d041ce09c8ecaed56d2c677a7a8983889e7f86ef6a6bec6c3560b6c2534b5",
+      "seqno": 17196731
+    },
+    "service": {
+      "entropy": "JT72fupiNwZJUnMtZuYfDyqc",
+      "hostname": "gifsync.herokuapp.com",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.5.1"
+  },
+  "ctime": 1596672140,
+  "expire_in": 504576000,
+  "prev": "adce3b582bc7e671d573b5fccc952f79829bae10a1caeb569c449785c8b373a9",
+  "seqno": 47,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgzeFsk62PcKLj7FHAPhS0XQMsvXl5xbDWfE+mQefnB9EKp3BheWxvYWTESpcCL8Qgrc47WCvH5nHVc7X8zJUveYKbrhChyutWnESXhcizc6nEINLaYpJEAA8i1bVZR6Z84q8m0IEOfp67XG6yeVfEwAXDAgHCo3NpZ8RAuH24dCN+0YxOebyTFcUWgWBWM3cnvV/85lL7AicB3WbwFz1c0qPA8OZrFsAbOqzXZqg7y9EWmYwKQYBPzyhrCahzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIHgY7on06dDRYLt0fY6OFVe+4n2sUgGquTCUxlAhEma8o3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/septem151
+
+==================================================================
