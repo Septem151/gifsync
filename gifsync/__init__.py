@@ -51,11 +51,16 @@ else:
     # Manually set OAUTHLIB_INSECURE_TRANSPORT so we don't have to include it in environment variables
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
+@app.errorhandler(400)
+@app.errorhandler(401)
+@app.errorhandler(404)
+def error_page(error):
+    return render_template('error.html', error = str(error).split(':')), 400
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return SpotifyUser.query.filter(SpotifyUser.id == str(user_id)).first()
-
 
 @login_manager.unauthorized_handler
 def unauthorized():
