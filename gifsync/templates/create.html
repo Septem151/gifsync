@@ -11,7 +11,7 @@
     <form class="form-center" method="POST" action="" enctype="multipart/form-data" novalidate>
         {{ form.hidden_tag() }}
         <div class="form-group row">
-            <small class="justify-content-center">Maximum file size: 6MB</small>
+            <small class="justify-content-center">Maximum file size: 32MB</small>
             <div class="custom-file">
                 {{ form.gif_file(class="custom-file-input", accept=".gif") }}
                 {{ form.gif_file.label(class="custom-file-label text-truncate") }}

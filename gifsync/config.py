@@ -28,3 +28,4 @@ csp = {
     'font-src': 'fonts.gstatic.com'
 }
 gif_frames_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/gif_frames')
+synced_gifs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/synced_gifs')
