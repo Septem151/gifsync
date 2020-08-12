@@ -8,3 +8,5 @@ venv/
 **/.pytest_cache
 **/*.env
 run.py
+gifsync/static/gif_frames/*
+gifsync/static/synced_gifs/*

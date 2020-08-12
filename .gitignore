@@ -142,3 +142,4 @@ tests/flake8.sh
 
 # Additional Files & Folders
 gifsync/static/gif_frames/*
+gifsync/static/synced_gifs/*

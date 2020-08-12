@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from flask import abort, Flask, flash, jsonify, make_response, redirect, render_template, request, \
                   send_file, send_from_directory, session, url_for
-from flask_login import current_user, login_required, login_user
+from flask_login import current_user, login_required, login_user, logout_user
 from flask_talisman import Talisman
 from gifsync import config
 from gifsync.extensions import db, login_manager
@@ -81,6 +81,9 @@ def api_curr_song():
 def api_delete_gif():
     gif_id = request.args.get('id')
     gif = retrieve_gif(gif_id, current_user.get_id())
+    # Delete any synced gif remnants that might have been created
+    if os.path.exists(gif.synced_gif_path):
+        os.remove(gif.synced_gif_path)
     db.session.delete(gif)
     db.session.commit()
     # Delete all images not being referenced by a gif to clean up the database & local files
@@ -144,7 +147,6 @@ def api_synced_gif():
     if not tempo:
         abort(404)
     synced_image = gif.get_synced_gif(tempo)
-    synced_image.seek(0, 0)
     response = make_response(send_file(synced_image, mimetype='image/gif'))
     response.headers['Cache-control'] = 'no-store'
     return response
@@ -213,8 +215,8 @@ def create():
         if '.' in filename and filename.rsplit('.', 1)[1].lower() == 'gif':
             image_data = form.gif_file.data.stream.read()
             size = len(image_data)
-            if size > 6 * 1024 * 1024:
-                flash('File is too large! Maximum Gif size is 6MB. Try a smaller file.', category='danger')
+            if size > 32 * 1024 * 1024:
+                flash('File is too large! Maximum Gif size is 32MB. Try a smaller file.', category='danger')
                 return render_template('create.html', title='New Gif', form=form)
             file = Image(image_data)
             if not Image.query.filter(Image.id == file.id).first():
@@ -261,6 +263,12 @@ def login():
 @login_required
 def logout():
     # Delete the current user, which deletes all of their gifs
+    # Cleanup synced gif remnants
+    for gif in current_user.gifs:
+        if os.path.exists(gif.synced_gif_path):
+            os.remove(gif.synced_gif_path)
+    # This commit is necessary, otherwise we get a "null user" error on later db session commits
+    db.session.commit()
     db.session.delete(current_user)
     db.session.commit()
     # Delete all images not being referenced by a gif to clean up the database & local files
@@ -273,6 +281,7 @@ def logout():
             shutil.rmtree(image_frames_folder)
     db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
     db.session.commit()
+    logout_user()
     return redirect(url_for('home'))
 
 
