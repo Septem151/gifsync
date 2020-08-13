@@ -3,14 +3,14 @@ name: GifSync CI
 on:
   pull_request:
     branches:
-      - "*"
+      - "**"
   push:
     branches:
-      - "*"
+      - "**"
 
 jobs:
   build:
-    # ubuntu-latest == Ubuntu 18.04 as of 06-21-2020
+    # ubuntu-latest == Ubuntu 18.04 as of 08-13-2020
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +31,7 @@ jobs:
           ${{ runner.os }}-
     - name: Install dependencies
       run: |
+        sudo apt-get update && sudo apt-get install -y imagemagick
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8

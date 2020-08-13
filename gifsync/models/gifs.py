@@ -1,13 +1,13 @@
 from flask import abort
-from gifsync.config import gif_frames_path
+from gifsync.config import gif_frames_path, synced_gifs_path
 from gifsync.extensions import db
 import hashlib
 from io import BytesIO
 import math
-from moviepy.video.io.VideoFileClip import VideoFileClip
 import os
 from pathlib import Path
-from PIL import Image as PilImage
+import subprocess
+from subprocess import CalledProcessError
 
 
 class Gif(db.Model):
@@ -34,6 +34,10 @@ class Gif(db.Model):
             self.id = Gif.generate_hash_id(user_id, name)
         else:
             self.id = id_
+
+    @property
+    def synced_gif_path(self):
+        return Path(synced_gifs_path).joinpath(f'{self.id}.gif')
 
     @staticmethod
     def generate_hash_id(user_id, name):
@@ -79,34 +83,23 @@ class Gif(db.Model):
         return frame_times
 
     def get_synced_gif(self, tempo):
+        Path(synced_gifs_path).mkdir(parents=True, exist_ok=True)
         original_frames = self.image.get_frames()
         frame_times = Gif.get_frame_times(len(original_frames), tempo, self.beats_per_loop)
-        synced_frames = []
-        for path_to_frame in original_frames:
-            pil_image = PilImage.open(str(path_to_frame))
-            # Convert the image into P mode but only use 255 colors in the palette out of 256
-            alpha = pil_image.getchannel('A')
-            pil_image = pil_image.convert('RGB').convert('P', palette=PilImage.ADAPTIVE, colors=255)
-            # Set all pixel values below 128 to 255 , and the rest to 0
-            mask = PilImage.eval(alpha, lambda a: 255 if a <= 128 else 0)
-            # Paste the color of index 255 and use alpha as a mask
-            pil_image.paste(255, mask)
-            # The transparency index is 255
-            pil_image.info['transparency'] = 255
-            synced_frames.append(pil_image)
-        synced_image = BytesIO()
-        synced_frames[0].save(
-            synced_image,
-            format='GIF',
-            save_all=True,
-            append_images=synced_frames[1:],
-            loop=0,
-            duration=frame_times,
-            disposal=2
-        )
-        return synced_image
+        params = ['convert', '-dispose', 'previous']
+        for i in range(0, len(frame_times)):
+            params.extend(['-delay', f'{frame_times[i]}x1000', original_frames[i]])
+        params.append(Path(synced_gifs_path).joinpath(f'{self.id}.gif'))
+        try:
+            subprocess.check_call(params)
+        except CalledProcessError:
+            abort(404)
+        return self.synced_gif_path
 
     def update_name(self, new_name):
+        # Delete any synced gif remnants that might have been created
+        if os.path.exists(self.synced_gif_path):
+            os.remove(self.synced_gif_path)
         self.name = new_name
         self.id = Gif.generate_hash_id(self.user_id, new_name)
 
@@ -132,7 +125,7 @@ class Image(db.Model):
     @property
     def is_saved_as_frames(self):
         return self.path_to_frames.exists() and \
-            not Path(gif_frames_path).joinpath(f'${self.id}.gif').exists()
+            not Path(gif_frames_path).joinpath(f'{self.id}.gif').exists()
 
     @staticmethod
     def hash_image(image):
@@ -140,12 +133,16 @@ class Image(db.Model):
 
     def save_frames(self):
         self.path_to_frames.mkdir(parents=True, exist_ok=True)
-        temp_gif_path = Path(gif_frames_path).joinpath(f'${self.id}.gif')
+        temp_gif_path = Path(gif_frames_path).joinpath(f'{self.id}.gif')
         with open(temp_gif_path, 'wb') as temp_gif_file:
             temp_gif_file.write(BytesIO(self.image).read())
-        with VideoFileClip(str(temp_gif_path), has_mask=True, verbose=False) as clip:
-            clip.write_images_sequence(str(self.path_to_frames.joinpath('%03d.png')), logger=None)
-        os.remove(temp_gif_path)
+        params = ['convert', '-coalesce', str(temp_gif_path), str(self.path_to_frames.joinpath('%03d.png'))]
+        try:
+            subprocess.check_call(params)
+        except CalledProcessError:
+            abort(404)
+        finally:
+            os.remove(temp_gif_path)
 
     def get_frames(self):
         if not self.path_to_frames.exists():
