@@ -292,6 +292,11 @@ def logout():
     return redirect(url_for('home'))
 
 
+@app.route('/privacy')
+def privacy_policy():
+    return render_template('privacy.html')
+
+
 @app.route('/show', methods=['GET'])
 @login_required
 def show():
