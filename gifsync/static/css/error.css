@@ -2,7 +2,7 @@
 .title {
     color: #1db954;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 46px;
     /* Margin is added to the bottom to space out title from the rest of the page's text for emphasis */
     margin-bottom: 64px;
 }
@@ -14,12 +14,4 @@
     font-size: 24px;
     /* Margin is added to the left to make headers stand apart from body text, and margin bottom to space out
        header from the body text */
-    margin-left: 30px;
-    margin-bottom: 18px;
-}
-
-/* Regular Text Styling */
-.textblock {
-    /* Margin is added to the bottom so subsequent header/textblock combos will be spaced apart */
-    margin-bottom: 64px;
 }

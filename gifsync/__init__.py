@@ -52,6 +52,13 @@ else:
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 
+@app.errorhandler(400)
+@app.errorhandler(401)
+@app.errorhandler(404)
+def error_page(error):
+    return render_template('error.html', error=str(error).split(':')), error.code
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return SpotifyUser.query.filter(SpotifyUser.id == str(user_id)).first()
