@@ -1,22 +1,3 @@
-/* Link Base Styling */
-a {
-    font-weight: bold;
-    color: #1db954;
-}
-
-/* Link Hover Styling */
-a:hover {
-    color: #20cb5c;
-}
-
-/* Logo Styling */
-.logo {
-    /* Margin is added to the bottom to space out page text from the logo */
-    width: 256px;
-    height: 256px;
-    margin-bottom: 32px;
-}
-
 /* Title Text Styling */
 .title {
     color: #1db954;

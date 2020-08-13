@@ -1,3 +1,8 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 /* Generic styling for all pages */
 body {
     font-family: "Ubuntu", serif;
@@ -5,12 +10,21 @@ body {
     color: #b2b2b2;
     /* Top padding is necessary to move body of page below the navbar, since the navbar is fixed to the top */
     padding-top: 107px;
+    padding-bottom: 53px; /* Fixed footer height */
 }
 
 /* Footer style */
 .footer-copyright {
     font-size: 14px;
     background-color: #282828;
+}
+
+.page-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 53px; /* Fixed footer height */
+  background-color: #b2b2b2;
 }
 
 /* Navbar Base Styling */
@@ -43,6 +57,25 @@ body {
 /* Navbar Spacing between List elements, ex: buttons */
 .navbar-custom .navbar-nav > li {
     margin: 10px 15px;
+}
+
+/* Link Base Styling */
+a {
+    font-weight: bold;
+    color: #1db954;
+}
+
+/* Link Hover Styling */
+a:hover {
+    color: #20cb5c;
+}
+
+/* Logo Styling */
+.logo {
+    /* Margin is added to the bottom to space out page text from the logo */
+    width: 256px;
+    height: 256px;
+    margin-bottom: 32px;
 }
 
 /* Green Button Base Styling */
