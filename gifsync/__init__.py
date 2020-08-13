@@ -52,6 +52,13 @@ else:
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 
+@app.errorhandler(400)
+@app.errorhandler(401)
+@app.errorhandler(404)
+def error_page(error):
+    return render_template('error.html', error=str(error).split(':')), error.code
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return SpotifyUser.query.filter(SpotifyUser.id == str(user_id)).first()
@@ -174,7 +181,7 @@ def callback():
             hat_kid_image = Image(image.read())
         if not Image.query.filter(Image.id == hat_kid_image.id).first():
             db.session.add(hat_kid_image)
-        hat_kid_gif = Gif(user.id, hat_kid_image.id, 'Hat Kid', 4)
+        hat_kid_gif = Gif(user.id, hat_kid_image.id, 'Hat Kid', 2)
         db.session.add(hat_kid_gif)
         db.session.commit()
     login_user(user)
