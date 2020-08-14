@@ -111,11 +111,12 @@ def api_edit_gif():
     gif_bpl = request.args.get('bpl')
     gif = retrieve_gif(gif_id, current_user.get_id())
     if gif_name and gif_name != gif.name:
+        gif_name = gif_name.strip()
         if not 1 <= len(gif_name) <= 64:
             return jsonify({'status': 'error', 'reason': 'New name must be between 1-64 characters in length.'})
-        new_id = Gif.generate_hash_id(current_user.get_id(), gif_name)
-        if Gif.query.filter(Gif.id == new_id).first():
-            return jsonify({'status': 'error', 'reason': 'You already have a Gif called that! Try a unique name.'})
+        for user_gif in current_user.gifs:
+            if user_gif.name.strip() == gif_name:
+                return jsonify({'status': 'error', 'reason': 'You already have a Gif called that! Try a unique name.'})
         gif.update_name(gif_name)
     if gif_bpl:
         try:
@@ -211,9 +212,10 @@ def collection():
 def create():
     form = GifCreationForm()
     if request.method == 'POST' and form.validate_on_submit():
+        gif_name = form.gif_name.data.strip()
         user_gifs = current_user.gifs
         for user_gif in user_gifs:
-            if user_gif.name == form.gif_name.data:
+            if user_gif.name.strip() == gif_name:
                 flash('You already have a Gif called that! Try a unique name.', category='danger')
                 return render_template('create.html', title='New Gif', form=form)
         filename = form.gif_file.data.filename
@@ -227,7 +229,7 @@ def create():
             if not Image.query.filter(Image.id == file.id).first():
                 db.session.add(file)
                 db.session.commit()
-            user_gif = Gif(current_user.get_id(), file.id, form.gif_name.data, form.beats_per_loop.data)
+            user_gif = Gif(current_user.get_id(), file.id, gif_name, form.beats_per_loop.data)
             db.session.add(user_gif)
             db.session.commit()
             return redirect(url_for('show', gif_id=user_gif.id))
