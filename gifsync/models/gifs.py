@@ -31,13 +31,17 @@ class Gif(db.Model):
         self.name = name
         self.beats_per_loop = beats_per_loop
         if not id_:
-            self.id = Gif.generate_hash_id(user_id, name)
+            self.id = self.generate_hash_id()
         else:
             self.id = id_
 
-    @staticmethod
-    def generate_hash_id(user_id, name):
-        return hashlib.sha256(f'{user_id}{name}'.encode('utf-8')).hexdigest()[:16]
+    def get_image_id(self):
+        # For some reason, SQLAlchemy makes the Image ID a string of length 64 by adding spaces to the end, despite the
+        # database and type declarations of Image class/table stating it's a char(16)
+        return self.image_id[:16]
+
+    def generate_hash_id(self):
+        return hashlib.sha256(f'{self.user_id}{self.get_image_id()}{self.name}'.encode('utf-8')).hexdigest()[:16]
 
     @staticmethod
     def round_tens(num):
@@ -108,7 +112,7 @@ class Gif(db.Model):
 
     def update_name(self, new_name):
         self.name = new_name
-        self.id = Gif.generate_hash_id(self.user_id, new_name)
+        self.id = self.generate_hash_id()
 
 
 class Image(db.Model):
@@ -120,7 +124,7 @@ class Image(db.Model):
     def __init__(self, image, id_=None):
         self.image = image
         if not id_:
-            image_hash = Image.hash_image(image)
+            image_hash = self.hash_image()
             self.id = image_hash
         else:
             self.id = id_
@@ -134,9 +138,8 @@ class Image(db.Model):
         return self.path_to_frames.exists() and \
             not Path(gif_frames_path).joinpath(f'${self.id}.gif').exists()
 
-    @staticmethod
-    def hash_image(image):
-        return hashlib.sha256(image).hexdigest()[:16]
+    def hash_image(self):
+        return hashlib.sha256(self.image).hexdigest()[:16]
 
     def save_frames(self):
         self.path_to_frames.mkdir(parents=True, exist_ok=True)
