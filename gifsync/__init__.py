@@ -9,6 +9,7 @@ from gifsync.models.forms import GifCreationForm
 from gifsync.models.gifs import Gif, Image
 from gifsync.models.songs import Song
 from gifsync.models.users import AnonymousUser, SpotifyUser
+from io import BytesIO
 from requests_oauthlib import OAuth2Session
 from urllib.parse import urlparse, urljoin
 import os
@@ -136,7 +137,8 @@ def api_edit_gif():
 def api_user_image():
     gif_id = request.args.get('gif_id')
     gif = retrieve_gif(gif_id, current_user.get_id())
-    response = make_response(gif.image.image)
+    response = make_response(send_file(BytesIO(gif.image.image), mimetype='image/gif'))
+    response.headers['Cache-control'] = 'max-age=2592000, private'
     return response
 
 

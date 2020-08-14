@@ -1,4 +1,4 @@
-from ..extensions import db
+from gifsync.extensions import db
 import requests
 
 
