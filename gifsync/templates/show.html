@@ -92,6 +92,7 @@
     var base_synced_gif_url = {{ url_for('api_synced_gif', gif_id=gif.id)|tojson }}
     var custom_tempo = null;
     var tempo_flag = false;
+    var fake_update = false;
 
     function updateLoop() {
         $.ajax({
@@ -101,9 +102,7 @@
     }
 
     function updateSong(data) {
-        console.log('custom_tempo: ' + custom_tempo);
-        if((custom_tempo !== null) && tempo_flag) {
-            console.log('custom tempo reached');
+        if(custom_tempo && tempo_flag) {
           timeout = default_timeout;
           updateSongText(data['name'], data['artists'], custom_tempo);
         }else if('paused' in data) {
@@ -121,11 +120,13 @@
                 timeout = default_timeout;
             }
             song_id = data['id'];
-            if(curr_song !== song_id || (custom_tempo == null && tempo_flag)) {
-                tempo_flag = false;
-                console.log('actual song reached');
+            if(curr_song !== song_id || tempo_flag) {
                 curr_song = song_id;
-                updateGif();
+                if(!tempo_flag || fake_update) {
+                    fake_update = false;
+                    updateGif();
+                }
+                tempo_flag = false;
                 updateSongText(data['name'], data['artists'], parseFloat(data['tempo']));
             }
         }
@@ -134,7 +135,7 @@
 
     function updateGif() {
         image_url = base_synced_gif_url;
-        if(custom_tempo !== null && tempo_flag) {
+        if(custom_tempo && tempo_flag) {
             image_url += ('&tempo=' + custom_tempo)
             image_url += '#' + new Date().getTime();
         } else if(curr_song !== 'placeholdersong') {
@@ -180,6 +181,7 @@
     }
 
     function validateEditForm(data) {
+        let update = false;
         if(data['status'] === 'error') {
             $('#alert-placeholder').append("<div class='alert alert-danger'>" + data['reason'] + "</div>");
             alertTimeout(5000);
@@ -187,19 +189,26 @@
             if(data['gif_name'] !== current_gif_name) {
                 new_id = data['gif_id'];
                 window.location.replace(base_show_url + '?gif_id=' + new_id);
+                return;
+            }
+            if(!data.hasOwnProperty('gif_tempo')) {
+                console.log("setting custom_tempo to null");
+                custom_tempo = null;
+                tempo_flag = true;
+                fake_update = true;
             } else {
-                if (data.hasOwnProperty('gif_bpl')) {
-                    current_gif_bpl = parseInt(data['gif_bpl']);
-                }
-                if (data.hasOwnProperty('gif_tempo')) {
-                    custom_tempo = parseInt(data['gif_tempo']);
-                    tempo_flag = true;
-                }else {
-                    custom_tempo = null;
-                }
-                toggleEditForm();
+                custom_tempo = parseInt(data['gif_tempo']);
+                tempo_flag = true;
+                update = true;
+            }
+            if (current_gif_bpl !== parseInt(data['gif_bpl'])) {
+                current_gif_bpl = parseInt(data['gif_bpl']);
+                update = true;
+            }
+            if(update) {
                 updateGif();
             }
+            toggleEditForm();
         }
     }
 
@@ -225,12 +234,19 @@
                 changed = true;
             }
         }
-        if(new_tempo !== null || new_tempo !== 0) {
-            post_url += '&tempo=' + encodeURIComponent(new_tempo);
+        if(custom_tempo && (!new_tempo || new_tempo.length === 0)) {
             changed = true;
-        }else {
-            custom_tempo = null;
-            changed = true;
+            console.log("new tempo: " + new_tempo);
+            console.log("custom_tempo: " + custom_tempo);
+            tempo_flag = false;
+        }else if(custom_tempo != new_tempo) {
+            if(new_tempo && new_tempo.length !== 1) {
+                post_url += '&tempo=' + encodeURIComponent(new_tempo);
+                changed = true;
+            }else {
+                changed = false;
+            }
+            tempo_flag = true;
         }
         if(changed) {
             $.ajax({
