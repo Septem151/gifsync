@@ -61,7 +61,7 @@
         <!-- NAVBAR -->
         <nav class="navbar navbar-custom navbar-expand-md fixed-top">
             <!-- BRAND -->
-            <a href="{{ url_for('home') }}" class="navbar-brand">GifSync</a>
+            <a href="{{ url_for('core.index') }}" class="navbar-brand">GifSync</a>
             <!-- TOGGLER for when screen size becomes too small (mobile devices in particular) -->
             <button
                 class="navbar-toggler navbar-dark"
@@ -79,7 +79,7 @@
                         <a
                             class="btn btn-custom-green shadow-none"
                             type="button"
-                            href="{{ url_for('home') }}"
+                            href="{{ url_for('core.index') }}"
                         >
                             <img
                                 class="btn-icon"
@@ -94,7 +94,7 @@
                         <a
                             class="btn btn-custom-green shadow-none"
                             type="button"
-                            href="{{ url_for('login') }}"
+                            href="{{ url_for('user.login') }}"
                         >
                             <img
                                 class="btn-icon"
@@ -109,7 +109,7 @@
                         <a
                             class="btn btn-custom-green shadow-none"
                             type="button"
-                            href="{{ url_for('collection') }}"
+                            href="{{ url_for('api.collection') }}"
                         >
                             <img
                                 class="btn-icon"
@@ -123,7 +123,7 @@
                         <a
                             class="btn btn-custom-red shadow-none"
                             type="button"
-                            href="{{ url_for('logout') }}"
+                            href="{{ url_for('user.logout') }}"
                         >
                             <img
                                 class="btn-icon"
@@ -157,7 +157,7 @@
                     >MIT License</a
                 >
                 |
-                <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
+                <a href="{{ url_for('core.privacy_policy') }}">Privacy Policy</a>
                 <div>Made with Flask, Bootstrap, and ❤</div>
             </div>
         </footer>

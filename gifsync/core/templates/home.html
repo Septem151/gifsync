@@ -1,31 +1,27 @@
-{% extends "skeleton.html" %} {% block styles %}
-<!-- Link the css file specifically for this page -->
-<link
-    rel="stylesheet"
-    type="text/css"
-    href="{{ url_for('static', filename='css/home.css') }}"
-/>
-{% endblock styles %} {% block content %}
+{% extends "skeleton.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}"/>
+{% endblock styles %} 
+
+{% block content %}
 <!-- LOGO -->
-<img
-    class="mx-auto d-block logo"
-    src="{{ url_for('static', filename='img/logo.png') }}"
-/>
+<img class="mx-auto d-block logo" src="{{ url_for('static', filename='img/logo.png') }}"/>
+
 <!-- TITLE -->
 <p class="text-center title">
     Synchronize the speed of Gifs to music on Spotify in real time
 </p>
+
 <!-- HEADER -->
 <p class="text-left header">What is GifSync?</p>
+
 <!-- TEXTBLOCK -->
 <p class="text-left textblock">
     GifSync started out as a simple question: "How do I get
-    <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="{{ url_for('static', filename='img/hat-kid-smug-dance.gif') }}"
-        >Hat Kid</a
-    >
+    <a target="_blank" rel="noopener noreferrer" href="{{ url_for('static', filename='img/hat-kid-smug-dance.gif') }}">
+        Hat Kid
+    </a>
     to dance to my music while I stream?" The answer to this question quickly
     turned into a long and convoluted dive into APIs, gif frame-times, and web
     servers. However, through <b>THE POWER OF THE INTERNET!!</b> (and a ton of
@@ -35,25 +31,21 @@
     you too can experience gifs that dance to your music in real time.<br /><br />If
     you're interested in reading the source code, or want to contribute to the
     development of GifSync, see the
-    <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://github.com/Septem151/gifsync"
-        >GitHub Repository</a
-    >.
+    <a target="_blank" rel="noopener noreferrer" href="https://github.com/Septem151/gifsync">
+        GitHub Repository
+    </a>.
 </p>
+
 <!-- HEADER -->
 <p class="text-left header">How does it work?</p>
+
 <!-- TEXTBLOCK -->
 <p class="text-left textblock">
     GifSync utilizes the
-    <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://developer.spotify.com/documentation/web-api/"
-    >
-        Spotify API</a
-    >
+    <a target="_blank" rel="noopener noreferrer" href="https://developer.spotify.com/documentation/web-api/">
+        Spotify API
+    </a>
+
     to retrieve your currently playing song and modifies your gif to loop to the
     beat.<br /><br />In more detail, GifSync uses an OAuth2 token provided by
     Spotify which is then used to periodically request your currently playing
@@ -64,8 +56,10 @@
     gif are adjusted to match as accurately as possible. This results in a gif
     that will loop every X beats of the currently playing song.
 </p>
+
 <!-- HEADER -->
 <p class="text-left header">How do I get started?</p>
+
 <!-- TEXTBLOCK -->
 <p class="text-left textblock">
     Easy! You must allow GifSync to access your currently playing songs by
@@ -75,13 +69,9 @@
     will continuously update with your music until you leave the page or select
     a new gif.<br /><br />If at any time you wish to revoke this site’s
     permission to see your currently playing song, visit your
-    <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://spotify.com/account/"
-    >
-        Spotify Account</a
-    >
+    <a target="_blank" rel="noopener noreferrer" href="https://spotify.com/account/">
+        Spotify Account
+    </a>
     page and remove GifSync’s access. If you wish to only have this site forget
     your Authorization token and synced Gifs, click on “Forget me” on the top of
     the page.

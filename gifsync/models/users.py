@@ -1,4 +1,3 @@
-from gifsync.config import refresh_url
 from gifsync.extensions import db
 from datetime import datetime, timedelta
 from gifsync.models.songs import Song

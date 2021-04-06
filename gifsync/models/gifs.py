@@ -15,18 +15,13 @@ class Gif(db.Model):
     __table_args__ = (db.CheckConstraint('beats_per_loop > 0'),)
 
     id = db.Column(db.String(16), primary_key=True)
-    user_id = db.Column(db.ForeignKey('spotify_user.id',
-                        ondelete='CASCADE'), nullable=False)
-    image_id = db.Column(db.ForeignKey(
-        'image.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    user_id = db.Column(db.ForeignKey('spotify_user.id', ondelete='CASCADE'), nullable=False)
+    image_id = db.Column(db.ForeignKey('image.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     name = db.Column(db.String(256), nullable=False)
     beats_per_loop = db.Column(db.Integer, nullable=False)
 
-    image = db.relationship('Image', primaryjoin='Gif.image_id == Image.id',
-                            backref=db.backref('gifs', passive_deletes=True))
-    user = db.relationship('SpotifyUser',
-                           primaryjoin='Gif.user_id == SpotifyUser.id',
-                           backref=db.backref('gifs', passive_deletes=True))
+    image = db.relationship('Image', primaryjoin='Gif.image_id == Image.id', backref=db.backref('gifs', passive_deletes=True))
+    user = db.relationship('SpotifyUser', primaryjoin='Gif.user_id == SpotifyUser.id', backref=db.backref('gifs', passive_deletes=True))
 
     def __init__(self, user_id, image_id, name, beats_per_loop, id_=None):
         self.user_id = user_id
@@ -46,8 +41,7 @@ class Gif(db.Model):
         return self.image_id[:16]
 
     def generate_hash_id(self):
-        return hashlib.sha256(f'{self.user_id}{self.get_image_id()}{self.name}'
-                              .encode('utf-8')).hexdigest()[:16]
+        return hashlib.sha256(f'{self.user_id}{self.get_image_id()}{self.name}'.encode('utf-8')).hexdigest()[:16]
 
     @staticmethod
     def round_tens(num):
