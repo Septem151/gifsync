@@ -1,67 +1,129 @@
-{% extends "skeleton.html" %}
-
-{% block styles %}
-    <!-- Link the css file specifically for this page -->
-    <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='css/home.css') }}">
-{% endblock styles %}
-
-{% block content %}
-    <h1 class="text-center title">Privacy Policy</h1>
-    <div class="textblock">
-        <p>At GifSync, accessible from https://gifsync.herokuapp.com, one of our main priorities is the privacy of our visitors.
-        This Privacy Policy document contains types of information that is collected and recorded by GifSync and how we use it.</p>
-        <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at
-            <a href="mailto:carsonmullins@yahoo.com">carsonmullins@yahoo.com</a> or by posting an issue on the
-            <a target="_blank" rel="noopener noreferrer" href="https://github.com/Septem151/GifSync">GitHub repository</a>.</p>
-    </div>
-    <h2 class="header">Log Files</h2>
-    <div class="textblock">
-        <p>GifSync follows a standard procedure of using log files. These files log visitors when they visit websites.
-        The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service
-        Provider (ISP), and date and time stamp of when pages are accessed. These are not linked to any information that is
-        personally identifiable. The purpose of the information is for analyzing trends, administering the site, and
-        tracking users' movement on the website. Please see the <a target="_blank" rel="noopener noreferrer"
-           href="https://www.salesforce.com/company/privacy/">Heroku/Salesforce Privacy Policy</a> for more details.</p>
-    </div>
-    <h2 class="header">Cookies and Web Beacons</h2>
-    <div class="textblock">
-        <p>Like any other website, GifSync uses 'session cookies'. These cookies are used only to store the user's login status and are
-        deleted upon closing your browser.</p>
-        <p>For more general information on cookies, please read <a target="_blank" rel="noopener noreferrer"
-                                                                   href="https://www.cookieconsent.com/what-are-cookies/">"What Are Cookies"</a>.</p>
-    </div>
-    <h2 class="header">Privacy Policies</h2>
-    <div class="textblock">
-        <p>In the following sections, the term "log out" is defined as actively clicking the "Forget Me" option located at the top-right of the website.</p>
-        <p>Note that GifSync currently does not use any third party tracking or advertisement software and does not sell your data to third parties.</p>
-        <p>GifSync utilizes the Spotify API to request your currently playing song. The following information is stored in our database,
-            which is hosted by Heroku:</p>
-        <ul>
-            <li>Your Spotify User ID</li>
-            <li>An OAuth2 API Token to access your currently playing song</li>
-            <li>An OAuth2 API Refresh Token to renew your access token when it expires</li>
-            <li>The expiration time of your OAuth2 API Token</li>
-        </ul>
-        <p>No other information accessible with your Spotify OAuth2 API Token is gathered, collected, or recorded by GifSync.
-         You may log out of GifSync at any time and all information regarding your synced gifs and your Spotify account in our database will be deleted.</p>
-        <p>Gifs you upload to GifSync are stored in our database for an indefinite period of time until you either log out or until all synced gifs using
-        said image are deleted.</p>
-    </div>
-    <h2 class="header">Children's Information</h2>
-    <div class="textblock">
-        <p>GifSync does not knowingly collect any Personal Identifiable Information from children under the age of 13.
-        If you think that your child provided this kind of information on our website, we strongly encourage you to
-        contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>
-    </div>
-    <h2 class="header">Online Privacy Policy Only</h2>
-    <div class="textblock">
-        <p>This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards
-        to the information that they shared and/or collect in GifSync. This policy is not applicable to any information
-        collected offline or via channels other than this website.</p>
-    </div>
-    <h2 class="header">Consent</h2>
-    <div class="textblock">
-        <p>By using our website, you hereby consent to our Privacy Policy and agree to its Terms and Conditions.</p>
-    </div>
+{% extends "skeleton.html" %} {% block styles %}
+<!-- Link the css file specifically for this page -->
+<link
+    rel="stylesheet"
+    type="text/css"
+    href="{{ url_for('static', filename='css/home.css') }}"
+/>
+{% endblock styles %} {% block content %}
+<h1 class="text-center title">Privacy Policy</h1>
+<div class="textblock">
+    <p>
+        At GifSync, accessible from https://gifsync.herokuapp.com, one of our
+        main priorities is the privacy of our visitors. This Privacy Policy
+        document contains types of information that is collected and recorded by
+        GifSync and how we use it.
+    </p>
+    <p>
+        If you have additional questions or require more information about our
+        Privacy Policy, do not hesitate to contact us at
+        <a href="mailto:carsonmullins@yahoo.com">carsonmullins@yahoo.com</a> or
+        by posting an issue on the
+        <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/Septem151/GifSync"
+            >GitHub repository</a
+        >.
+    </p>
+</div>
+<h2 class="header">Log Files</h2>
+<div class="textblock">
+    <p>
+        GifSync follows a standard procedure of using log files. These files log
+        visitors when they visit websites. The information collected by log
+        files include internet protocol (IP) addresses, browser type, Internet
+        Service Provider (ISP), and date and time stamp of when pages are
+        accessed. These are not linked to any information that is personally
+        identifiable. The purpose of the information is for analyzing trends,
+        administering the site, and tracking users' movement on the website.
+        Please see the
+        <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.salesforce.com/company/privacy/"
+            >Heroku/Salesforce Privacy Policy</a
+        >
+        for more details.
+    </p>
+</div>
+<h2 class="header">Cookies and Web Beacons</h2>
+<div class="textblock">
+    <p>
+        Like any other website, GifSync uses 'session cookies'. These cookies
+        are used only to store the user's login status and are deleted upon
+        closing your browser.
+    </p>
+    <p>
+        For more general information on cookies, please read
+        <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.cookieconsent.com/what-are-cookies/"
+            >"What Are Cookies"</a
+        >.
+    </p>
+</div>
+<h2 class="header">Privacy Policies</h2>
+<div class="textblock">
+    <p>
+        In the following sections, the term "log out" is defined as actively
+        clicking the "Forget Me" option located at the top-right of the website.
+    </p>
+    <p>
+        Note that GifSync currently does not use any third party tracking or
+        advertisement software and does not sell your data to third parties.
+    </p>
+    <p>
+        GifSync utilizes the Spotify API to request your currently playing song.
+        The following information is stored in our database, which is hosted by
+        Heroku:
+    </p>
+    <ul>
+        <li>Your Spotify User ID</li>
+        <li>An OAuth2 API Token to access your currently playing song</li>
+        <li>
+            An OAuth2 API Refresh Token to renew your access token when it
+            expires
+        </li>
+        <li>The expiration time of your OAuth2 API Token</li>
+    </ul>
+    <p>
+        No other information accessible with your Spotify OAuth2 API Token is
+        gathered, collected, or recorded by GifSync. You may log out of GifSync
+        at any time and all information regarding your synced gifs and your
+        Spotify account in our database will be deleted.
+    </p>
+    <p>
+        Gifs you upload to GifSync are stored in our database for an indefinite
+        period of time until you either log out or until all synced gifs using
+        said image are deleted.
+    </p>
+</div>
+<h2 class="header">Children's Information</h2>
+<div class="textblock">
+    <p>
+        GifSync does not knowingly collect any Personal Identifiable Information
+        from children under the age of 13. If you think that your child provided
+        this kind of information on our website, we strongly encourage you to
+        contact us immediately and we will do our best efforts to promptly
+        remove such information from our records.
+    </p>
+</div>
+<h2 class="header">Online Privacy Policy Only</h2>
+<div class="textblock">
+    <p>
+        This Privacy Policy applies only to our online activities and is valid
+        for visitors to our website with regards to the information that they
+        shared and/or collect in GifSync. This policy is not applicable to any
+        information collected offline or via channels other than this website.
+    </p>
+</div>
+<h2 class="header">Consent</h2>
+<div class="textblock">
+    <p>
+        By using our website, you hereby consent to our Privacy Policy and agree
+        to its Terms and Conditions.
+    </p>
+</div>
 {% endblock content %}

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
-from flask import abort, Flask, flash, jsonify, make_response, redirect, render_template, request, \
-                  send_file, send_from_directory, session, url_for
+from flask import (abort, Flask, flash, jsonify, make_response, redirect,
+                   render_template, request, send_file, send_from_directory,
+                   session, url_for)
 from flask_login import current_user, login_required, login_user
 from flask_talisman import Talisman
 from gifsync import config
@@ -31,7 +32,8 @@ def create_app():
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+    return (test_url.scheme in ('http', 'https')
+            and ref_url.netloc == test_url.netloc)
 
 
 def retrieve_gif(gif_id, user_id):
@@ -49,7 +51,8 @@ app = create_app()
 if not app.config['ENV'] == 'development':
     Talisman(app, content_security_policy=config.csp)
 else:
-    # Manually set OAUTHLIB_INSECURE_TRANSPORT so we don't have to include it in environment variables
+    # Manually set OAUTHLIB_INSECURE_TRANSPORT so we don't have to include it
+    # in environment variables
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 
@@ -57,7 +60,8 @@ else:
 @app.errorhandler(401)
 @app.errorhandler(404)
 def error_page(error):
-    return render_template('error.html', error=str(error).split(':')), error.code
+    return (render_template('error.html', error=str(error).split(':')),
+            error.code)
 
 
 @login_manager.user_loader
@@ -91,15 +95,20 @@ def api_delete_gif():
     gif = retrieve_gif(gif_id, current_user.get_id())
     db.session.delete(gif)
     db.session.commit()
-    # Delete all images not being referenced by a gif to clean up the database & local files
+    # Delete all images not being referenced by a gif to clean up the database
+    # & local files
     image_query_result = db.session.execute(
-        'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+        'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif'
+        ' WHERE image_id = imid.id)')
     for result in image_query_result:
         image_id = result['id']
-        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id))
+        image_frames_folder = os.path.join(
+            config.gif_frames_path, str(image_id))
         if os.path.exists(image_frames_folder):
             shutil.rmtree(image_frames_folder)
-    db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+    db.session.execute(
+        'DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif'
+        ' WHERE image_id = imid.id)')
     db.session.commit()
     return redirect(url_for('collection'))
 
@@ -110,26 +119,46 @@ def api_edit_gif():
     gif_id = request.args.get('id')
     gif_name = request.args.get('name')
     gif_bpl = request.args.get('bpl')
+    gif_tempo = request.args.get('tempo')
     gif = retrieve_gif(gif_id, current_user.get_id())
     if gif_name and gif_name != gif.name:
         gif_name = gif_name.strip()
         if not 1 <= len(gif_name) <= 64:
-            return jsonify({'status': 'error', 'reason': 'New name must be between 1-64 characters in length.'})
+            return jsonify({'status': 'error',
+                            'reason': ('New name must be between '
+                                       '1-64 characters in length.')})
         for user_gif in current_user.gifs:
             if user_gif.name.strip() == gif_name:
-                return jsonify({'status': 'error', 'reason': 'You already have a Gif called that! Try a unique name.'})
+                return jsonify({'status': 'error',
+                                'reason': ('You already have a Gif '
+                                           'called that! Try a unique name.')})
         gif.update_name(gif_name)
     if gif_bpl:
         try:
             gif_bpl = int(gif_bpl)
         except (TypeError, ValueError):
-            return jsonify({'status': 'error', 'reason': 'Only whole numbers are allowed for Beats per loop.'})
+            return jsonify({'status': 'error',
+                            'reason': ('Only whole numbers are allowed '
+                                       'for Beats per loop.')})
         if not 1 <= gif_bpl <= 64:
-            return jsonify({'status': 'error', 'reason': 'Beats per loop value must be between 1-64.'})
+            return jsonify({'status': 'error',
+                            'reason': ('Beats per loop value must be '
+                                       'between 1-64.')})
         gif.beats_per_loop = gif_bpl
     if gif_name or gif_bpl:
         db.session.commit()
-    return jsonify({'status': 'OK', 'gif_id': gif.id, 'gif_name': gif.name, 'gif_bpl': gif.beats_per_loop})
+    ret_data = {'status': 'OK', 'gif_id': gif.id,
+                'gif_name': gif.name, 'gif_bpl': gif.beats_per_loop}
+    if gif_tempo:
+        try:
+            gif_tempo = int(gif_tempo)
+            if gif_tempo <= 0:
+                raise ValueError()
+        except (TypeError, ValueError):
+            return jsonify({'status': 'error',
+                            'reason': 'Tempo must be greater than 0.'})
+        ret_data['gif_tempo'] = gif_tempo
+    return jsonify(ret_data)
 
 
 @app.route('/api/me/image')
@@ -137,7 +166,8 @@ def api_edit_gif():
 def api_user_image():
     gif_id = request.args.get('gif_id')
     gif = retrieve_gif(gif_id, current_user.get_id())
-    response = make_response(send_file(BytesIO(gif.image.image), mimetype='image/gif'))
+    response = make_response(
+        send_file(BytesIO(gif.image.image), mimetype='image/gif'))
     response.headers['Cache-control'] = 'max-age=2592000, private'
     return response
 
@@ -150,7 +180,8 @@ def api_synced_gif():
     gif = retrieve_gif(gif_id, current_user.get_id())
     if not song_id:
         song_id = 'placeholdersong'
-    tempo = Song.get_song_tempo(song_id, current_user.access_token)
+    tempo = int(request.args.get('tempo', 0)) or Song.get_song_tempo(
+        song_id, current_user.access_token)
     if not tempo:
         abort(404)
     synced_image = gif.get_synced_gif(tempo)
@@ -162,12 +193,17 @@ def api_synced_gif():
 
 @app.route('/callback', methods=['GET'])
 def callback():
-    if not session.get('oauth_state') or len(request.args) != 2 or 'error' in request.args \
-            or ('code' not in request.args and 'state' not in request.args):
+    if (not session.get('oauth_state') or len(request.args) != 2
+            or 'error' in request.args
+            or ('code' not in request.args and 'state' not in request.args)):
         flash('There was an error logging you in.', category='danger')
         return redirect(url_for('index'))
-    spotify_oauth = OAuth2Session(config.client_id, redirect_uri=config.callback_uri, state=session['oauth_state'])
-    token = spotify_oauth.fetch_token(config.token_url, client_secret=config.client_secret,
+    spotify_oauth = OAuth2Session(
+        config.client_id,
+        redirect_uri=config.callback_uri,
+        state=session['oauth_state'])
+    token = spotify_oauth.fetch_token(config.token_url,
+                                      client_secret=config.client_secret,
                                       authorization_response=request.url)
     access_token = token['access_token']
     expires_in = float(token['expires_in'])
@@ -177,8 +213,9 @@ def callback():
     if not SpotifyUser.query.filter(SpotifyUser.id == user.get_id()).first():
         db.session.add(user)
         # Insert hat kid image into user's collection by default
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                               'static/img/hat-kid-smug-dance.gif'), 'rb') as image:
+        with open(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         'static/img/hat-kid-smug-dance.gif'), 'rb') as image:
             hat_kid_image = Image(image.read())
         if not Image.query.filter(Image.id == hat_kid_image.id).first():
             db.session.add(hat_kid_image)
@@ -218,32 +255,41 @@ def create():
         user_gifs = current_user.gifs
         for user_gif in user_gifs:
             if user_gif.name.strip() == gif_name:
-                flash('You already have a Gif called that! Try a unique name.', category='danger')
-                return render_template('create.html', title='New Gif', form=form)
+                flash(
+                    'You already have a Gif called that! Try a unique name.',
+                    category='danger')
+                return render_template('create.html', title='New Gif',
+                                       form=form)
         filename = form.gif_file.data.filename
         if '.' in filename and filename.rsplit('.', 1)[1].lower() == 'gif':
             image_data = form.gif_file.data.stream.read()
             size = len(image_data)
             if size > 6 * 1024 * 1024:
-                flash('File is too large! Maximum Gif size is 6MB. Try a smaller file.', category='danger')
-                return render_template('create.html', title='New Gif', form=form)
+                flash(
+                    ('File is too large! Maximum Gif size is 6MB. '
+                     'Try a smaller file.'), category='danger')
+                return render_template('create.html', title='New Gif',
+                                       form=form)
             file = Image(image_data)
             if not Image.query.filter(Image.id == file.id).first():
                 db.session.add(file)
                 db.session.commit()
-            user_gif = Gif(current_user.get_id(), file.id, gif_name, form.beats_per_loop.data)
+            user_gif = Gif(current_user.get_id(), file.id,
+                           gif_name, form.beats_per_loop.data)
             db.session.add(user_gif)
             db.session.commit()
             return redirect(url_for('show', gif_id=user_gif.id))
         else:
-            flash('You must select a file (Only .gif files are allowed)', 'danger')
+            flash('You must select a file (Only .gif files are allowed)',
+                  'danger')
     return render_template('create.html', title='New Gif', form=form)
 
 
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'img/favicon.ico', mimetype='image/vnd.microsoft.icon')
+                               'img/favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
 
 
 @app.route("/home")
@@ -259,8 +305,10 @@ def keybase():
 
 @app.route('/login')
 def login():
-    spotify_oauth = OAuth2Session(config.client_id, scope=config.scope, redirect_uri=config.callback_uri)
-    authorization_url, state = spotify_oauth.authorization_url(config.authorization_base_url, show_dialog='true')
+    spotify_oauth = OAuth2Session(
+        config.client_id, scope=config.scope, redirect_uri=config.callback_uri)
+    authorization_url, state = spotify_oauth.authorization_url(
+        config.authorization_base_url, show_dialog='true')
     session['oauth_state'] = state
     next_url = request.args.get('next')
     if next_url:
@@ -274,15 +322,20 @@ def logout():
     # Delete the current user, which deletes all of their gifs
     db.session.delete(current_user)
     db.session.commit()
-    # Delete all images not being referenced by a gif to clean up the database & local files
+    # Delete all images not being referenced by a gif to clean up the database
+    # & local files
     image_query_result = db.session.execute(
-        'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+        'SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif'
+        ' WHERE image_id = imid.id)')
     for result in image_query_result:
         image_id = result['id']
-        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id))
+        image_frames_folder = os.path.join(
+            config.gif_frames_path, str(image_id))
         if os.path.exists(image_frames_folder):
             shutil.rmtree(image_frames_folder)
-    db.session.execute('DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif WHERE image_id = imid.id)')
+    db.session.execute(
+        'DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif'
+        ' WHERE image_id = imid.id)')
     db.session.commit()
     return redirect(url_for('home'))
 
@@ -299,5 +352,6 @@ def show():
     gif = retrieve_gif(gif_id, current_user.get_id())
     if not gif.image.is_saved_as_frames:
         flash('Gifs may take a few seconds to load when first created! '
-              'If still not loaded after 30 seconds, try refreshing the page.', category='warning')
+              'If still not loaded after 30 seconds, try refreshing the page.',
+              category='warning')
     return render_template('show.html', title=gif.name, gif=gif)

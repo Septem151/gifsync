@@ -1,41 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <!-- META -->
-        <meta charset="utf-8">
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta property="og:title" content="GifSync">
-        <meta property="og:description" content="Synchronize the speed of Gifs to music on Spotify in real time">
-        <meta property="og:image" content="https://gifsync.herokuapp.com/static/img/logo.png">
-        <meta property="og:url" content="https://gifsync.herokuapp.com/home">
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="google-site-verification" content="a6z232GPOaEV-I6ml17W34GlxHj5-Nw9T6iQdWKnnwE" />
-        {% block meta %}
-        {% endblock meta %}
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <meta property="og:title" content="GifSync" />
+        <meta
+            property="og:description"
+            content="Synchronize the speed of Gifs to music on Spotify in real time"
+        />
+        <meta
+            property="og:image"
+            content="https://gifsync.herokuapp.com/static/img/logo.png"
+        />
+        <meta property="og:url" content="https://gifsync.herokuapp.com/home" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="google-site-verification"
+            content="a6z232GPOaEV-I6ml17W34GlxHj5-Nw9T6iQdWKnnwE"
+        />
+        {% block meta %} {% endblock meta %}
         <!-- FAVICON Reference for newer browsers -->
-        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+        <link
+            rel="shortcut icon"
+            href="{{ url_for('static', filename='img/favicon.ico') }}"
+        />
         <!-- BOOTSTRAP CSS LINK -->
-        <link rel="stylesheet"
-              href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-              integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-              crossorigin="anonymous">
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+            integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+            crossorigin="anonymous"
+        />
 
         <!-- MAIN CSS LINK AND FONTS LINK -->
-        <link rel="stylesheet"
-              href="https://fonts.googleapis.com/css?family=Ubuntu|Ubuntu:bold|Ubuntu:bolditalic|Ubuntu:italic">
-        <link rel="stylesheet" type="text/css"
-              href="{{ url_for('static', filename='css/skeleton.css') }}">
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Ubuntu|Ubuntu:bold|Ubuntu:bolditalic|Ubuntu:italic"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ url_for('static', filename='css/skeleton.css') }}"
+        />
 
         <!-- PAGE SPECIFIC CSS LINKS -->
-        {% block styles %}
-        {% endblock styles %}
+        {% block styles %} {% endblock styles %}
 
         <!-- PAGE TITLE -->
         {% if title %}
-            <title>GifSync - {{ title }}</title>
+        <title>GifSync - {{ title }}</title>
         {% else %}
-            <title>GifSync</title>
+        <title>GifSync</title>
         {% endif %}
     </head>
     <body>
@@ -44,7 +63,11 @@
             <!-- BRAND -->
             <a href="{{ url_for('home') }}" class="navbar-brand">GifSync</a>
             <!-- TOGGLER for when screen size becomes too small (mobile devices in particular) -->
-            <button class="navbar-toggler navbar-dark" data-toggle="collapse" data-target="#navbarMenu">
+            <button
+                class="navbar-toggler navbar-dark"
+                data-toggle="collapse"
+                data-target="#navbarMenu"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
             <!-- NAVBAR ITEMS wrapped in collapse div so the elements can be snapped into a dropdown view when too small
@@ -53,34 +76,62 @@
                 <ul class="navbar-nav ml-auto">
                     <!-- BUTTON "About GifSync" -->
                     <li class="nav-item">
-                        <a class="btn btn-custom-green shadow-none" type="button" href="{{ url_for('home') }}">
-                            <img class="btn-icon" src="{{ url_for('static', filename='img/info-icon.svg') }}" />
+                        <a
+                            class="btn btn-custom-green shadow-none"
+                            type="button"
+                            href="{{ url_for('home') }}"
+                        >
+                            <img
+                                class="btn-icon"
+                                src="{{ url_for('static', filename='img/info-icon.svg') }}"
+                            />
                             About GifSync
                         </a>
                     </li>
                     {% if not current_user.is_authenticated %}
-                        <!-- BUTTON "Connect Spotify" -->
-                        <li class="nav-item">
-                            <a class="btn btn-custom-green shadow-none" type="button" href="{{ url_for('login') }}">
-                                <img class="btn-icon" src="{{ url_for('static', filename='img/account-icon-black.svg') }}" />
-                                Connect Spotify
-                            </a>
-                        </li>
+                    <!-- BUTTON "Connect Spotify" -->
+                    <li class="nav-item">
+                        <a
+                            class="btn btn-custom-green shadow-none"
+                            type="button"
+                            href="{{ url_for('login') }}"
+                        >
+                            <img
+                                class="btn-icon"
+                                src="{{ url_for('static', filename='img/account-icon-black.svg') }}"
+                            />
+                            Connect Spotify
+                        </a>
+                    </li>
                     {% else %}
-                        <!-- BUTTON "My Synced Gifs" -->
-                        <li class="nav-item">
-                            <a class="btn btn-custom-green shadow-none" type="button" href="{{ url_for('collection') }}">
-                                <img class="btn-icon" src="{{ url_for('static', filename='img/synced-gifs-icon.svg') }}" />
-                                My Synced Gifs
-                            </a>
-                        </li>
-                        <!-- BUTTON "Forget Me" -->
-                        <li class="nav-item">
-                            <a class="btn btn-custom-red shadow-none" type="button" href="{{ url_for('logout') }}">
-                                <img class="btn-icon" src="{{ url_for('static', filename='img/account-icon-white.svg') }}" />
-                                Forget Me
-                            </a>
-                        </li>
+                    <!-- BUTTON "My Synced Gifs" -->
+                    <li class="nav-item">
+                        <a
+                            class="btn btn-custom-green shadow-none"
+                            type="button"
+                            href="{{ url_for('collection') }}"
+                        >
+                            <img
+                                class="btn-icon"
+                                src="{{ url_for('static', filename='img/synced-gifs-icon.svg') }}"
+                            />
+                            My Synced Gifs
+                        </a>
+                    </li>
+                    <!-- BUTTON "Forget Me" -->
+                    <li class="nav-item">
+                        <a
+                            class="btn btn-custom-red shadow-none"
+                            type="button"
+                            href="{{ url_for('logout') }}"
+                        >
+                            <img
+                                class="btn-icon"
+                                src="{{ url_for('static', filename='img/account-icon-white.svg') }}"
+                            />
+                            Forget Me
+                        </a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
@@ -89,41 +140,48 @@
         <div class="container">
             <div id="alert-placeholder">
                 {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+                {% if messages %} {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %} {% endif %} {% endwith %}
             </div>
-            {% block content %}
-            {% endblock content %}
+            {% block content %} {% endblock content %}
         </div>
         <!-- FOOTER -->
         <footer class="page-footer">
             <div class="text-center py-3">
                 © Copyright 2020 Carson Mullins |
-                <a target="_blank" rel="noopener noreferrer"
-                    href="https://github.com/Septem151/gifsync/blob/master/LICENSE.txt">MIT License</a> |
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://github.com/Septem151/gifsync/blob/master/LICENSE.txt"
+                    >MIT License</a
+                >
+                |
                 <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
                 <div>Made with Flask, Bootstrap, and ❤</div>
             </div>
         </footer>
         <!-- BOOTSTRAP JS -->
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
             integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-            crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-                integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-                crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-                integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-                crossorigin="anonymous"></script>
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous"
+        ></script>
         <!-- PAGE SPECIFIC JS -->
-        <script type="text/javascript" src="{{ url_for('static', filename='js/timeoutFlashes.js') }}"></script>
-        {% block js %}
-        {% endblock js %}
+        <script
+            type="text/javascript"
+            src="{{ url_for('static', filename='js/timeoutFlashes.js') }}"
+        ></script>
+        {% block js %} {% endblock js %}
     </body>
 </html>

@@ -39,11 +39,15 @@ def assert_routes_with_codes(client, routes_and_codes):
     for route_and_code in routes_and_codes:
         route = route_and_code['route']
         code = route_and_code['code']
-        print(f'Testing Response Code from route "{route}" without following redirects.')
+        print(
+            f'Testing Response Code from route "{route}" '
+            'without following redirects.')
         response = client.get(route)
         assert(response.status_code == code)
         if 'redirect' in route_and_code:
-            assert('Location' in response.headers and response.headers['Location'].endswith(route_and_code['redirect']))
+            assert('Location' in response.headers and
+                   response.headers['Location'].endswith(
+                       route_and_code['redirect']))
 
 
 def assert_html_skeleton_exists(client, route):

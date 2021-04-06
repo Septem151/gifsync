@@ -1,196 +1,258 @@
-{% extends "skeleton.html" %}
-{% block styles %}
-    <!-- Link the css file specifically for this page -->
-    <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='css/show.css') }}">
-{% endblock styles %}
-{% block content %}
-    <img id="synced-image" class="synced-image mx-auto d-block"
-         src="">
-    <p class="header text-center margin-btm">{{ gif.name }}</p>
-    <p class="sub-header text-center">Now Playing:</p>
-    <p id="song-name" class="header text-center"></p>
-    <p id="song-tempo" class="sub-header text-center margin-btm"></p>
-    <div id="edit-choice" class="row justify-content-center">
-        <p class="header my-auto">Want to make a change?</p>
-        <p id="edit-btn" class="ml-3 my-3 btn btn-custom-green shadow-none">Edit gif</p>
-    </div>
-    <div id="edit-form" class="" style="display: none;">
-        <div class="row justify-content-center">
-            <div class="form-group">
-                <p class="sub-header text-center mb-1">Beats per loop</p>
-                <div class="col">
-                    <input class="form-control" id="beats-per-loop" name="beats-per-loop" type="number"
-                       value="{{ gif.beats_per_loop }}">
-                </div>
+{% extends "skeleton.html" %} {% block styles %}
+<!-- Link the css file specifically for this page -->
+<link
+    rel="stylesheet"
+    type="text/css"
+    href="{{ url_for('static', filename='css/show.css') }}"
+/>
+{% endblock styles %} {% block content %}
+<img id="synced-image" class="synced-image mx-auto d-block" src="" />
+<p class="header text-center margin-btm">{{ gif.name }}</p>
+<p class="sub-header text-center">Now Playing:</p>
+<p id="song-name" class="header text-center"></p>
+<p id="song-tempo" class="sub-header text-center margin-btm"></p>
+<div id="edit-choice" class="row justify-content-center">
+    <p class="header my-auto">Want to make a change?</p>
+    <p id="edit-btn" class="ml-3 my-3 btn btn-custom-green shadow-none">
+        Edit gif
+    </p>
+</div>
+<div id="edit-form" class="" style="display: none">
+    <div class="row justify-content-center">
+        <div class="form-group">
+            <p class="sub-header text-center mb-1">Beats per loop</p>
+            <div class="col">
+                <input
+                    class="form-control"
+                    id="beats-per-loop"
+                    name="beats-per-loop"
+                    type="number"
+                    value="{{ gif.beats_per_loop }}"
+                />
             </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="form-group">
-                <p class="sub-header text-center mb-1">Gif Name</p>
-                <div class="col">
-                    <input class="form-control" id="gif-name" name="gif-name" placeholder="Name of Gif" type="text"
-                       value="{{ gif.name }}">
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center mt-2">
-            <p id="apply-btn" class="btn btn-custom-green shadow-none">Apply</p>
         </div>
     </div>
     <div class="row justify-content-center">
-        <p class="header my-auto margin-left">Sync another?</p>
-        <a class="my-3 btn btn-custom-green margin-left shadow-none" type="button"
-           href="{{ url_for('create') }}">
-            Click here!
-        </a>
+        <div class="form-group">
+            <p class="sub-header text-center mb-1">Gif Name</p>
+            <div class="col">
+                <input
+                    class="form-control"
+                    id="gif-name"
+                    name="gif-name"
+                    placeholder="Name of Gif"
+                    type="text"
+                    value="{{ gif.name }}"
+                />
+            </div>
+        </div>
     </div>
-    <div class="row justify-content-center mb-4">
-        <p class="header my-auto margin-left">Not satisfied?</p>
-        <a class="my-3 btn btn-custom-red margin-left shadow-none" type="button"
-           href="{{ url_for('api_delete_gif', id=gif.id) }}">
-            Delete gif
-        </a>
+    <div class="row justify-content-center">
+        <div class="form-group">
+            <p class="sub-header text-center mb-1">Custom Tempo</p>
+            <div class="col">
+                <input
+                    class="form-control"
+                    id="gif-tempo"
+                    name="gif-tempo"
+                    type="number"
+                />
+            </div>
+        </div>
     </div>
-{% endblock content %}
-{% block js %}
-    <script>
-        var default_timeout = 5000;
-        var timeout = default_timeout;
-        var curr_song = 'none';
-        var base_synced_gif_url = {{ url_for('api_synced_gif', gif_id=gif.id)|tojson }}
+    <div class="row justify-content-center mt-2">
+        <p id="apply-btn" class="btn btn-custom-green shadow-none">Apply</p>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <p class="header my-auto margin-left">Sync another?</p>
+    <a
+        class="my-3 btn btn-custom-green margin-left shadow-none"
+        type="button"
+        href="{{ url_for('create') }}"
+    >
+        Click here!
+    </a>
+</div>
+<div class="row justify-content-center mb-4">
+    <p class="header my-auto margin-left">Not satisfied?</p>
+    <a
+        class="my-3 btn btn-custom-red margin-left shadow-none"
+        type="button"
+        href="{{ url_for('api_delete_gif', id=gif.id) }}"
+    >
+        Delete gif
+    </a>
+</div>
+{% endblock content %} {% block js %}
+<script>
+    var default_timeout = 5000;
+    var timeout = default_timeout;
+    var curr_song = 'none';
+    var base_synced_gif_url = {{ url_for('api_synced_gif', gif_id=gif.id)|tojson }}
+    var custom_tempo = null;
+    var tempo_flag = false;
 
-        function updateLoop() {
-            $.ajax({
-                method: 'GET',
-                url: {{ url_for('api_curr_song')|tojson }}
-            }).done(updateSong);
-        }
+    function updateLoop() {
+        $.ajax({
+            method: 'GET',
+            url: {{ url_for('api_curr_song')|tojson }}
+        }).done(updateSong);
+    }
 
-        function updateSong(data) {
-            if('paused' in data) {
+    function updateSong(data) {
+        console.log('custom_tempo: ' + custom_tempo);
+        if((custom_tempo !== null) && tempo_flag) {
+            console.log('custom tempo reached');
+          timeout = default_timeout;
+          updateSongText(data['name'], data['artists'], custom_tempo);
+        }else if('paused' in data) {
+            timeout = default_timeout;
+            if(curr_song === 'none' || curr_song !== 'placeholdersong') {
+                curr_song = 'placeholdersong';
+                updateGif();
+                updateSongText(null, null, null);
+            }
+        } else {
+            let time_remaining = parseInt(data['remaining_ms']);
+            if (time_remaining < default_timeout) {
+                timeout = time_remaining + 1500;
+            } else {
                 timeout = default_timeout;
-                if(curr_song === 'none' || curr_song !== 'placeholdersong') {
-                    curr_song = 'placeholdersong';
-                    updateGif();
-                    updateSongText(null, null, null);
-                }
-            } else {
-                let time_remaining = parseInt(data['remaining_ms']);
-                if (time_remaining < default_timeout) {
-                    timeout = time_remaining + 1500;
-                } else {
-                    timeout = default_timeout;
-                }
-                song_id = data['id'];
-                if(curr_song !== song_id) {
-                    curr_song = song_id;
-                    updateGif();
-                    updateSongText(data['name'], data['artists'], parseFloat(data['tempo']));
-                }
             }
-            setTimeout(updateLoop, timeout);
-        }
-
-        function updateGif() {
-            image_url = base_synced_gif_url;
-            if(curr_song !== 'placeholdersong') {
-                image_url += ('&song_id=' + curr_song + '#' + new Date().getTime());
-            } else {
-                image_url = {{ url_for('api_user_image', gif_id=gif.id)|tojson }}
-            }
-            $('#synced-image').attr('src', image_url);
-        }
-
-        function updateSongText(name, artists, tempo) {
-            if(name) {
-                let artist_str = "";
-                for(var i=0; i<artists.length; i++) {
-                    artist_str += artists[i];
-                    if (i !== artists.length - 1) {
-                        artist_str += ", ";
-                    }
-                }
-                $('#song-name').text(name + ' - ' + artist_str);
-                if(tempo) {
-                    $('#song-tempo').text(Math.floor(tempo) + ' BPM');
-                }
-            } else {
-                $('#song-name').text('No song is playing right now!');
-                $('#song-tempo').text('');
+            song_id = data['id'];
+            if(curr_song !== song_id || (custom_tempo == null && tempo_flag)) {
+                tempo_flag = false;
+                console.log('actual song reached');
+                curr_song = song_id;
+                updateGif();
+                updateSongText(data['name'], data['artists'], parseFloat(data['tempo']));
             }
         }
+        setTimeout(updateLoop, timeout);
+    }
 
-        updateLoop();
-    </script>
-    <script>
-        var base_show_url = {{ url_for('show')|tojson }}
-        var base_edit_url = {{ url_for('api_edit_gif', id=gif.id)|tojson }};
-        var current_gif_name = {{ gif.name|tojson }};
-        var current_gif_bpl = {{ gif.beats_per_loop }};
-
-        function toggleEditForm() {
-            $('#edit-choice').toggle();
-            $('#edit-form').toggle();
+    function updateGif() {
+        image_url = base_synced_gif_url;
+        if(custom_tempo !== null && tempo_flag) {
+            image_url += ('&tempo=' + custom_tempo)
+            image_url += '#' + new Date().getTime();
+        } else if(curr_song !== 'placeholdersong') {
+            image_url += ('&song_id=' + curr_song);
+            image_url += '#' + new Date().getTime();
+        } else {
+            image_url = {{ url_for('api_user_image', gif_id=gif.id)|tojson }}
         }
+        $('#synced-image').attr('src', image_url);
+    }
 
-        function validateEditForm(data) {
-            if(data['status'] === 'error') {
-                $('#alert-placeholder').append("<div class='alert alert-danger'>" + data['reason'] + "</div>");
-                alertTimeout(5000);
+    function updateSongText(name, artists, tempo) {
+        if(name) {
+            let artist_str = "";
+            for(var i=0; i<artists.length; i++) {
+                artist_str += artists[i];
+                if (i !== artists.length - 1) {
+                    artist_str += ", ";
+                }
+            }
+            $('#song-name').text(name + ' - ' + artist_str);
+        } else {
+            $('#song-name').text('No song is playing right now!');
+        }
+        if(tempo !== null) {
+          $('#song-tempo').text(Math.floor(tempo) + ' BPM');
+        }else {
+            $('#song-tempo').text('');
+        }
+    }
+
+    updateLoop();
+</script>
+<script>
+    var base_show_url = {{ url_for('show')|tojson }}
+    var base_edit_url = {{ url_for('api_edit_gif', id=gif.id)|tojson }};
+    var current_gif_name = {{ gif.name|tojson }};
+    var current_gif_bpl = {{ gif.beats_per_loop }};
+
+    function toggleEditForm() {
+        $('#edit-choice').toggle();
+        $('#edit-form').toggle();
+    }
+
+    function validateEditForm(data) {
+        if(data['status'] === 'error') {
+            $('#alert-placeholder').append("<div class='alert alert-danger'>" + data['reason'] + "</div>");
+            alertTimeout(5000);
+        } else {
+            if(data['gif_name'] !== current_gif_name) {
+                new_id = data['gif_id'];
+                window.location.replace(base_show_url + '?gif_id=' + new_id);
             } else {
-                if(data['gif_name'] !== current_gif_name) {
-                    new_id = data['gif_id'];
-                    window.location.replace(base_show_url + '?gif_id=' + new_id);
-                } else {
+                if (data.hasOwnProperty('gif_bpl')) {
                     current_gif_bpl = parseInt(data['gif_bpl']);
-                    toggleEditForm();
-                    updateGif();
                 }
+                if (data.hasOwnProperty('gif_tempo')) {
+                    custom_tempo = parseInt(data['gif_tempo']);
+                    tempo_flag = true;
+                }else {
+                    custom_tempo = null;
+                }
+                toggleEditForm();
+                updateGif();
             }
         }
+    }
 
-        function submitEditForm() {
-            let post_url = base_edit_url;
-            let new_name = $('#gif-name').val();
-            let new_bpl = $('#beats-per-loop').val();
-            let changed = false;
-            if(new_name !== current_gif_name) {
-                post_url += '&name=' + encodeURIComponent(new_name);
+    function submitEditForm() {
+        let post_url = base_edit_url;
+        let new_name = $('#gif-name').val();
+        let new_bpl = $('#beats-per-loop').val();
+        let new_tempo = $('#gif-tempo').val();
+        let changed = false;
+        if(new_name !== current_gif_name) {
+            post_url += '&name=' + encodeURIComponent(new_name);
+            changed = true;
+        }
+        if(new_bpl != current_gif_bpl) {
+            if(new_bpl.length == 0) {
+                $('#alert-placeholder').append("<div class='alert alert-danger'>"
+                    + "Beats per loop cannot be blank!" + "</div>");
+                alertTimeout(5000);
+                $('#beats-per-loop').val(current_gif_bpl);
+                return;
+            } else {
+                post_url += '&bpl=' + encodeURIComponent(new_bpl);
                 changed = true;
             }
-            if(new_bpl != current_gif_bpl) {
-                if(new_bpl.length == 0) {
-                    $('#alert-placeholder').append("<div class='alert alert-danger'>"
-                        + "Beats per loop cannot be blank!" + "</div>");
-                    alertTimeout(5000);
-                    $('#beats-per-loop').val(current_gif_bpl);
-                    return;
-                } else {
-                    post_url += '&bpl=' + encodeURIComponent(new_bpl);
-                    changed = true;
-                }
-            }
-            if(changed) {
-                $.ajax({
-                    method: 'POST',
-                    url: post_url
-                })
-                .done(validateEditForm);
-            } else {
-                toggleEditForm();
-            }
         }
-
-        function applyOnEnter(event) {
-            if(event.keyCode == 13){
-                $('#apply-btn').click();
-            }
+        if(new_tempo !== null || new_tempo !== 0) {
+            post_url += '&tempo=' + encodeURIComponent(new_tempo);
+            changed = true;
+        }else {
+            custom_tempo = null;
+            changed = true;
         }
+        if(changed) {
+            $.ajax({
+                method: 'POST',
+                url: post_url
+            })
+            .done(validateEditForm);
+        } else {
+            toggleEditForm();
+        }
+    }
 
-        $('#edit-btn').on('click', toggleEditForm);
-        $('#apply-btn').on('click', submitEditForm);
-        $('#beats-per-loop').keypress(applyOnEnter);
-        $('#gif-name').keypress(applyOnEnter);
-    </script>
+    function applyOnEnter(event) {
+        if(event.keyCode == 13){
+            $('#apply-btn').click();
+        }
+    }
+
+    $('#edit-btn').on('click', toggleEditForm);
+    $('#apply-btn').on('click', submitEditForm);
+    $('#beats-per-loop').keypress(applyOnEnter);
+    $('#gif-name').keypress(applyOnEnter);
+    $('#gif-tempo').keypress(applyOnEnter);
+</script>
 {% endblock js %}

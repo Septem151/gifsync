@@ -32,11 +32,11 @@
     box-shadow: none;
 }
 
-input[type=number] {
+input[type="number"] {
     width: 80px;
 }
 
-input[type=text] {
+input[type="text"] {
     width: 200px;
 }
 

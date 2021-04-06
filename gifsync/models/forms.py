@@ -8,5 +8,6 @@ class GifCreationForm(FlaskForm):
     gif_name = StringField('Name your creation',
                            validators=[DataRequired(), Length(min=1, max=64)])
     beats_per_loop = IntegerField('Beats per loop',
-                                  validators=[DataRequired(), NumberRange(1, 64)])
+                                  validators=[DataRequired(),
+                                              NumberRange(1, 64)])
     submit = SubmitField('PRESTO!')
