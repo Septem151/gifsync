@@ -11,6 +11,7 @@ flask_secret = os.environ.get('SECRET_KEY', 'devkey')
 db_url = os.environ.get(
     'DATABASE_URL',
     'postgresql://postgres:devpassword@localhost:5432/postgres')
+db_url = db_url.replace('postgres://', 'postgresql://')
 port = int(os.environ.get('PORT', 8000))
 callback_uri = os.environ.get(
     'CALLBACK_URI', f'http://localhost:{port}/callback')
