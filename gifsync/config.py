@@ -1,13 +1,20 @@
 import os
+import dotenv
+
+dotenv.load_dotenv('web.env')
 
 # CLIENT_ID and CLIENT_SECRET **MUST** be defined in environment variables
 client_id = os.environ.get('CLIENT_ID')
 client_secret = os.environ.get('CLIENT_SECRET')
 flask_env = os.environ.get('FLASK_ENV', 'development')
 flask_secret = os.environ.get('SECRET_KEY', 'devkey')
-db_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:devpassword@localhost:5432/postgres')
+db_url = os.environ.get(
+    'DATABASE_URL',
+    'postgresql://postgres:devpassword@localhost:5432/postgres')
+db_url = db_url.replace('postgres://', 'postgresql://')
 port = int(os.environ.get('PORT', 8000))
-callback_uri = os.environ.get('CALLBACK_URI', f'http://localhost:{port}/callback')
+callback_uri = os.environ.get(
+    'CALLBACK_URI', f'http://localhost:{port}/callback')
 authorization_base_url = 'https://accounts.spotify.com/authorize'
 token_url = 'https://accounts.spotify.com/api/token'
 refresh_url = token_url
@@ -27,4 +34,5 @@ csp = {
     ],
     'font-src': 'fonts.gstatic.com'
 }
-gif_frames_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/gif_frames')
+gif_frames_path = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), 'static/gif_frames')

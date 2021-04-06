@@ -1,53 +1,59 @@
-{% extends "skeleton.html" %}
-{% block styles %}
-    <!-- Link the css file specifically for this page -->
-    <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='css/create.css') }}">
-{% endblock styles %}
-{% block content %}
-    <img class="mx-auto d-block logo"
-         src="{{ url_for('static', filename='img/logo.png') }}">
-    <p class="text-center header">Upload a gif to sync</p>
-    <form class="form-center" method="POST" action="" enctype="multipart/form-data" novalidate>
-        {{ form.hidden_tag() }}
-        <div class="form-group row">
-            <small class="justify-content-center">Maximum file size: 6MB</small>
-            <div class="custom-file">
-                {{ form.gif_file(class="custom-file-input", accept=".gif") }}
-                {{ form.gif_file.label(class="custom-file-label text-truncate") }}
-            </div>
+{% extends "skeleton.html" %} {% block styles %}
+<!-- Link the css file specifically for this page -->
+<link
+    rel="stylesheet"
+    type="text/css"
+    href="{{ url_for('static', filename='css/create.css') }}"
+/>
+{% endblock styles %} {% block content %}
+<img
+    class="mx-auto d-block logo"
+    src="{{ url_for('static', filename='img/logo.png') }}"
+/>
+<p class="text-center header">Upload a gif to sync</p>
+<form
+    class="form-center"
+    method="POST"
+    action=""
+    enctype="multipart/form-data"
+    novalidate
+>
+    {{ form.hidden_tag() }}
+    <div class="form-group row">
+        <small class="justify-content-center">Maximum file size: 6MB</small>
+        <div class="custom-file">
+            {{ form.gif_file(class="custom-file-input", accept=".gif") }} {{
+            form.gif_file.label(class="custom-file-label text-truncate") }}
         </div>
-        <div class="form-group row">
-            {{ form.gif_name.label(class="col-form-label") }}
-            {% if form.gif_name.errors %}
-                {{ form.gif_name(class="form-control is-invalid", placeholder="Name of Gif") }}
-                <div class="invalid-feedback">
-                    {% for error in form.gif_name.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.gif_name(class="form-control", placeholder="Name of Gif") }}
-            {% endif %}
+    </div>
+    <div class="form-group row">
+        {{ form.gif_name.label(class="col-form-label") }} {% if
+        form.gif_name.errors %} {{ form.gif_name(class="form-control
+        is-invalid", placeholder="Name of Gif") }}
+        <div class="invalid-feedback">
+            {% for error in form.gif_name.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
         </div>
-        <div class="form-group row">
-            {{ form.beats_per_loop.label(class="col-form-label") }}
-            {% if form.beats_per_loop.errors %}
-                {{ form.beats_per_loop(type="number", class="form-control is-invalid", value="1") }}
-                <div class="invalid-feedback">
-                    {% for error in form.beats_per_loop.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.beats_per_loop(type="number", class="form-control", value="1") }}
-            {% endif %}
+        {% else %} {{ form.gif_name(class="form-control", placeholder="Name of
+        Gif") }} {% endif %}
+    </div>
+    <div class="form-group row">
+        {{ form.beats_per_loop.label(class="col-form-label") }} {% if
+        form.beats_per_loop.errors %} {{ form.beats_per_loop(type="number",
+        class="form-control is-invalid", value="1") }}
+        <div class="invalid-feedback">
+            {% for error in form.beats_per_loop.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
         </div>
-        <div class="form-group row">
-            {{ form.submit(class="btn btn-custom-green shadow-none") }}
-        </div>
-    </form>
-{% endblock content %}
-{% block js %}
-    <script src="{{ url_for('static', filename='js/updateFileChooser.js') }}"></script>
+        {% else %} {{ form.beats_per_loop(type="number", class="form-control",
+        value="1") }} {% endif %}
+    </div>
+    <div class="form-group row">
+        {{ form.submit(class="btn btn-custom-green shadow-none") }}
+    </div>
+</form>
+{% endblock content %} {% block js %}
+<script src="{{ url_for('static', filename='js/updateFileChooser.js') }}"></script>
 {% endblock js %}

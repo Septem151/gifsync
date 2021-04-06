@@ -53,15 +53,19 @@ class SpotifyUser(db.Model):
         self.curr_song = {}
         if response.status_code == 200:
             content = response.json()
-            # When an ad is playing for users w/out premium, content['item'] = None, so we must check first
-            # Additionally, when user is playing a local file, state that we are paused
+            # When an ad is playing for users w/out premium,
+            # content['item'] = None, so we must check first
+            # Additionally, when user is playing a local file,
+            # state that we are paused
             if content['item'] and not content['item']['is_local']:
                 self.curr_song['name'] = content['item']['name']
                 self.curr_song['id'] = content['item']['id']
-                self.curr_song['tempo'] = Song.get_song_tempo(self.curr_song['id'], self.access_token)
+                self.curr_song['tempo'] = Song.get_song_tempo(
+                    self.curr_song['id'], self.access_token)
                 track_duration = int(content['item']['duration_ms'])
                 track_progress = int(content['progress_ms'])
-                self.curr_song['remaining_ms'] = track_duration - track_progress
+                self.curr_song['remaining_ms'] = track_duration - \
+                    track_progress
                 self.curr_song['artists'] = []
                 for artist in content['item']['artists']:
                     self.curr_song['artists'].append(artist['name'])
@@ -83,7 +87,8 @@ class SpotifyUser(db.Model):
         token = spotify_oauth.refresh_token(refresh_url, **extra)
         self.access_token = token['access_token']
         expires_in = float(token['expires_in'])
-        self.expiration_time = datetime.utcnow() + timedelta(seconds=expires_in)
+        self.expiration_time = (datetime.utcnow()
+                                + timedelta(seconds=expires_in))
         if 'refresh_token' in token:
             self.refresh_token = token['refresh_token']
         db.session.commit()
@@ -103,10 +108,6 @@ class SpotifyUser(db.Model):
     def get_id(self):
         return self.id
 
-    def __repr__(self):
-        return f'User ID: {self.get_id()} | Is Authenticated: {self.is_authenticated} | Is Active: {self.is_active} ' \
-               f'| Is Anonymous: {self.is_anonymous}'
-
 
 class AnonymousUser(object):
     @property
@@ -123,7 +124,3 @@ class AnonymousUser(object):
 
     def get_id(self):
         return
-
-    def __repr__(self):
-        return f'User ID: Anonymous | Is Authenticated: {self.is_authenticated} | Is Active: {self.is_active} ' \
-               f'| Is Anonymous: {self.is_anonymous}'

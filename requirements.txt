@@ -8,6 +8,7 @@ imageio==2.9.0
 moviepy==1.0.3
 Pillow==7.1.2
 psycopg2-binary==2.8.5
+python-dotenv==0.17.0
 requests_oauthlib==1.3.0
 requests==2.24.0
 WTForms==2.3.1
