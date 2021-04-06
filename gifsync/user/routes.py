@@ -1,5 +1,6 @@
-from flask import Blueprint, redirect, url_for, render_template
+from flask import Blueprint, redirect, url_for, render_template, current_app, session, request
 from flask_login import login_required
+from requests_oauthlib import OAuth2Session
 
 from gifsync.models.users import AnonymousUser, SpotifyUser
 
@@ -8,14 +9,22 @@ blueprint = Blueprint('user', __name__)
 @blueprint.route('/login')
 def login():
     spotify_oauth = OAuth2Session(
-        config.client_id, scope=config.scope, redirect_uri=config.callback_uri)
+        current_app.config['CLIENT_ID'],
+        scope=current_app.config['SCOPE'],
+        redirect_uri=current_app.config['CALLBACK_URI']
+    )
     authorization_url, state = spotify_oauth.authorization_url(
-        config.authorization_base_url, show_dialog='true')
+        current_app.config['BASE_URL'],
+        show_dialog='true'
+    )
+    
     session['oauth_state'] = state
     next_url = request.args.get('next')
     if next_url:
         session['next'] = next_url
+
     return redirect(authorization_url)
+
 
 @blueprint.route('/logout')
 @login_required
