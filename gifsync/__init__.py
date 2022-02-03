@@ -306,10 +306,10 @@ def create():
         if "." in filename and filename.rsplit(".", 1)[1].lower() == "gif":
             image_data = form.gif_file.data.stream.read()
             size = len(image_data)
-            if size > 24 * 1024 * 1024:
+            if size > 64 * 1024 * 1024:
                 flash(
                     (
-                        "File is too large! Maximum Gif size is 24MB. "
+                        "File is too large! Maximum Gif size is 64MB. "
                         "Try a smaller file."
                     ),
                     category="danger",
