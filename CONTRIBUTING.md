@@ -1,5 +1,7 @@
 # Contributing
 
+> WARNING: These docs may be outdated!
+
 There are two main ways to start developing and contributing to GifSync: **Docker Compose** (all dependencies and python
 requirements are hosted in a container), or a **Local Build** (dependencies and python must be installed locally).
 
@@ -78,10 +80,9 @@ All Linux commands assume you are running a debian-based system. All Windows com
    - **web.env** must have `CLIENT_ID` and `CLIENT_SECRET` defined (see
      [Additional Information](#additional-information) for getting a Spotify Client & Secret ID). Populate **web.env**
      with the following:
-     `    CLIENT_ID=your_spotify_client_id
-    CLIENT_SECRET=your_spotify_client_secret
-    DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres
-   `
+     `   CLIENT_ID=your_spotify_client_id
+ CLIENT_SECRET=your_spotify_client_secret
+ DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres`
    - Optional values for **web.env** include:
      - `FLASK_ENV` - recommended value: `development`
      - `SECRET_KEY` - not necessary to set, defaults to `devkey`
@@ -189,9 +190,8 @@ All Linux commands assume you are running a debian-based system. All Windows com
    - **web.env** must have `CLIENT_ID` and `CLIENT_SECRET` defined (see
      [Additional Information](#additional-information) for getting a Spotify Client & Secret ID). Populate **web.env**
      with the following:
-     `    CLIENT_ID=your_spotify_client_id
-    CLIENT_SECRET=your_spotify_client_secret
-   `
+     `   CLIENT_ID=your_spotify_client_id
+ CLIENT_SECRET=your_spotify_client_secret`
    - Optional values for **web.env** include:
      - `FLASK_ENV` - not necessary to set, defaults to: `development`
      - `DATABASE_URL` - if you are connecting to an external database or have defined a different user/password than
