@@ -22,4 +22,3 @@ CREATE TABLE song (
     id varchar(32) UNIQUE NOT NULL PRIMARY KEY,
     tempo real NOT NULL
 );
-

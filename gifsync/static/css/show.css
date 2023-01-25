@@ -1,45 +1,45 @@
 /* Add margin bottom to the synced gif */
 .synced-image {
-    max-width: 100%;
-    height: auto;
-    width: auto\9; /* specifically for ie8 compatibility.
+  max-width: 100%;
+  height: auto;
+  width: auto\9; /* specifically for ie8 compatibility.
                       Might remove, since I'm not sure if I want the site IE compatible anyway. */
-    margin-bottom: 32px;
-    margin-top: 32px;
+  margin-bottom: 32px;
+  margin-top: 32px;
 }
 
 .margin-btm {
-    margin-bottom: 32px;
+  margin-bottom: 32px;
 }
 
 .margin-left {
-    margin-left: 39px;
+  margin-left: 39px;
 }
 
 /* Header Text Styling */
 .header {
-    font-weight: bold;
-    font-size: 18px;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .sub-header {
-    font-weight: bold;
-    font-size: 14px;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .form-control:focus {
-    border-color: #1db954;
-    box-shadow: none;
+  border-color: #1db954;
+  box-shadow: none;
 }
 
 input[type="number"] {
-    width: 80px;
+  width: 80px;
 }
 
 input[type="text"] {
-    width: 200px;
+  width: 200px;
 }
 
 #edit-form {
-    padding-top: 22px;
+  padding-top: 22px;
 }

@@ -1,14 +1,14 @@
 {% extends "skeleton.html" %} {% block styles %}
 <!-- Link the css file specifically for this page -->
 <link
-    rel="stylesheet"
-    type="text/css"
-    href="{{ url_for('static', filename='css/error.css') }}"
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/error.css') }}"
 />
 {% endblock styles %} {% block content %}
 <img
-    class="mx-auto d-block logo"
-    src="{{ url_for('static', filename='img/logo.png') }}"
+  class="mx-auto d-block logo"
+  src="{{ url_for('static', filename='img/logo.png') }}"
 />
 
 <h1 class="text-center title">{{ error[0] }}</h1>
