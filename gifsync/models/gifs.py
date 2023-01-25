@@ -6,7 +6,6 @@ from http import HTTPStatus
 
 from flask import abort
 
-from gifsync.config import gif_frames_path
 from gifsync.extensions import db
 
 
