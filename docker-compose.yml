@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   web:
     image: gifsync_web:dev
@@ -8,7 +8,7 @@ services:
     env_file:
       - web.env
     ports:
-      - '8000:8000'
+      - "8000:8000"
     volumes:
       - ./gifsync:/app/gifsync
     depends_on:
@@ -21,6 +21,6 @@ services:
     env_file:
       - db.env
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - ./db_backup:/backup

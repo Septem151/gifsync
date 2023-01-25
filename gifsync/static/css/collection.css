@@ -1,23 +1,23 @@
 /* Header Text Styling */
 .header {
-    font-weight: bold;
-    font-size: 24px;
+  font-weight: bold;
+  font-size: 24px;
 }
 
 .top-bar {
-    margin-bottom: 32px;
+  margin-bottom: 32px;
 }
 
 .framed-image {
-    background: transparent;
-    border: 2px solid #1db954;
-    border-radius: 6px;
-    width: 128px;
-    height: 128px;
-    margin-bottom: 8px;
+  background: transparent;
+  border: 2px solid #1db954;
+  border-radius: 6px;
+  width: 128px;
+  height: 128px;
+  margin-bottom: 8px;
 }
 
 .image-label {
-    width: 128px;
-    text-align: center;
+  width: 128px;
+  text-align: center;
 }

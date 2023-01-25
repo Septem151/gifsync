@@ -2,10 +2,11 @@ import os
 from datetime import datetime, timedelta
 
 import requests
+from requests_oauthlib import OAuth2Session
+
 from gifsync.config import refresh_url
 from gifsync.extensions import db
 from gifsync.models.songs import Song
-from requests_oauthlib import OAuth2Session
 
 
 class SpotifyUser(db.Model):

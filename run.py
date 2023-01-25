@@ -9,8 +9,7 @@
 """
 from gifsync import app, config
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     # YOU SHOULDN'T HAVE TO MODIFY THE PORT OR ENV! The Production server
     # provided by flask is pointless.
     # Change the default port/environment by modifying the second parameter in
@@ -23,7 +22,7 @@ if __name__ == '__main__':
     # your web browser.
     # Valid env values: development, production
     port = config.port
-    if app.config['ENV'] == 'development':
-        app.run(host='0.0.0.0', port=port, debug=True)
+    if app.config["ENV"] == "development":
+        app.run(host="0.0.0.0", port=port, debug=True)
     else:
-        app.run(host='0.0.0.0', port=port)
+        app.run(host="0.0.0.0", port=port)

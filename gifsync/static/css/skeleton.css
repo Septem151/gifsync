@@ -1,125 +1,125 @@
 html {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 
 /* Generic styling for all pages */
 body {
-    font-family: "Ubuntu", serif;
-    background-color: #181818;
-    color: #b2b2b2;
-    /* Top padding is necessary to move body of page below the navbar, since the navbar is fixed to the top */
-    padding-top: 107px;
-    padding-bottom: 53px; /* Fixed footer height */
+  font-family: "Ubuntu", serif;
+  background-color: #181818;
+  color: #b2b2b2;
+  /* Top padding is necessary to move body of page below the navbar, since the navbar is fixed to the top */
+  padding-top: 107px;
+  padding-bottom: 53px; /* Fixed footer height */
 }
 
 .page-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    /* height: 53px; */ /* Fixed footer height */
-    background-color: #282828;
-    padding: 0 2rem;
-    font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* height: 53px; */ /* Fixed footer height */
+  background-color: #282828;
+  padding: 0 2rem;
+  font-size: 14px;
 }
 
 /* Navbar Base Styling */
 .navbar-custom {
-    background-color: #282828;
-    -webkit-box-shadow: 0 4px 12px 2px rgb(0, 0, 0, 0.35);
-    -moz-box-shadow: 0 4px 12px 2px rgb(0, 0, 0, 0.35);
-    box-shadow: 0 4px 12px 2px rgb(0, 0, 0, 0.35);
+  background-color: #282828;
+  -webkit-box-shadow: 0 4px 12px 2px rgb(0, 0, 0, 0.35);
+  -moz-box-shadow: 0 4px 12px 2px rgb(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px 2px rgb(0, 0, 0, 0.35);
 }
 
 /* Navbar Brand/Text Styling */
 .navbar-custom .navbar-brand,
 .navbar-custom .navbar-text {
-    color: #1db954;
-    font-weight: bold;
-    font-size: 32px;
+  color: #1db954;
+  font-weight: bold;
+  font-size: 32px;
 }
 
 /* Navbar Link Styling (not in use, but covering all bases) */
 .navbar-custom .navbar-nav .nav-link {
-    color: #1db954;
+  color: #1db954;
 }
 
 /* Navbar Link additional Styling (not in use, but covering all bases) */
 .navbar-custom .nav-item.active .nav-link,
 .navbar-custom .nav-item:hover .nav-link {
-    color: #20cb5c;
+  color: #20cb5c;
 }
 
 /* Navbar Spacing between List elements, ex: buttons */
 .navbar-custom .navbar-nav > li {
-    margin: 10px 15px;
+  margin: 10px 15px;
 }
 
 /* Link Base Styling */
 a {
-    font-weight: bold;
-    color: #1db954;
+  font-weight: bold;
+  color: #1db954;
 }
 
 /* Link Hover Styling */
 a:hover {
-    color: #20cb5c;
+  color: #20cb5c;
 }
 
 /* Logo Styling */
 .logo {
-    /* Margin is added to the bottom to space out page text from the logo */
-    width: 256px;
-    height: 256px;
-    margin-bottom: 32px;
+  /* Margin is added to the bottom to space out page text from the logo */
+  width: 256px;
+  height: 256px;
+  margin-bottom: 32px;
 }
 
 /* Green Button Base Styling */
 .btn-custom-green {
-    color: #181818;
-    font-weight: bold;
-    background-color: #1db954;
-    /* Webkit Appearance is set to none so buttons appear as intended on Mobile browsers */
-    -webkit-appearance: none;
-    display: flex;
-    align-items: center;
+  color: #181818;
+  font-weight: bold;
+  background-color: #1db954;
+  /* Webkit Appearance is set to none so buttons appear as intended on Mobile browsers */
+  -webkit-appearance: none;
+  display: flex;
+  align-items: center;
 }
 
 /* Green Button Icon Styling */
 .btn-custom-green .btn-icon {
-    width: 20px;
-    height: 20px;
-    /* Margin to right is added so text doesn't sit so close to the icon */
-    margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  /* Margin to right is added so text doesn't sit so close to the icon */
+  margin-right: 8px;
 }
 
 /* Green Button Hover Styling */
 .btn-custom-green:hover {
-    color: #181818;
-    background-color: #20cb5c;
+  color: #181818;
+  background-color: #20cb5c;
 }
 
 /* Red Button Base Styling */
 .btn-custom-red {
-    color: #e5e5e5;
-    font-weight: bold;
-    background-color: #b91d34;
-    /* Webkit Appearance is set to none so buttons appear as intended on Mobile browsers */
-    -webkit-appearance: none;
-    display: flex;
-    align-items: center;
+  color: #e5e5e5;
+  font-weight: bold;
+  background-color: #b91d34;
+  /* Webkit Appearance is set to none so buttons appear as intended on Mobile browsers */
+  -webkit-appearance: none;
+  display: flex;
+  align-items: center;
 }
 
 /* Red Button Hover Styling */
 .btn-custom-red:hover {
-    color: #e5e5e5;
-    background-color: #cb2039;
+  color: #e5e5e5;
+  background-color: #cb2039;
 }
 
 /* Red Button Icon Styling */
 .btn-custom-red .btn-icon {
-    width: 20px;
-    height: 20px;
-    /* Margin to right is added so text doesn't sit so close to the icon */
-    margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  /* Margin to right is added so text doesn't sit so close to the icon */
+  margin-right: 8px;
 }

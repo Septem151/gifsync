@@ -108,15 +108,6 @@ def api_delete_gif():
     db.session.commit()
     # Delete all images not being referenced by a gif to clean up the database
     # & local files
-    image_query_result = db.session.execute(
-        "SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif"
-        " WHERE image_id = imid.id)"
-    )
-    for result in image_query_result:
-        image_id = result["id"]
-        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id))
-        if os.path.exists(image_frames_folder):
-            shutil.rmtree(image_frames_folder)
     db.session.execute(
         "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"
         " WHERE image_id = imid.id)"
@@ -374,15 +365,6 @@ def logout():
     db.session.commit()
     # Delete all images not being referenced by a gif to clean up the database
     # & local files
-    image_query_result = db.session.execute(
-        "SELECT id FROM image imid WHERE NOT EXISTS (SELECT FROM gif"
-        " WHERE image_id = imid.id)"
-    )
-    for result in image_query_result:
-        image_id = result["id"]
-        image_frames_folder = os.path.join(config.gif_frames_path, str(image_id))
-        if os.path.exists(image_frames_folder):
-            shutil.rmtree(image_frames_folder)
     db.session.execute(
         "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"
         " WHERE image_id = imid.id)"

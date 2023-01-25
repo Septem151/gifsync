@@ -1,17 +1,17 @@
 /* Title Text Styling */
 .title {
-    color: #1db954;
-    font-weight: bold;
-    font-size: 46px;
-    /* Margin is added to the bottom to space out title from the rest of the page's text for emphasis */
-    margin-bottom: 64px;
+  color: #1db954;
+  font-weight: bold;
+  font-size: 46px;
+  /* Margin is added to the bottom to space out title from the rest of the page's text for emphasis */
+  margin-bottom: 64px;
 }
 
 /* Header Text Styling */
 .header {
-    font-weight: bold;
-    font-style: italic;
-    font-size: 24px;
-    /* Margin is added to the left to make headers stand apart from body text, and margin bottom to space out
+  font-weight: bold;
+  font-style: italic;
+  font-size: 24px;
+  /* Margin is added to the left to make headers stand apart from body text, and margin bottom to space out
        header from the body text */
 }

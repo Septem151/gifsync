@@ -1,18 +1,13 @@
 import hashlib
-import math
-import os
 import re
 import subprocess
 from decimal import ROUND_HALF_UP, Decimal
 from http import HTTPStatus
-from io import BytesIO
-from pathlib import Path
 
 from flask import abort
+
 from gifsync.config import gif_frames_path
 from gifsync.extensions import db
-from moviepy.video.io.VideoFileClip import VideoFileClip
-from PIL import Image as PilImage
 
 
 class Gif(db.Model):
@@ -68,76 +63,6 @@ class Gif(db.Model):
         a = (num // 10) * 10
         b = a + 10
         return int(b if num - a >= b - num else a)
-
-    # @staticmethod
-    # def get_frame_times(num_frames, tempo, beats_per_loop):
-    #     # Calculate the number of seconds per beat in order to get number of
-    #     # milliseconds per loop
-    #     beats_per_sec = tempo / 60
-    #     secs_per_beat = 1 / beats_per_sec
-    #     duration = Gif.round_tens(secs_per_beat * beats_per_loop * 1000)
-    #     frame_times = []
-    #     # Try to make frame times as even as possible by dividing duration by
-    #     # number of frames
-    #     actual_duration = 0
-    #     for _ in range(0, num_frames):
-    #         frame_time = Gif.round_tens(duration / num_frames)
-    #         frame_times.append(frame_time)
-    #         actual_duration += frame_time
-    #     # Adjust frame times to match as closely as possible to the actual
-    #     # duration, rounded to multiple of 10
-    #     # Keep track of which indexes we've added to already and attempt to
-    #     # split corrections as evenly as possible
-    #     # throughout the frame times
-    #     correction = duration - actual_duration
-    #     adjust_val = int(math.copysign(10, correction))
-    #     i = 0
-    #     seen_i = {i}
-    #     while actual_duration != duration:
-    #         frame_times[i % num_frames] += adjust_val
-    #         actual_duration += adjust_val
-    #         if i not in seen_i:
-    #             seen_i.add(i)
-    #         elif len(seen_i) == num_frames:
-    #             seen_i.clear()
-    #             i = 0
-    #         else:
-    #             i += 1
-    #         i += num_frames // abs(correction // 10)
-    #     return frame_times
-
-    # def get_synced_gif(self, tempo):
-    #     original_frames = self.image.get_frames()
-    #     frame_times = Gif.get_frame_times(
-    #         len(original_frames), tempo, self.beats_per_loop
-    #     )
-    #     synced_frames = []
-    #     for path_to_frame in original_frames:
-    #         pil_image = PilImage.open(str(path_to_frame))
-    #         # Convert the image into P mode but only use 255 colors in the
-    #         # palette out of 256
-    #         alpha = pil_image.getchannel("A")
-    #         pil_image = pil_image.convert("RGB").convert(
-    #             "P", palette=PilImage.ADAPTIVE, colors=255
-    #         )
-    #         # Set all pixel values below 128 to 255 , and the rest to 0
-    #         mask = PilImage.eval(alpha, lambda a: 255 if a <= 128 else 0)
-    #         # Paste the color of index 255 and use alpha as a mask
-    #         pil_image.paste(255, mask)
-    #         # The transparency index is 255
-    #         pil_image.info["transparency"] = 255
-    #         synced_frames.append(pil_image)
-    #     synced_image = BytesIO()
-    #     synced_frames[0].save(
-    #         synced_image,
-    #         format="GIF",
-    #         save_all=True,
-    #         append_images=synced_frames[1:],
-    #         loop=0,
-    #         duration=frame_times,
-    #         disposal=2,
-    #     )
-    #     return synced_image
 
     @staticmethod
     def get_frame_times(tempo: float, num_frames: int, beats_per_loop: float) -> list:
@@ -209,38 +134,5 @@ class Image(db.Model):
                 "Internal server error trying to get number of gif frames",
             )
 
-    # @property
-    # def path_to_frames(self):
-    #     return Path(f"{gif_frames_path}/{self.id}")
-
-    # @property
-    # def is_saved_as_frames(self):
-    #     return (
-    #         self.path_to_frames.exists()
-    #         and not Path(gif_frames_path).joinpath(f"${self.id}.gif").exists()
-    #     )
-
     def hash_image(self):
         return hashlib.sha256(self.image).hexdigest()[:16]
-
-    # def save_frames(self):
-    #     self.path_to_frames.mkdir(parents=True, exist_ok=True)
-    #     temp_gif_path = Path(gif_frames_path).joinpath(f"${self.id}.gif")
-    #     with open(temp_gif_path, "wb") as temp_gif_file:
-    #         temp_gif_file.write(BytesIO(self.image).read())
-    #     with VideoFileClip(str(temp_gif_path), has_mask=True, verbose=False) as clip:
-    #         clip.write_images_sequence(
-    #             str(self.path_to_frames.joinpath("%03d.png")), logger=None
-    #         )
-    #     os.remove(temp_gif_path)
-
-    # def get_frames(self):
-    #     if not self.path_to_frames.exists():
-    #         self.save_frames()
-    #     frame_files = os.listdir(self.path_to_frames)
-    #     if not self.is_saved_as_frames:
-    #         abort(409)
-    #     for i in range(0, len(frame_files)):
-    #         frame_files[i] = self.path_to_frames.joinpath(frame_files[i])
-    #     frame_files.sort()
-    #     return frame_files
