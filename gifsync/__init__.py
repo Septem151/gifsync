@@ -201,6 +201,21 @@ def api_user_image():
     return response
 
 
+@app.route("/api/me/image/thumbnail")
+@login_required
+def api_user_image_thumbnail():
+    gif_id = request.args.get("gif_id")
+    gif = retrieve_gif(gif_id, current_user.get_id())
+    if not gif.image.thumbnail:
+        gif.image.thumbnail = gif.image.generate_thumbnail()
+        db.session.commit()
+    response = make_response(
+        send_file(BytesIO(gif.image.thumbnail), mimetype="image/gif")
+    )
+    response.headers["Cache-control"] = "max-age=2592000, private"
+    return response
+
+
 @app.route("/api/me/synced-gif")
 @login_required
 def api_synced_gif():
@@ -277,7 +292,7 @@ def collection():
     for gif in user_gifs:
         images.append(
             {
-                "src": url_for("api_user_image", gif_id=gif.id),
+                "src": url_for("api_user_image_thumbnail", gif_id=gif.id),
                 "label": gif.name,
                 "href": url_for("show", gif_id=gif.id),
             }

@@ -8,7 +8,8 @@ CREATE TABLE spotify_user (
 
 CREATE TABLE image (
     id char(16) UNIQUE NOT NULL PRIMARY KEY,
-    image bytea NOT NULL
+    image bytea NOT NULL,
+    thumbnail bytea
 );
 
 CREATE TABLE gif (

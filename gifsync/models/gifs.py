@@ -105,6 +105,7 @@ class Image(db.Model):  # type: ignore[name-defined]
 
     id = db.Column(db.String(16), primary_key=True)
     image = db.Column(db.LargeBinary, nullable=False)
+    thumbnail = db.Column(db.LargeBinary, nullable=True)
 
     def __init__(self, image, id_=None):
         self.image = image
@@ -128,6 +129,22 @@ class Image(db.Model):  # type: ignore[name-defined]
             abort(
                 HTTPStatus.INTERNAL_SERVER_ERROR,
                 "Internal server error trying to get number of gif frames",
+            )
+
+    def generate_thumbnail(self):
+        try:
+            cmd = subprocess.run(
+                ["gifsicle", "#0"],
+                input=self.image,
+                capture_output=True,
+                check=True,
+            )
+            result_data = cmd.stdout
+            return result_data
+        except subprocess.CalledProcessError:
+            abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                "Internal server error trying to get thumbnail",
             )
 
     def hash_image(self):
