@@ -1,0 +1,46 @@
+{% extends "skeleton.html" %} {% block styles %}
+<!-- Link the css file specifically for this page -->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/preferences.css') }}"
+/>
+{% endblock styles %} {% block content %}
+<p class="top-bar header">Your Preferences</p>
+<form
+  class="form-left"
+  method="POST"
+  action=""
+  enctype="multipart/form-data"
+  novalidate
+>
+  {{ form.hidden_tag() }}
+  <div class="form-group row">
+    {{ form.min_tempo.label(class="col-form-label") }} {% if
+    form.min_tempo.errors %} {{ form.min_tempo(type="number",
+    class="form-control is-invalid", value=user_prefs["min_tempo"]) }}
+    <div class="invalid-feedback">
+      {% for error in form.min_tempo.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+    {% else %} {{ form.min_tempo(type="number", class="form-control",
+    value=user_prefs["min_tempo"]) }} {% endif %}
+  </div>
+  <div class="form-group row">
+    {{ form.max_tempo.label(class="col-form-label") }} {% if
+    form.max_tempo.errors %} {{ form.max_tempo(type="number",
+    class="form-control is-invalid", value=user_prefs["max_tempo"]) }}
+    <div class="invalid-feedback">
+      {% for error in form.max_tempo.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+    {% else %} {{ form.max_tempo(type="number", class="form-control",
+    value=user_prefs["max_tempo"]) }} {% endif %}
+  </div>
+  <div class="form-group row">
+    {{ form.submit(class="btn btn-custom-green shadow-none") }}
+  </div>
+</form>
+{% endblock content %}

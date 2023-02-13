@@ -81,10 +81,10 @@ All Linux commands assume you are running a debian-based system. All Windows com
      [Additional Information](#additional-information) for getting a Spotify Client & Secret ID). Populate **web.env**
      with the following:
      `   CLIENT_ID=your_spotify_client_id
- CLIENT_SECRET=your_spotify_client_secret
- DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres`
+CLIENT_SECRET=your_spotify_client_secret
+DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres`
    - Optional values for **web.env** include:
-     - `FLASK_ENV` - recommended value: `development`
+     - `FLASK_DEBUG` - recommended value: `true`
      - `SECRET_KEY` - not necessary to set, defaults to `devkey`
      - `PORT` - if set, you **MUST** change the port definition within the `docker-compose.yml` file to match
 
@@ -191,9 +191,9 @@ All Linux commands assume you are running a debian-based system. All Windows com
      [Additional Information](#additional-information) for getting a Spotify Client & Secret ID). Populate **web.env**
      with the following:
      `   CLIENT_ID=your_spotify_client_id
- CLIENT_SECRET=your_spotify_client_secret`
+CLIENT_SECRET=your_spotify_client_secret`
    - Optional values for **web.env** include:
-     - `FLASK_ENV` - not necessary to set, defaults to: `development`
+     - `FLASK_DEBUG` - not necessary to set, defaults to: `true`
      - `DATABASE_URL` - if you are connecting to an external database or have defined a different user/password than
        what is in **db.env** file above
      - `SECRET_KEY` - not necessary to set, defaults to `devkey`

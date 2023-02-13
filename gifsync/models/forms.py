@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import FileField, IntegerField, StringField, SubmitField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 
 class GifCreationForm(FlaskForm):
@@ -12,3 +12,13 @@ class GifCreationForm(FlaskForm):
         "Beats per loop", validators=[DataRequired(), NumberRange(1, 64)]
     )
     submit = SubmitField("PRESTO!")
+
+
+class PreferencesForm(FlaskForm):
+    min_tempo = IntegerField(
+        "Minimum Tempo", validators=[Optional(), NumberRange(min=0)]
+    )
+    max_tempo = IntegerField(
+        "Maximum Tempo", validators=[Optional(), NumberRange(min=0)]
+    )
+    submit = SubmitField("Save")

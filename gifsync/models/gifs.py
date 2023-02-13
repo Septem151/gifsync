@@ -9,7 +9,7 @@ from flask import abort
 from gifsync.extensions import db
 
 
-class Gif(db.Model):
+class Gif(db.Model):  # type: ignore[name-defined]
     __tablename__ = "gif"
     __table_args__ = (db.CheckConstraint("beats_per_loop > 0"),)
 
@@ -23,6 +23,7 @@ class Gif(db.Model):
     )
     name = db.Column(db.String(256), nullable=False)
     beats_per_loop = db.Column(db.Integer, nullable=False)
+    custom_tempo = db.Column(db.Numeric(5, 2), nullable=True)
 
     image = db.relationship(
         "Image",
@@ -46,11 +47,7 @@ class Gif(db.Model):
             self.id = id_
 
     def get_image_id(self):
-        # For some reason, SQLAlchemy makes the Image ID a string of length 64
-        # by adding spaces to the end, despite the
-        # database and type declarations of Image class/table stating it's a
-        # char(16)
-        return self.image_id[:16]
+        return self.image_id
 
     def generate_hash_id(self):
         return hashlib.sha256(
@@ -95,7 +92,7 @@ class Gif(db.Model):
             )
             result_data = result.stdout
             return result_data
-        except subprocess.CalledProcessError as error:
+        except subprocess.CalledProcessError:
             abort(HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def update_name(self, new_name):
@@ -103,7 +100,7 @@ class Gif(db.Model):
         self.id = self.generate_hash_id()
 
 
-class Image(db.Model):
+class Image(db.Model):  # type: ignore[name-defined]
     __tablename__ = "image"
 
     id = db.Column(db.String(16), primary_key=True)

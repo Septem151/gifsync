@@ -23,7 +23,7 @@ from requests_oauthlib import OAuth2Session
 
 from gifsync import config
 from gifsync.extensions import db, login_manager
-from gifsync.models.forms import GifCreationForm
+from gifsync.models.forms import GifCreationForm, PreferencesForm
 from gifsync.models.gifs import Gif, Image
 from gifsync.models.songs import Song
 from gifsync.models.users import AnonymousUser, SpotifyUser
@@ -31,7 +31,7 @@ from gifsync.models.users import AnonymousUser, SpotifyUser
 
 def create_app():
     flask_app = Flask(__name__)
-    flask_app.config["ENV"] = config.flask_env
+    flask_app.config["DEBUG"] = config.flask_debug
     flask_app.config["SECRET_KEY"] = config.flask_secret
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url
     flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -59,7 +59,7 @@ def retrieve_gif(gif_id, user_id):
 
 
 app = create_app()
-if not app.config["ENV"] == "development":
+if app.config["DEBUG"] is False:
     Talisman(app, content_security_policy=config.csp)
 else:
     # Manually set OAUTHLIB_INSECURE_TRANSPORT so we don't have to include it
@@ -108,7 +108,7 @@ def api_delete_gif():
     # Delete all images not being referenced by a gif to clean up the database
     # & local files
     db.session.execute(
-        "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"
+        "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"  # type: ignore
         " WHERE image_id = imid.id)"
     )
     db.session.commit()
@@ -147,7 +147,7 @@ def api_edit_gif():
         gif.update_name(gif_name)
     if gif_bpl:
         try:
-            gif_bpl = int(gif_bpl)
+            new_gif_bpl = int(gif_bpl)
         except (TypeError, ValueError):
             return jsonify(
                 {
@@ -155,16 +155,14 @@ def api_edit_gif():
                     "reason": ("Only whole numbers are allowed " "for Beats per loop."),
                 }
             )
-        if not 1 <= gif_bpl <= 64:
+        if not 1 <= new_gif_bpl <= 64:
             return jsonify(
                 {
                     "status": "error",
                     "reason": ("Beats per loop value must be " "between 1-64."),
                 }
             )
-        gif.beats_per_loop = gif_bpl
-    if gif_name or gif_bpl:
-        db.session.commit()
+        gif.beats_per_loop = new_gif_bpl
     ret_data = {
         "status": "OK",
         "gif_id": gif.id,
@@ -173,14 +171,23 @@ def api_edit_gif():
     }
     if gif_tempo:
         try:
-            gif_tempo = int(gif_tempo)
-            if gif_tempo <= 0:
+            new_gif_tempo = float(gif_tempo)
+            if new_gif_tempo < 0:
                 raise ValueError()
         except (TypeError, ValueError):
             return jsonify(
-                {"status": "error", "reason": "Tempo must be greater than 0."}
+                {
+                    "status": "error",
+                    "reason": "Tempo wasn't a number, or was less than 0",
+                }
             )
-        ret_data["gif_tempo"] = gif_tempo
+        if new_gif_tempo == 0:
+            gif.custom_tempo = None
+        else:
+            gif.custom_tempo = new_gif_tempo
+            ret_data["gif_tempo"] = new_gif_tempo
+    if gif_name or gif_bpl or gif_tempo:
+        db.session.commit()
     return jsonify(ret_data)
 
 
@@ -202,8 +209,8 @@ def api_synced_gif():
     gif = retrieve_gif(gif_id, current_user.get_id())
     if not song_id:
         song_id = "placeholdersong"
-    tempo = int(request.args.get("tempo", 0)) or Song.get_song_tempo(
-        song_id, current_user.access_token
+    tempo = gif.custom_tempo or current_user.clamp_tempo(
+        Song.get_song_tempo(song_id, current_user.access_token)
     )
     if not tempo:
         abort(404)
@@ -278,6 +285,55 @@ def collection():
     return render_template("collection.html", title="My Gifs", images=images)
 
 
+@app.route("/preferences", methods=["GET", "POST"])
+@login_required
+def preferences():
+    form = PreferencesForm()
+    user_prefs: dict | None = current_user.preferences
+    new_prefs: dict = {}
+    if request.method == "POST" and form.validate_on_submit():
+        min_tempo = form.min_tempo.data
+        max_tempo = form.max_tempo.data
+        if min_tempo and max_tempo:
+            if min_tempo >= max_tempo:
+                flash(
+                    "Minimum Tempo cannot be less than Maximum Tempo!",
+                    category="danger",
+                )
+                return render_template(
+                    "preferences.html",
+                    title="Settings",
+                    form=form,
+                    user_prefs=user_prefs,
+                )
+            if max_tempo < min_tempo:
+                flash(
+                    "Maximum Tempo cannot be less than Minimum Tempo!",
+                    category="danger",
+                )
+                return render_template(
+                    "preferences.html",
+                    title="Settings",
+                    form=form,
+                    user_prefs=user_prefs,
+                )
+        if min_tempo:
+            new_prefs["min_tempo"] = min_tempo
+        if max_tempo:
+            new_prefs["max_tempo"] = max_tempo
+        if len(new_prefs) != 0:
+            current_user.preferences = new_prefs
+        else:
+            current_user.preferences = None
+        db.session.commit()
+        return render_template(
+            "preferences.html", title="Settings", form=form, user_prefs=new_prefs
+        )
+    return render_template(
+        "preferences.html", title="Settings", form=form, user_prefs=user_prefs
+    )
+
+
 @app.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
@@ -315,8 +371,7 @@ def create():
             db.session.add(user_gif)
             db.session.commit()
             return redirect(url_for("show", gif_id=user_gif.id))
-        else:
-            flash("You must select a file (Only .gif files are allowed)", "danger")
+        flash("You must select a file (Only .gif files are allowed)", "danger")
     return render_template("create.html", title="New Gif", form=form)
 
 
@@ -365,7 +420,7 @@ def logout():
     # Delete all images not being referenced by a gif to clean up the database
     # & local files
     db.session.execute(
-        "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"
+        "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"  # type: ignore
         " WHERE image_id = imid.id)"
     )
     db.session.commit()
@@ -382,9 +437,4 @@ def privacy_policy():
 def show():
     gif_id = request.args.get("gif_id")
     gif = retrieve_gif(gif_id, current_user.get_id())
-    flash(
-        "Gifs may take a few seconds to load when first created! "
-        "If still not loaded after 30 seconds, try refreshing the page.",
-        category="warning",
-    )
     return render_template("show.html", title=gif.name, gif=gif)

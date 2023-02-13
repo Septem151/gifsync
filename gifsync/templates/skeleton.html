@@ -74,20 +74,6 @@
                  (mobile devices in particular) -->
       <div id="navbarMenu" class="navbar-collapse collapse">
         <ul class="navbar-nav ml-auto">
-          <!-- BUTTON "About GifSync" -->
-          <li class="nav-item">
-            <a
-              class="btn btn-custom-green shadow-none"
-              type="button"
-              href="{{ url_for('home') }}"
-            >
-              <img
-                class="btn-icon"
-                src="{{ url_for('static', filename='img/info-icon.svg') }}"
-              />
-              About GifSync
-            </a>
-          </li>
           {% if not current_user.is_authenticated %}
           <!-- BUTTON "Connect Spotify" -->
           <li class="nav-item">
@@ -116,6 +102,20 @@
                 src="{{ url_for('static', filename='img/synced-gifs-icon.svg') }}"
               />
               My Synced Gifs
+            </a>
+          </li>
+          <!-- BUTTON "Settings" -->
+          <li class="nav-item">
+            <a
+              class="btn btn-custom-green shadow-none"
+              type="button"
+              href="{{ url_for('preferences') }}"
+            >
+              <img
+                class="btn-icon"
+                src="{{ url_for('static', filename='img/preferences-icon.svg') }}"
+              />
+              Settings
             </a>
           </li>
           <!-- BUTTON "Forget Me" -->
