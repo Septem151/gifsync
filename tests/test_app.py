@@ -3,12 +3,12 @@ import pytest
 from gifsync import app
 
 
-@pytest.fixture
-def client():
+@pytest.fixture(name="client")
+def fixture_client():
     app.testing = True
     app.config["SECRET_KEY"] = "devkey"
-    client = app.test_client()
-    yield client
+    test_client = app.test_client()
+    yield test_client
 
 
 def test_routes_while_logged_out(client):

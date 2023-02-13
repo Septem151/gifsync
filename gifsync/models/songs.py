@@ -3,7 +3,7 @@ import requests
 from gifsync.extensions import db
 
 
-class Song(db.Model):
+class Song(db.Model):  # type: ignore[name-defined]
     __tablename__ = "song"
 
     id = db.Column(db.String(32), primary_key=True)
@@ -23,6 +23,7 @@ class Song(db.Model):
                     "Accept": "application/json",
                     "Authorization": "Bearer " + access_token,
                 },
+                timeout=60,
             )
             content = response.json()
             if "tempo" in content:
@@ -30,7 +31,5 @@ class Song(db.Model):
                 db.session.add(song)
                 db.session.commit()
                 return song.tempo
-            else:
-                return None
-        else:
-            return song.tempo
+            return None
+        return song.tempo

@@ -10,19 +10,18 @@
 from gifsync import app, config
 
 if __name__ == "__main__":
-    # YOU SHOULDN'T HAVE TO MODIFY THE PORT OR ENV! The Production server
+    # YOU SHOULDN'T HAVE TO MODIFY THE PORT OR DEBUG! The Production server
     # provided by flask is pointless.
     # Change the default port/environment by modifying the second parameter in
     # "on.environ.get", OR by setting
-    # environment variables for PORT and/or FLASK_ENV.
-    # "development" env should be used when developing to prevent the need of
+    # environment variables for PORT and/or FLASK_DEBUG.
+    # "true" debug should be used when developing to prevent the need of
     # restarting the
     # local server after changes made to HTML. Does NOT update CSS changes
     # automatically, requiring a Hard Reload of
     # your web browser.
-    # Valid env values: development, production
     port = config.port
-    if app.config["ENV"] == "development":
+    if app.config["DEBUG"] is True:
         app.run(host="0.0.0.0", port=port, debug=True)
     else:
         app.run(host="0.0.0.0", port=port)

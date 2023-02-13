@@ -1,3 +1,2 @@
 FROM postgres:latest
-MAINTAINER Carson Mullins "carsonmullins@yahoo.com"
 COPY ./initdb.sh /docker-entrypoint-initdb.d

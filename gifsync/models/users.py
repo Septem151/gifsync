@@ -3,20 +3,22 @@ from datetime import datetime, timedelta
 
 import requests
 from requests_oauthlib import OAuth2Session
+from sqlalchemy.dialects.postgresql import JSONB
 
 from gifsync.config import refresh_url
 from gifsync.extensions import db
 from gifsync.models.songs import Song
 
 
-class SpotifyUser(db.Model):
+class SpotifyUser(db.Model):  # type: ignore[name-defined]
     __tablename__ = "spotify_user"
 
     id = db.Column(db.String(32), primary_key=True)
     access_token = db.Column(db.String(256), nullable=False)
     expiration_time = db.Column(db.DateTime, nullable=False)
     refresh_token = db.Column(db.String(256), nullable=False)
-    curr_song = None
+    preferences = db.Column(JSONB, nullable=True)
+    curr_song: dict | None = None
 
     @staticmethod
     def get_user_id(access_token):
@@ -26,12 +28,12 @@ class SpotifyUser(db.Model):
                 "Accept": "application/json",
                 "Authorization": "Bearer " + access_token,
             },
+            timeout=60,
         )
         content = response.json()
         if response.status_code == 200 and "id" in content:
             return content["id"]
-        else:
-            return None
+        return None
 
     def __init__(self, access_token, expiration_time, refresh_token, id_=None):
         if not id_:
@@ -51,6 +53,7 @@ class SpotifyUser(db.Model):
                 "Accept": "application/json",
                 "Authorization": "Bearer " + self.access_token,
             },
+            timeout=60,
         )
         self.curr_song = {}
         if response.status_code == 200:
@@ -62,8 +65,8 @@ class SpotifyUser(db.Model):
             if content.get("item") and not content["item"].get("is_local"):
                 self.curr_song["name"] = content["item"]["name"]
                 self.curr_song["id"] = content["item"]["id"]
-                self.curr_song["tempo"] = Song.get_song_tempo(
-                    self.curr_song["id"], self.access_token
+                self.curr_song["tempo"] = self.clamp_tempo(
+                    Song.get_song_tempo(self.curr_song["id"], self.access_token)
                 )
                 track_duration = int(content["item"]["duration_ms"])
                 track_progress = int(content["progress_ms"])
@@ -76,6 +79,15 @@ class SpotifyUser(db.Model):
         elif response.status_code == 204:
             self.curr_song["paused"] = "true"
         return self.curr_song
+
+    def clamp_tempo(self, tempo: float) -> float:
+        clamped_tempo = tempo
+        if self.preferences is not None:
+            if clamped_tempo <= self.preferences.get("min_tempo", 0):
+                clamped_tempo *= 2
+            elif clamped_tempo >= self.preferences.get("max_tempo", 999):
+                clamped_tempo /= 2
+        return clamped_tempo
 
     def refresh_access_token(self):
         client_id = os.environ.get("CLIENT_ID")

@@ -7,7 +7,7 @@ dotenv.load_dotenv("web.env")
 # CLIENT_ID and CLIENT_SECRET **MUST** be defined in environment variables
 client_id = os.environ.get("CLIENT_ID")
 client_secret = os.environ.get("CLIENT_SECRET")
-flask_env = os.environ.get("FLASK_ENV", "development")
+flask_debug = os.environ.get("FLASK_DEBUG", "true").lower() in ["true", "1"]
 flask_secret = os.environ.get("SECRET_KEY", "devkey")
 db_url = os.environ.get(
     "DATABASE_URL", "postgresql://postgres:devpassword@localhost:5432/postgres"
