@@ -80,6 +80,7 @@ class Gif(db.Model):  # type: ignore[name-defined]
         frame_times = Gif.get_frame_times(tempo, num_frames, self.beats_per_loop)
         args = [
             "gifsicle",
+            "--conserve-memory",
             "-o",
             "-",
         ]
@@ -93,7 +94,7 @@ class Gif(db.Model):  # type: ignore[name-defined]
             result_data = result.stdout
             return result_data
         except subprocess.CalledProcessError:
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR)
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, "Error getting synced gifs")
 
     def update_name(self, new_name):
         self.name = new_name
@@ -134,7 +135,7 @@ class Image(db.Model):  # type: ignore[name-defined]
     def generate_thumbnail(self):
         try:
             cmd = subprocess.run(
-                ["gifsicle", "#0"],
+                ["gifsicle", "--conserve-memory", "#0"],
                 input=self.image,
                 capture_output=True,
                 check=True,
