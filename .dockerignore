@@ -1,6 +1,4 @@
 .git*
-LICENSE.txt
-*.md
 .idea/
 tests/
 venv/
