@@ -4,6 +4,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y bash curl openssh
 COPY ./.profile.d /app/.profile.d
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 COPY ./pyproject.toml /app/pyproject.toml
+COPY ./README.md /app/README.md
+COPY ./LICENSE.txt /app/LICENSE.txt
 WORKDIR /app
 RUN pip3 install .[server]
 COPY ./gifsync /app/gifsync

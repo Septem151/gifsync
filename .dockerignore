@@ -8,3 +8,10 @@ venv/
 **/.pytest_cache
 **/*.env
 run.py
+build/
+dist/
+**/*.egg-info
+junit/
+.coverage
+cov-*.xml
+cov_html*/
