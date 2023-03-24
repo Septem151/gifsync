@@ -5,7 +5,6 @@ COPY ./.profile.d /app/.profile.d
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
-RUN pip3 install -r requirements.txt
-RUN pip3 install gunicorn
+RUN pip3 install .[server]
 COPY ./gifsync /app/gifsync
 CMD exec gunicorn -b 0.0.0.0:${PORT:-8000} --workers=1 --threads=2 --worker-class=gthread gifsync:app --log-file -
