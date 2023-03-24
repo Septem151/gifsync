@@ -1,0 +1,117 @@
+[project]
+name = "gifsync"
+version = "0.1.0"
+description = "Synchronize the speed of Gifs to music on Spotify in real time"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+authors = [
+  {name = "Carson Mullins", email = "carsonmullins@yahoo.com"}
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Typing :: Typed"
+]
+dependencies = [
+  "certifi==2022.12.7",
+  "charset-normalizer==3.0.1",
+  "click==8.1.3",
+  "Flask==2.2.2",
+  "Flask-Login==0.6.2",
+  "Flask-SQLAlchemy==3.0.2",
+  "flask-talisman==1.0.0",
+  "Flask-WTF==1.1.1",
+  "greenlet==2.0.1",
+  "idna==3.4",
+  "itsdangerous==2.1.2",
+  "Jinja2==3.1.2",
+  "MarkupSafe==2.1.2",
+  "oauthlib==3.2.2",
+  "psycopg2-binary==2.9.5",
+  "python-dotenv==0.21.1",
+  "requests==2.28.2",
+  "requests-oauthlib==1.3.1",
+  "SQLAlchemy==1.4.46",
+  "urllib3==1.26.14",
+  "Werkzeug==2.2.3",
+  "WTForms==3.0.1"
+]
+
+[project.optional-dependencies]
+dev = [
+  "black==23.1.0",
+  "isort==5.12.0",
+  "mypy==1.1.1",
+  "pylint==2.17.1"
+]
+test = [
+  "pytest==7.2.2",
+  "pytest-cov==4.0.0"
+]
+server = [
+  "gunicorn==20.1.0"
+]
+
+[project.urls]
+homepage = "https://gifsync.herokuapp.com"
+documentation = "https://github.com/Septem151/gifsync/blob/master/README.md"
+repository = "https://github.com/Septem151/gifsync.git"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["gifsync"]
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint."DESIGN"]
+max-args = "5"
+max-attributes = "7"
+max-bool-expr = "5"
+max-branches = "12"
+max-locals = "15"
+max-parents = "7"
+max-public-methods = "20"
+max-returns = "6"
+max-statements = "50"
+min-public-methods = "2"
+
+[tool.pylint."REFACTORING"]
+max-nested-blocks = "5"
+
+[tool.pylint."TYPECHECK"]
+ignored-classes = [
+  "optparse.Values",
+  "thread._local_",
+  "_thead._local",
+  "_local",
+  "argparse.Namespace",
+  "scoped_session"
+]
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = "missing-module-docstring,missing-function-docstring,missing-class-docstring"
+
+[tool.pylint."FORMAT"]
+max-line-length = "88"
+
+[tool.mypy]
+plugins = "sqlalchemy.ext.mypy.plugin"
+check_untyped_defs = true
+follow_imports = "silent"
+show_column_numbers = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = [
+  "flask_wtf",
+  "requests_oauthlib",
+  "flask_login",
+  "flask_talisman",
+  "wtforms"
+]
+ignore_missing_imports = true

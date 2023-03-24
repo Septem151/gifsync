@@ -36,13 +36,15 @@ class Gif(db.Model):  # type: ignore[name-defined]
         backref=db.backref("gifs", passive_deletes=True),
     )
 
-    def __init__(self, user_id, image_id, name, beats_per_loop, id_=None):
+    def __init__(  # pylint: disable=too-many-arguments
+        self, user_id, image_id, name, beats_per_loop, id_=None
+    ):
         self.user_id = user_id
         self.image_id = image_id
         self.name = name
         self.beats_per_loop = beats_per_loop
         if not id_:
-            self.id = self.generate_hash_id()
+            self.id = self.generate_hash_id()  # pylint: disable=invalid-name
         else:
             self.id = id_
 
@@ -56,9 +58,9 @@ class Gif(db.Model):  # type: ignore[name-defined]
 
     @staticmethod
     def round_tens(num):
-        a = (num // 10) * 10
-        b = a + 10
-        return int(b if num - a >= b - num else a)
+        num_a = (num // 10) * 10
+        num_b = num_a + 10
+        return int(num_b if num - num_a >= num_b - num else num_a)
 
     @staticmethod
     def get_frame_times(tempo: float, num_frames: int, beats_per_loop: float) -> list:
@@ -75,7 +77,9 @@ class Gif(db.Model):  # type: ignore[name-defined]
             frame_times[(i * num_frames // extra_frame_duration) % num_frames] += 1
         return frame_times
 
-    def get_synced_gif(self, tempo: float) -> bytes:
+    def get_synced_gif(  # pylint: disable=inconsistent-return-statements
+        self, tempo: float
+    ) -> bytes:
         num_frames = self.image.get_num_frames()
         frame_times = Gif.get_frame_times(tempo, num_frames, self.beats_per_loop)
         args = [
@@ -112,11 +116,11 @@ class Image(db.Model):  # type: ignore[name-defined]
         self.image = image
         if not id_:
             image_hash = self.hash_image()
-            self.id = image_hash
+            self.id = image_hash  # pylint: disable=invalid-name
         else:
             self.id = id_
 
-    def get_num_frames(self):
+    def get_num_frames(self):  # pylint: disable=inconsistent-return-statements
         try:
             cmd = subprocess.run(
                 ["gifsicle", "-I"], input=self.image, capture_output=True, check=True
@@ -132,7 +136,7 @@ class Image(db.Model):  # type: ignore[name-defined]
                 "Internal server error trying to get number of gif frames",
             )
 
-    def generate_thumbnail(self):
+    def generate_thumbnail(self):  # pylint: disable=inconsistent-return-statements
         try:
             cmd = subprocess.run(
                 ["gifsicle", "--conserve-memory", "#0"],

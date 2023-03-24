@@ -5,9 +5,10 @@ import requests
 from requests_oauthlib import OAuth2Session
 from sqlalchemy.dialects.postgresql import JSONB
 
-from gifsync.config import refresh_url
+from gifsync.config import REFRESH_URL
 from gifsync.extensions import db
 from gifsync.models.songs import Song
+from gifsync.util import spotify_request
 
 
 class SpotifyUser(db.Model):  # type: ignore[name-defined]
@@ -22,22 +23,16 @@ class SpotifyUser(db.Model):  # type: ignore[name-defined]
 
     @staticmethod
     def get_user_id(access_token):
-        response = requests.get(
-            "https://api.spotify.com/v1/me",
-            headers={
-                "Accept": "application/json",
-                "Authorization": "Bearer " + access_token,
-            },
-            timeout=60,
-        )
-        content = response.json()
+        response, content = spotify_request("me", access_token)
         if response.status_code == 200 and "id" in content:
             return content["id"]
         return None
 
     def __init__(self, access_token, expiration_time, refresh_token, id_=None):
         if not id_:
-            self.id = SpotifyUser.get_user_id(access_token)
+            self.id = SpotifyUser.get_user_id(  # pylint: disable=invalid-name
+                access_token
+            )
         else:
             self.id = id_
         self.access_token = access_token
@@ -95,7 +90,7 @@ class SpotifyUser(db.Model):  # type: ignore[name-defined]
         refresh_token = {"refresh_token": self.refresh_token}
         extra = {"client_id": client_id, "client_secret": client_secret}
         spotify_oauth = OAuth2Session(client_id, token=refresh_token)
-        token = spotify_oauth.refresh_token(refresh_url, **extra)
+        token = spotify_oauth.refresh_token(REFRESH_URL, **extra)
         self.access_token = token["access_token"]
         expires_in = float(token["expires_in"])
         self.expiration_time = datetime.utcnow() + timedelta(seconds=expires_in)
@@ -119,7 +114,7 @@ class SpotifyUser(db.Model):  # type: ignore[name-defined]
         return self.id
 
 
-class AnonymousUser(object):
+class AnonymousUser:
     @property
     def is_authenticated(self):
         return False
