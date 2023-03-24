@@ -1,12 +1,9 @@
 FROM python:3.11-slim-buster
 RUN apt-get update && apt-get upgrade -y && apt-get install -y bash curl openssh-server gifsicle \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
-COPY ./.profile.d /app/.profile.d
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-COPY ./pyproject.toml /app/pyproject.toml
-COPY ./README.md /app/README.md
-COPY ./LICENSE.txt /app/LICENSE.txt
 WORKDIR /app
+COPY ./.profile.d ./pyproject.toml ./README.md ./LICENSE.txt ./gifsync /app/
+
 RUN pip3 install .[server]
-COPY ./gifsync /app/gifsync
 CMD exec gunicorn -b 0.0.0.0:${PORT:-8000} --workers=1 --threads=2 --worker-class=gthread gifsync:app --log-file -
