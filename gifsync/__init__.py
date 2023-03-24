@@ -237,17 +237,10 @@ def api_synced_gif():
 
 @app.route("/callback", methods=["GET"])
 def callback():
-    if (
-        not session.get("oauth_state")
-        or len(request.args) != 2
-        or "error" in request.args
-        or ("code" not in request.args and "state" not in request.args)
-    ):
+    if "error" in request.args or "code" not in request.args:
         flash("There was an error logging you in.", category="danger")
         return redirect(url_for("index"))
-    spotify_oauth = OAuth2Session(
-        config.client_id, redirect_uri=config.callback_uri, state=session["oauth_state"]
-    )
+    spotify_oauth = OAuth2Session(config.client_id, redirect_uri=config.callback_uri)
     token = spotify_oauth.fetch_token(
         config.token_url,
         client_secret=config.client_secret,
@@ -280,7 +273,6 @@ def callback():
         abort(400)
     if next_url:
         session.pop("next")
-    session.pop("oauth_state")
     return redirect(next_url or url_for("collection"))
 
 
@@ -416,10 +408,9 @@ def login():
     spotify_oauth = OAuth2Session(
         config.client_id, scope=config.scope, redirect_uri=config.callback_uri
     )
-    authorization_url, state = spotify_oauth.authorization_url(
+    authorization_url = spotify_oauth.authorization_url(
         config.authorization_base_url, show_dialog="true"
     )
-    session["oauth_state"] = state
     next_url = request.args.get("next")
     if next_url:
         session["next"] = next_url
