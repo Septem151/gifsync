@@ -18,8 +18,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-cov
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install .[test]
       - name: Test with pytest
         run: |
           python -m pytest tests/ --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml --cov=gifsync tests/ --cov-report=xml:cov-${{ matrix.python-version }}.xml --cov-report=html:cov_html-${{ matrix.python-version }}

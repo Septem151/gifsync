@@ -15,9 +15,9 @@ db_url = os.environ.get(
 db_url = db_url.replace("postgres://", "postgresql://")
 port = int(os.environ.get("PORT", 8000))
 callback_uri = os.environ.get("CALLBACK_URI", f"http://localhost:{port}/callback")
-authorization_base_url = "https://accounts.spotify.com/authorize"
-token_url = "https://accounts.spotify.com/api/token"
-refresh_url = token_url
+AUTHORIZATION_BASE_URL = "https://accounts.spotify.com/authorize"
+TOKEN_URL = "https://accounts.spotify.com/api/token"
+REFRESH_URL = TOKEN_URL
 scope = ["user-read-currently-playing"]
 csp = {
     "default-src": [
