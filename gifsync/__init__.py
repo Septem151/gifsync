@@ -36,6 +36,7 @@ def create_app():
     flask_app.config["SECRET_KEY"] = config.flask_secret
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url
     flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    flask_app.config["REMEMBER_COOKIE_DURATION"] = config.REMEMBER_COOKIE_DURATION
     db.init_app(flask_app)
     login_manager.anonymous_user = AnonymousUser
     login_manager.init_app(flask_app)
@@ -306,7 +307,7 @@ def callback():
         hat_kid_gif = Gif(user.id, hat_kid_image.id, "Hat Kid", 2)
         db.session.add(hat_kid_gif)
         db.session.commit()
-    login_user(user)
+    login_user(user, remember=True)
     state_obj = login_session.pop(state)
     next_url = state_obj.get("next")
     session["login"] = login_session
