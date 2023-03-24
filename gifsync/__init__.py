@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from http import HTTPStatus
 from io import BytesIO
 from urllib.parse import urljoin, urlparse
 
@@ -17,7 +18,7 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import current_user, login_required, login_user
+from flask_login import current_user, login_required, login_user, logout_user
 from flask_talisman import Talisman
 from requests_oauthlib import OAuth2Session
 
@@ -69,6 +70,7 @@ else:
 
 @app.errorhandler(400)
 @app.errorhandler(401)
+@app.errorhandler(403)
 @app.errorhandler(404)
 def error_page(error):
     return (render_template("error.html", error=str(error).split(":")), error.code)
@@ -92,15 +94,17 @@ def index():
 
 
 @app.route("/api/me/current-song")
-@login_required
 def api_curr_song():
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.FORBIDDEN)
     current_user.update_curr_song()
     return jsonify(current_user.curr_song)
 
 
 @app.route("/api/me/delete-gif")
-@login_required
 def api_delete_gif():
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.FORBIDDEN)
     gif_id = request.args.get("id")
     gif = retrieve_gif(gif_id, current_user.get_id())
     db.session.delete(gif)
@@ -116,8 +120,9 @@ def api_delete_gif():
 
 
 @app.route("/api/me/edit-gif", methods=["POST"])
-@login_required
 def api_edit_gif():  # pylint: disable=too-many-branches
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.FORBIDDEN)
     gif_id = request.args.get("id")
     gif_name = request.args.get("name")
     gif_bpl = request.args.get("bpl")
@@ -192,8 +197,9 @@ def api_edit_gif():  # pylint: disable=too-many-branches
 
 
 @app.route("/api/me/image")
-@login_required
 def api_user_image():
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.FORBIDDEN)
     gif_id = request.args.get("gif_id")
     gif = retrieve_gif(gif_id, current_user.get_id())
     response = make_response(send_file(BytesIO(gif.image.image), mimetype="image/gif"))
@@ -202,8 +208,9 @@ def api_user_image():
 
 
 @app.route("/api/me/image/thumbnail")
-@login_required
 def api_user_image_thumbnail():
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.FORBIDDEN)
     gif_id = request.args.get("gif_id")
     gif = retrieve_gif(gif_id, current_user.get_id())
     if not gif.image.thumbnail:
@@ -217,8 +224,9 @@ def api_user_image_thumbnail():
 
 
 @app.route("/api/me/synced-gif")
-@login_required
 def api_synced_gif():
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.FORBIDDEN)
     gif_id = request.args.get("gif_id")
     song_id = request.args.get("song_id")
     gif = retrieve_gif(gif_id, current_user.get_id())
@@ -235,12 +243,43 @@ def api_synced_gif():
     return response
 
 
+@app.route("/api/me/cleanup")
+def api_cleanup():
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.FORBIDDEN)
+    # Delete the current user, which deletes all of their gifs
+    db.session.delete(current_user)
+    db.session.commit()
+    # Delete all images not being referenced by a gif to clean up the database
+    # & local files
+    db.session.execute(
+        "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"  # type: ignore
+        " WHERE image_id = imid.id)"
+    )
+    db.session.commit()
+    return redirect(url_for("logout"))
+
+
 @app.route("/callback", methods=["GET"])
 def callback():
-    if "error" in request.args or "code" not in request.args:
+    if (
+        len(request.args) != 2
+        or "error" in request.args
+        or ("code" not in request.args and "state" not in request.args)
+    ):
         flash("There was an error logging you in.", category="danger")
         return redirect(url_for("index"))
-    spotify_oauth = OAuth2Session(config.client_id, redirect_uri=config.callback_uri)
+    login_session = session.get("login", {})
+    state = request.args["state"]
+    if state not in login_session:
+        flash(
+            "There was an error logging you in. [CSRF State Token invalid]",
+            category="danger",
+        )
+        return redirect(url_for("index"))
+    spotify_oauth = OAuth2Session(
+        config.client_id, redirect_uri=config.callback_uri, state=state
+    )
     token = spotify_oauth.fetch_token(
         config.TOKEN_URL,
         client_secret=config.client_secret,
@@ -268,11 +307,11 @@ def callback():
         db.session.add(hat_kid_gif)
         db.session.commit()
     login_user(user)
-    next_url = session.get("next")
-    if not is_safe_url(next_url):
+    state_obj = login_session.pop(state)
+    next_url = state_obj.get("next")
+    session["login"] = login_session
+    if next_url and not is_safe_url(next_url):
         abort(400)
-    if next_url:
-        session.pop("next")
     return redirect(next_url or url_for("collection"))
 
 
@@ -408,28 +447,23 @@ def login():
     spotify_oauth = OAuth2Session(
         config.client_id, scope=config.scope, redirect_uri=config.callback_uri
     )
-    authorization_url, _ = spotify_oauth.authorization_url(
+    authorization_url, state = spotify_oauth.authorization_url(
         config.AUTHORIZATION_BASE_URL, show_dialog="true"
     )
     next_url = request.args.get("next")
-    if next_url:
-        session["next"] = next_url
+    login_session = session.get("login", {})
+    login_session.update(
+        {state: {"next": next_url}},
+    )
+    session["login"] = login_session
+    session.modified = True
     return redirect(authorization_url)
 
 
 @app.route("/logout")
 @login_required
 def logout():
-    # Delete the current user, which deletes all of their gifs
-    db.session.delete(current_user)
-    db.session.commit()
-    # Delete all images not being referenced by a gif to clean up the database
-    # & local files
-    db.session.execute(
-        "DELETE FROM image imid WHERE NOT EXISTS (SELECT FROM gif"  # type: ignore
-        " WHERE image_id = imid.id)"
-    )
-    db.session.commit()
+    logout_user()
     return redirect(url_for("home"))
 
 

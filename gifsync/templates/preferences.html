@@ -6,7 +6,16 @@
   href="{{ url_for('static', filename='css/preferences.css') }}"
 />
 {% endblock styles %} {% block content %}
-<p class="top-bar header">Your Preferences</p>
+<div class="row top-bar">
+  <p class="header col-auto my-auto">Your Preferences</p>
+  <a
+    class="col-auto ml-3 my-3 btn btn-custom-red shadow-none"
+    type="button"
+    href="{{ url_for('api_cleanup') }}"
+  >
+    Delete profile
+  </a>
+</div>
 <form
   class="form-left"
   method="POST"
