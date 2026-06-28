@@ -21,6 +21,7 @@ from flask import (
 from flask_login import current_user, login_required, login_user, logout_user
 from flask_talisman import Talisman
 from requests_oauthlib import OAuth2Session
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from gifsync import config
 from gifsync.extensions import db, login_manager
@@ -40,6 +41,9 @@ def create_app():
     db.init_app(flask_app)
     login_manager.anonymous_user = AnonymousUser
     login_manager.init_app(flask_app)
+    # Behind the reverse proxy (nginx terminates TLS), trust X-Forwarded-* from the
+    # single proxy hop so Talisman's force-HTTPS and url_for see the real scheme/host.
+    flask_app.wsgi_app = ProxyFix(flask_app.wsgi_app, x_for=1, x_proto=1, x_host=1)
     return flask_app
 
 
@@ -264,9 +268,9 @@ def api_cleanup():
 @app.route("/callback", methods=["GET"])
 def callback():
     if (
-        len(request.args) != 2
-        or "error" in request.args
-        or ("code" not in request.args and "state" not in request.args)
+        "error" in request.args
+        or "code" not in request.args
+        or "state" not in request.args
     ):
         flash("There was an error logging you in.", category="danger")
         return redirect(url_for("index"))

@@ -143,3 +143,6 @@ tests/flake8.sh
 # Additional Files & Folders
 gifsync/static/gif_frames/*
 .vscode/
+
+# TLS certificates / keys for the nginx reverse proxy (never commit private keys)
+nginx/certs/

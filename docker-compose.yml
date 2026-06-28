@@ -1,5 +1,18 @@
-version: "3"
 services:
+  # Dev-only TLS reverse proxy (self-signed). In prod the media-stack nginx fronts
+  # dance.gifsync.io and proxies to web on 10.0.0.2:8443, so this stays off by default.
+  # Enable with: docker compose --profile dev up
+  nginx:
+    profiles: ["dev"]
+    image: nginx:stable-alpine
+    ports:
+      - "10.0.0.2:8444:443"   # 8444 so it doesn't clash with web's published 8443
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - web
+    restart: unless-stopped
   web:
     image: gifsync_web:dev
     build:
@@ -8,11 +21,12 @@ services:
     env_file:
       - web.env
     ports:
-      - "8000:8000"
+      - "10.0.0.2:8443:8443"   # fronted by the media-stack nginx (dance.gifsync.io) in prod
     volumes:
       - ./gifsync:/app/gifsync
     depends_on:
       - db
+    restart: unless-stopped
   db:
     image: gifsync_db:dev
     build:
@@ -20,7 +34,10 @@ services:
       dockerfile: Dockerfile_db
     env_file:
       - db.env
-    ports:
-      - "5432:5432"
     volumes:
       - ./db_backup:/backup
+      - pgdata:/var/lib/postgresql
+    restart: unless-stopped
+
+volumes:
+  pgdata:
