@@ -15,9 +15,9 @@ class SpotifyUser(db.Model):  # type: ignore[name-defined]
     __tablename__ = "spotify_user"
 
     id = db.Column(db.String(32), primary_key=True)
-    access_token = db.Column(db.String(256), nullable=False)
+    access_token = db.Column(db.Text, nullable=False)
     expiration_time = db.Column(db.DateTime, nullable=False)
-    refresh_token = db.Column(db.String(256), nullable=False)
+    refresh_token = db.Column(db.Text, nullable=False)
     preferences = db.Column(JSONB, nullable=True)
     curr_song: dict | None = None
 

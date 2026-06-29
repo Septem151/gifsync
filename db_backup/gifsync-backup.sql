@@ -1,8 +1,8 @@
 CREATE TABLE spotify_user (
     id varchar(32) UNIQUE NOT NULL PRIMARY KEY,
-    access_token varchar(256) NOT NULL,
+    access_token text NOT NULL,
     expiration_time TIMESTAMP NOT NULL,
-    refresh_token varchar(256) NOT NULL,
+    refresh_token text NOT NULL,
     preferences jsonb
 );
 
