@@ -54,7 +54,7 @@ server = [
 ]
 
 [project.urls]
-homepage = "https://gifsync.herokuapp.com"
+homepage = "https://dance.gifsync.io"
 documentation = "https://github.com/Septem151/gifsync/blob/master/README.md"
 repository = "https://github.com/Septem151/gifsync.git"
 

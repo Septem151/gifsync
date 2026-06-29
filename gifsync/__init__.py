@@ -440,13 +440,6 @@ def home():
     return render_template("home.html", title="Home")
 
 
-@app.route("/keybase.txt")
-def keybase():
-    return send_from_directory(
-        os.path.join(app.root_path, "static"), "keybase.txt", mimetype="text/plain"
-    )
-
-
 @app.route("/login")
 def login():
     spotify_oauth = OAuth2Session(

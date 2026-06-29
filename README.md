@@ -11,7 +11,7 @@
     <img src="gifsync/static/img/logo.png" alt="GifSync Logo" width="256" height="256">
   </a>
 
-  <h3 align="center"><a href="https://gifsync.herokuapp.com">GifSync</a></h3>
+  <h3 align="center"><a href="https://dance.gifsync.io">GifSync</a></h3>
 
   <p align="center">
     Synchronize the speed of Gifs to music on Spotify in real time
@@ -53,13 +53,13 @@ However, through the power of **THE INTERNET!!** (and a ton of duck-duck-go'ing)
 - [Python][python-url]
 - [Flask][flask-url]
 - [Bootstrap][bootstrap-url]
-- [Heroku][heroku-url]
+- [Docker][docker-url]
 
 <!-- USAGE EXAMPLES -->
 
 ## Usage
 
-GifSync is hosted on [Heroku][heroku-url]. The link for GifSync is https://gifsync.herokuapp.com
+GifSync is self-hosted with [Docker][docker-url] behind an nginx reverse proxy. The link for GifSync is https://dance.gifsync.io
 
 <!-- ROADMAP -->
 
@@ -120,7 +120,7 @@ Project Link: https://github.com/Septem151/gifsync
 [gfb-url]: https://gearsforbreakfast.com
 [python-url]: https://www.python.org/
 [flask-url]: https://pypi.org/project/Flask/
-[heroku-url]: https://heroku.com
+[docker-url]: https://www.docker.com
 [bootstrap-url]: https://getbootstrap.com
 [keybase-url]: https://keybase.io/septem151
 [email-mailto]: mailto:septem151@protonmail.com

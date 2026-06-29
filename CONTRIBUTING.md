@@ -112,20 +112,14 @@ DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres`
   - Docker
     - I highly recommend using Docker for PostgreSQL. Please see the [Docker Prerequisites](#prerequisites-docker)
       section for help setting up Docker, then proceed with the next steps.
-    - Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local), then run the following command:
+    - Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local), then start just the database
+      service from the main compose file:
       ```sh
-      docker-compose -f docker-compose.postgres.yml up --build -d
+      docker compose up --build -d db
       ```
-    - Open a web browser and go to `localhost:8080`. Within the Adminer console, select/enter the following:
-      - System: PostgreSQL
-      - Server: db
-      - Username: postgres
-      - Password: devpassword
-      - Database: postgres
-    - Click on "Import" near the left-hand side, and under "File upload" select the file `db_template.sql`.
-      Execute the chosen file. You now have a test database that is available for the app to use, and a GUI to
-      interact with the database. If you wish to use the command line, enter `docker exec -it gifsync_db_1 bash` and
-      once you are in the container's terminal, enter `psql -U postgres`.
+    - The database container automatically seeds its schema from `db_backup/gifsync-backup.sql` on first start
+      (via `initdb.sh`), so there is nothing to import manually. To inspect the database, exec into the db
+      container (`docker compose exec db bash`) and run `psql -U postgres`.
   - Linux
     - Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local), then run the following commands:
     ```sh
@@ -135,12 +129,12 @@ DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres`
     # It is recommended that you set a strong password when running postgres locally on your machine like this.
     sudo passwd postgres
     sudo su - postgres
-    psql -U postgres -d postgres -a -f /absolute/path/to/project/db_template.sql
+    psql -U postgres -d postgres -a -f /absolute/path/to/project/db_backup/gifsync-backup.sql
     ```
   - Windows
-    - Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local) to get the `db_template.sql` file
+    - Follow steps 1 & 2 in [Environment Setup (Local)](#environment-setup-local) to get the `db_backup/gifsync-backup.sql` file
     - [Download][postgres-windows-url] and install PostgreSQL and PgAdmin installer
-    - Use PgAdmin to run the `db_template.sql` file
+    - Use PgAdmin to run the `db_backup/gifsync-backup.sql` file
 
 ### Environment Setup (Local)
 
@@ -175,7 +169,7 @@ DATABASE_URL=postgresql://postgres:devpassword@db:5432/postgres`
    - Linux
      ```sh
      python3 -m pip install --upgrade pip
-     python3 -m pip install -r requirements.txt
+     python3 -m pip install .
      ```
    - Windows
      - Replace "python3" with "python" in the Linux commands above
