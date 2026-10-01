@@ -27,7 +27,7 @@ dependencies = [
   "itsdangerous==2.1.2",
   "Jinja2==3.1.2",
   "MarkupSafe==2.1.2",
-  "oauthlib==3.2.2",
+  "oauthlib==4.0.0",
   "psycopg2-binary==2.9.5",
   "python-dotenv==0.21.1",
   "requests==2.28.2",
